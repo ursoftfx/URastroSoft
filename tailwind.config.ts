@@ -13,7 +13,36 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        display: ["Cinzel", "serif"],
+        serif: ["Cormorant Garamond", "serif"],
+        tamil: ["Tiro Tamil", "Catamaran", "serif"],
+        sans: ["Catamaran", "system-ui", "sans-serif"],
+      },
+      backgroundImage: {
+        "gradient-royal": "var(--gradient-royal)",
+        "gradient-gold": "var(--gradient-gold)",
+        "gradient-parchment": "var(--gradient-parchment)",
+        "gradient-temple": "var(--gradient-temple)",
+      },
+      boxShadow: {
+        royal: "var(--shadow-royal)",
+        gold: "var(--shadow-gold)",
+        soft: "var(--shadow-soft)",
+      },
       colors: {
+        maroon: {
+          DEFAULT: "hsl(var(--maroon))",
+          deep: "hsl(var(--maroon-deep))",
+          glow: "hsl(var(--maroon-glow))",
+        },
+        gold: {
+          DEFAULT: "hsl(var(--gold))",
+          bright: "hsl(var(--gold-bright))",
+          deep: "hsl(var(--gold-deep))",
+        },
+        cream: "hsl(var(--cream))",
+        ink: "hsl(var(--ink))",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

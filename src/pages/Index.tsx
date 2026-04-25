@@ -1,16 +1,162 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import { useState } from "react";
+import { BirthForm } from "@/components/BirthForm";
+import { JathagamReport } from "@/components/JathagamReport";
+import { BirthInput, computeJathagam, JathagamResult } from "@/lib/jathagam";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+import { ArrowLeft } from "lucide-react";
 
-// IMPORTANT: Fully REPLACE this with your own code
-const PlaceholderIndex = () => {
-  // PLACEHOLDER: Replace this entire return statement with the user's app.
-  // The inline background color is intentionally not part of the design system.
+const Index = () => {
+  const [result, setResult] = useState<JathagamResult | null>(null);
+  const [interpretation, setInterpretation] = useState("");
+  const [interpretationLoading, setInterpretationLoading] = useState(false);
+
+  const streamInterpretation = async (jathagam: JathagamResult) => {
+    setInterpretation("");
+    setInterpretationLoading(true);
+
+    const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
+    const ANON = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+    try {
+      const resp = await fetch(`${SUPABASE_URL}/functions/v1/jathagam-interpretation`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${ANON}`,
+        },
+        body: JSON.stringify({ jathagam }),
+      });
+      if (!resp.ok || !resp.body) {
+        if (resp.status === 429) {
+          toast.error("அதிக கோரிக்கைகள். சிறிது நேரம் கழித்து முயற்சிக்கவும்.");
+        } else if (resp.status === 402) {
+          toast.error("கிரெடிட் தீர்ந்துவிட்டது. தயவுசெய்து கணக்கில் சேர்க்கவும்.");
+        } else {
+          toast.error("பலன் தரவில்லை. மீண்டும் முயற்சிக்கவும்.");
+        }
+        setInterpretationLoading(false);
+        return;
+      }
+
+      const reader = resp.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      let done = false;
+
+      while (!done) {
+        const { done: d, value } = await reader.read();
+        if (d) break;
+        buffer += decoder.decode(value, { stream: true });
+        let idx;
+        while ((idx = buffer.indexOf("\n")) !== -1) {
+          let line = buffer.slice(0, idx);
+          buffer = buffer.slice(idx + 1);
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (!line.startsWith("data: ")) continue;
+          const json = line.slice(6).trim();
+          if (json === "[DONE]") {
+            done = true;
+            break;
+          }
+          try {
+            const parsed = JSON.parse(json);
+            const c = parsed.choices?.[0]?.delta?.content;
+            if (c) setInterpretation((prev) => prev + c);
+          } catch {
+            buffer = line + "\n" + buffer;
+            break;
+          }
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      toast.error("தொடர்பு கொள்ள முடியவில்லை");
+    } finally {
+      setInterpretationLoading(false);
+    }
+  };
+
+  const handleSubmit = async (input: BirthInput) => {
+    try {
+      const r = computeJathagam(input);
+      setResult(r);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      streamInterpretation(r);
+    } catch (e) {
+      console.error(e);
+      toast.error("ஜாதகம் கணக்கிட முடியவில்லை");
+    }
+  };
+
+  const handleReset = () => {
+    setResult(null);
+    setInterpretation("");
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center" style={{ backgroundColor: '#fcfbf8' }}>
-      <img data-lovable-blank-page-placeholder="REMOVE_THIS" src="/placeholder.svg" alt="Your app will live here!" />
-    </div>
+    <main className="min-h-screen relative">
+      {/* Decorative background */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full bg-gradient-gold opacity-[0.04] blur-3xl" />
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] rounded-full bg-maroon opacity-[0.05] blur-3xl" />
+      </div>
+
+      <div className="relative max-w-5xl mx-auto px-4 py-10 md:py-16">
+        {/* Header */}
+        {!result && (
+          <header className="text-center mb-12 animate-fade-up">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-royal shadow-royal mb-6 relative">
+              <div className="absolute inset-0 rounded-full bg-gradient-gold opacity-30 animate-shimmer" />
+              <span className="relative font-tamil text-4xl text-gold-bright">ॐ</span>
+            </div>
+            <div className="font-display text-xs tracking-[0.5em] text-gold-deep mb-3">
+              ✦ TAMIL VEDIC ASTROLOGY ✦
+            </div>
+            <h1 className="font-tamil text-5xl md:text-7xl font-bold text-maroon-deep leading-tight">
+              ஜாதக<span className="text-gold"> பலன்</span>
+            </h1>
+            <p className="font-tamil text-lg md:text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">
+              உங்கள் பிறப்பு விவரங்களின் அடிப்படையில் வேத ஜோதிட பாணியில் முழுமையான ஜாதக பலன் பெறுங்கள்
+            </p>
+            <div className="temple-divider mt-8 max-w-md mx-auto" />
+          </header>
+        )}
+
+        {!result ? (
+          <div className="max-w-xl mx-auto">
+            <BirthForm onSubmit={handleSubmit} />
+            <div className="mt-8 grid grid-cols-3 gap-4 text-center">
+              {[
+                { t: "ராசி & நட்சத்திரம்", s: "துல்லியமான கணிப்பு" },
+                { t: "தசா புத்தி", s: "விம்சோத்தரி தசை" },
+                { t: "AI பலன்", s: "தமிழில் விரிவான பலன்" },
+              ].map((f, i) => (
+                <div key={i} className="parchment p-4 rounded-xl">
+                  <div className="font-tamil font-bold text-maroon-deep text-sm">{f.t}</div>
+                  <div className="font-tamil text-xs text-muted-foreground mt-1">{f.s}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <Button
+              variant="ghost"
+              onClick={handleReset}
+              className="font-tamil text-maroon-deep hover:bg-cream"
+            >
+              <ArrowLeft className="w-4 h-4 mr-2" /> புதிய ஜாதகம்
+            </Button>
+            <JathagamReport
+              result={result}
+              interpretation={interpretation}
+              interpretationLoading={interpretationLoading}
+            />
+          </div>
+        )}
+      </div>
+    </main>
   );
 };
-
-const Index = PlaceholderIndex;
 
 export default Index;
