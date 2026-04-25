@@ -1,1 +1,4 @@
 project_id = "jbymizoocujxosrtynof"
+
+[functions.jathagam-interpretation]
+verify_jwt = false
