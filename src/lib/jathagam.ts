@@ -221,7 +221,7 @@ export function computeJathagam(input: BirthInput): JathagamResult {
   const ayanamsa = lahiriAyanamsa(jd);
 
   // Sun (apparent geocentric ecliptic longitude)
-  const sunLon = (solar.apparentLongitude(julian.J2000Century(jd)) * 180) / Math.PI;
+  const sunLon = (solar.apparentLongitude(base.J2000Century(jd)) * 180) / Math.PI;
 
   // Moon
   const moonPos = moonposition.position(jd);
