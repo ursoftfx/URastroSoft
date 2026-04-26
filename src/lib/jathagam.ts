@@ -158,8 +158,9 @@ function computeAscendant(lstDeg: number, latDeg: number, oblDeg: number): numbe
   const lst = (lstDeg * Math.PI) / 180;
   const lat = (latDeg * Math.PI) / 180;
   const obl = (oblDeg * Math.PI) / 180;
-  const y = -Math.cos(lst);
-  const x = Math.sin(obl) * Math.tan(lat) + Math.cos(obl) * Math.sin(lst);
+  // Standard formula: λ_Asc = atan2(cos(LST), -(sin(LST)·cos(ε) + tan(φ)·sin(ε)))
+  const y = Math.cos(lst);
+  const x = -(Math.sin(lst) * Math.cos(obl) + Math.tan(lat) * Math.sin(obl));
   let asc = Math.atan2(y, x) * (180 / Math.PI);
   asc = norm360(asc);
   return asc;
