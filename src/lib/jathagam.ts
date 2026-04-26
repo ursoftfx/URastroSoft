@@ -293,6 +293,7 @@ export function computeJathagam(input: BirthInput): JathagamResult {
     getPlanetPosition(jd, ayanamsa, "rahu", PLANETS_TAMIL.rahu, planetTropical.rahu, true),
     getPlanetPosition(jd, ayanamsa, "ketu", PLANETS_TAMIL.ketu, planetTropical.ketu, true),
   ];
+  const ascendant = getPlanetPosition(jd, ayanamsa, "ascendant", PLANETS_TAMIL.ascendant, ascTropical);
   const moon = planets.find((p) => p.key === "moon")!;
   const sun = planets.find((p) => p.key === "sun")!;
 
