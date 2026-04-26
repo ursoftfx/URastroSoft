@@ -1,7 +1,7 @@
 // Vedic astrology calculations - sidereal positions using Lahiri ayanamsa
 // Uses astronomia for high-precision astronomical calculations
 
-import { julian, moonposition, solar, planetposition } from "astronomia";
+import { julian, moonposition, solar, planetposition, base } from "astronomia";
 import vsop87Bmercury from "astronomia/data/vsop87Bmercury";
 import vsop87Bvenus from "astronomia/data/vsop87Bvenus";
 import vsop87Bmars from "astronomia/data/vsop87Bmars";
