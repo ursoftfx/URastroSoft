@@ -241,7 +241,7 @@ export function computeJathagam(input: BirthInput): JathagamResult {
   // For geocentric apparent longitude, simplest reasonable approach:
   // Use planetposition for each planet (heliocentric ecliptic), then compute geocentric.
   // astronomia provides Planet class
-  const sunHelio = (solar.apparentLongitude(julian.J2000Century(jd)) * 180) / Math.PI;
+  const sunHelio = (solar.apparentLongitude(base.J2000Century(jd)) * 180) / Math.PI;
 
   const planetTropical: Record<string, number> = {
     sun: sunLon,
