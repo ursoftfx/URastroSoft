@@ -1,7 +1,7 @@
 // Vedic astrology calculations - sidereal positions using Lahiri ayanamsa
 // Uses astronomia for high-precision astronomical calculations
 
-import { julian, moonposition, solar, planetposition } from "astronomia";
+import { julian, moonposition, solar, planetposition, base } from "astronomia";
 import vsop87Bmercury from "astronomia/data/vsop87Bmercury";
 import vsop87Bvenus from "astronomia/data/vsop87Bvenus";
 import vsop87Bmars from "astronomia/data/vsop87Bmars";
@@ -221,7 +221,7 @@ export function computeJathagam(input: BirthInput): JathagamResult {
   const ayanamsa = lahiriAyanamsa(jd);
 
   // Sun (apparent geocentric ecliptic longitude)
-  const sunLon = (solar.apparentLongitude(julian.J2000Century(jd)) * 180) / Math.PI;
+  const sunLon = (solar.apparentLongitude(base.J2000Century(jd)) * 180) / Math.PI;
 
   // Moon
   const moonPos = moonposition.position(jd);
@@ -241,7 +241,7 @@ export function computeJathagam(input: BirthInput): JathagamResult {
   // For geocentric apparent longitude, simplest reasonable approach:
   // Use planetposition for each planet (heliocentric ecliptic), then compute geocentric.
   // astronomia provides Planet class
-  const sunHelio = (solar.apparentLongitude(julian.J2000Century(jd)) * 180) / Math.PI;
+  const sunHelio = (solar.apparentLongitude(base.J2000Century(jd)) * 180) / Math.PI;
 
   const planetTropical: Record<string, number> = {
     sun: sunLon,
