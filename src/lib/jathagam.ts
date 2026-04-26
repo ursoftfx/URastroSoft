@@ -1,9 +1,10 @@
 // Vedic astrology calculations - sidereal positions using Lahiri ayanamsa
 // Uses astronomia for high-precision astronomical calculations
 
-import { julian, moonposition, solar, planetposition, base } from "astronomia";
+import { julian, moonposition, solar, planetposition, base, elliptic, coord } from "astronomia";
 import vsop87Bmercury from "astronomia/data/vsop87Bmercury";
 import vsop87Bvenus from "astronomia/data/vsop87Bvenus";
+import vsop87Bearth from "astronomia/data/vsop87Bearth";
 import vsop87Bmars from "astronomia/data/vsop87Bmars";
 import vsop87Bjupiter from "astronomia/data/vsop87Bjupiter";
 import vsop87Bsaturn from "astronomia/data/vsop87Bsaturn";
@@ -228,7 +229,8 @@ export function computeJathagam(input: BirthInput): JathagamResult {
   const moonPos = moonposition.position(jd);
   const moonLon = (moonPos.lon * 180) / Math.PI;
 
-  // Planets via VSOP87
+  // Planets via VSOP87B - geocentric apparent ecliptic longitude using elliptic.position
+  const earth = new planetposition.Planet(vsop87Bearth);
   const planetData: { key: string; data: any }[] = [
     { key: "mercury", data: vsop87Bmercury },
     { key: "venus", data: vsop87Bvenus },
@@ -237,36 +239,39 @@ export function computeJathagam(input: BirthInput): JathagamResult {
     { key: "saturn", data: vsop87Bsaturn },
   ];
 
-  const earthPlanet = null; // We use heliocentric -> geocentric approximation via solar position
-
-  // For geocentric apparent longitude, simplest reasonable approach:
-  // Use planetposition for each planet (heliocentric ecliptic), then compute geocentric.
-  // astronomia provides Planet class
-  const sunHelio = (solar.apparentLongitude(base.J2000Century(jd)) * 180) / Math.PI;
-
   const planetTropical: Record<string, number> = {
     sun: sunLon,
     moon: moonLon,
+  };
+  const planetRetro: Record<string, boolean> = {};
+
+  // Convert equatorial -> ecliptic longitude (degrees, normalised)
+  const eqToEclLon = (ra: number, dec: number) => {
+    const eq = new coord.Equatorial(ra, dec);
+    const ecl = eq.toEcliptic(base.SOblJ2000, base.COblJ2000);
+    return norm360((ecl.lon * 180) / Math.PI);
   };
 
   for (const p of planetData) {
     try {
       const planet = new planetposition.Planet(p.data);
-      // heliocentric ecliptic coords
-      const helio = planet.position(jd);
-      // helio.lon, lat, range. We need geocentric. Use Earth position via VSOP would be needed.
-      // Approximation: geocentric longitude ≈ heliocentric + 180 for outer? Not accurate.
-      // Better: use ecliptic position relative to Earth via simple vector subtraction.
-      // We'll use a simpler method: astronomia has elliptic.position for accurate geocentric, but requires Earth VSOP.
-      // For now, store heliocentric — but we need geocentric for astrology.
-      planetTropical[p.key] = norm360((helio.lon * 180) / Math.PI);
+      const eq = elliptic.position(planet, earth, jd);
+      const lon = eqToEclLon(eq.ra, eq.dec);
+      // Retrograde detection: compare with position 1 day later
+      const eq2 = elliptic.position(planet, earth, jd + 1);
+      const lon2 = eqToEclLon(eq2.ra, eq2.dec);
+      let delta = lon2 - lon;
+      if (delta > 180) delta -= 360;
+      if (delta < -180) delta += 360;
+      planetRetro[p.key] = delta < 0;
+      planetTropical[p.key] = lon;
     } catch (e) {
       planetTropical[p.key] = 0;
+      planetRetro[p.key] = false;
     }
   }
 
-  // Rahu (Mean Lunar Node ascending)
-  // Mean longitude of ascending node: from Meeus
+  // Rahu (Mean Lunar Node ascending) - always retrograde in Vedic
   const T = (jd - 2451545.0) / 36525;
   const meanNode = norm360(125.04452 - 1934.136261 * T + 0.0020708 * T * T + (T * T * T) / 450000);
   planetTropical.rahu = meanNode;
@@ -280,15 +285,14 @@ export function computeJathagam(input: BirthInput): JathagamResult {
   const planets: PlanetPosition[] = [
     getPlanetPosition(jd, ayanamsa, "sun", PLANETS_TAMIL.sun, planetTropical.sun),
     getPlanetPosition(jd, ayanamsa, "moon", PLANETS_TAMIL.moon, planetTropical.moon),
-    getPlanetPosition(jd, ayanamsa, "mars", PLANETS_TAMIL.mars, planetTropical.mars),
-    getPlanetPosition(jd, ayanamsa, "mercury", PLANETS_TAMIL.mercury, planetTropical.mercury),
-    getPlanetPosition(jd, ayanamsa, "jupiter", PLANETS_TAMIL.jupiter, planetTropical.jupiter),
-    getPlanetPosition(jd, ayanamsa, "venus", PLANETS_TAMIL.venus, planetTropical.venus),
-    getPlanetPosition(jd, ayanamsa, "saturn", PLANETS_TAMIL.saturn, planetTropical.saturn),
+    getPlanetPosition(jd, ayanamsa, "mars", PLANETS_TAMIL.mars, planetTropical.mars, planetRetro.mars),
+    getPlanetPosition(jd, ayanamsa, "mercury", PLANETS_TAMIL.mercury, planetTropical.mercury, planetRetro.mercury),
+    getPlanetPosition(jd, ayanamsa, "jupiter", PLANETS_TAMIL.jupiter, planetTropical.jupiter, planetRetro.jupiter),
+    getPlanetPosition(jd, ayanamsa, "venus", PLANETS_TAMIL.venus, planetTropical.venus, planetRetro.venus),
+    getPlanetPosition(jd, ayanamsa, "saturn", PLANETS_TAMIL.saturn, planetTropical.saturn, planetRetro.saturn),
     getPlanetPosition(jd, ayanamsa, "rahu", PLANETS_TAMIL.rahu, planetTropical.rahu, true),
     getPlanetPosition(jd, ayanamsa, "ketu", PLANETS_TAMIL.ketu, planetTropical.ketu, true),
   ];
-
   const ascendant = getPlanetPosition(jd, ayanamsa, "ascendant", PLANETS_TAMIL.ascendant, ascTropical);
   const moon = planets.find((p) => p.key === "moon")!;
   const sun = planets.find((p) => p.key === "sun")!;
