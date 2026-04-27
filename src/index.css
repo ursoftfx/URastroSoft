@@ -48,6 +48,8 @@
     --gold-deep: 38 70% 40%;
     --cream: 38 55% 92%;
     --ink: 0 50% 12%;
+    --whatsapp: 142 70% 45%;
+    --whatsapp-deep: 142 75% 35%;
 
     /* Gradients */
     --gradient-royal: linear-gradient(135deg, hsl(var(--maroon-deep)) 0%, hsl(var(--maroon)) 50%, hsl(var(--maroon-glow)) 100%);
