@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PLACES } from "@/lib/places";
 import { BirthInput } from "@/lib/jathagam";
-import { Sparkles, MapPin, Calendar, Clock, User } from "lucide-react";
+import { Sparkles, MapPin, Calendar, Clock, User, Phone } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,7 @@ interface Props {
 
 export const BirthForm = ({ onSubmit, loading }: Props) => {
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [gender, setGender] = useState("ஆண்");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
@@ -24,9 +25,12 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
 
   const placeData = useMemo(() => PLACES.find((p) => p.name === place), [place]);
 
+  const phoneDigits = phone.replace(/\D/g, "");
+  const phoneValid = phoneDigits.length >= 7 && phoneDigits.length <= 15;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !date || !time || !placeData) return;
+    if (!name || !phoneValid || !date || !time || !placeData) return;
     const [yyyy, mm, dd] = date.split("-").map(Number);
     const [hh, min] = time.split(":").map(Number);
     onSubmit({
@@ -41,6 +45,7 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
       placeName: placeData.name,
       name,
       gender,
+      phone: phone.trim(),
     });
   };
 
