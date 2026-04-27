@@ -76,6 +76,27 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
         />
       </div>
 
+      {/* Phone */}
+      <div className="space-y-2">
+        <Label htmlFor="phone" className="font-tamil flex items-center gap-2 text-maroon-deep">
+          <Phone className="w-4 h-4" /> தொலைபேசி எண் <span className="text-destructive">*</span>
+        </Label>
+        <Input
+          id="phone"
+          type="tel"
+          required
+          inputMode="tel"
+          autoComplete="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="உ.ம் 9876543210"
+          className="font-tamil bg-cream/50 border-gold/40 focus-visible:ring-accent"
+        />
+        {phone && !phoneValid && (
+          <p className="text-xs text-destructive font-tamil">சரியான தொலைபேசி எண் கொடுக்கவும் (7-15 இலக்கங்கள்)</p>
+        )}
+      </div>
+
       {/* Gender */}
       <div className="space-y-2">
         <Label className="font-tamil text-maroon-deep">பாலினம்</Label>
