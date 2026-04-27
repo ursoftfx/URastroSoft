@@ -5,6 +5,10 @@ import { BirthInput, computeJathagam, JathagamResult } from "@/lib/jathagam";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { SEO } from "@/components/SEO";
+import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const [result, setResult] = useState<JathagamResult | null>(null);
@@ -82,6 +86,29 @@ const Index = () => {
       setResult(r);
       window.scrollTo({ top: 0, behavior: "smooth" });
       streamInterpretation(r);
+
+      // Save lead (fire-and-forget; never block the user)
+      const pad = (n: number) => String(n).padStart(2, "0");
+      supabase
+        .from("jathagam_leads")
+        .insert({
+          name: input.name,
+          phone: input.phone || "",
+          gender: input.gender ?? null,
+          birth_date: `${input.year}-${pad(input.month)}-${pad(input.day)}`,
+          birth_time: `${pad(input.hour)}:${pad(input.minute)}:00`,
+          place_name: input.placeName,
+          latitude: input.latitude,
+          longitude: input.longitude,
+          tz_offset_hours: input.tzOffsetHours,
+          rasi: r.rasiTamil,
+          nakshatra: r.nakshatraTamil,
+          lagna: r.lagnaTamil,
+          user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 255) : null,
+        })
+        .then(({ error }) => {
+          if (error) console.error("lead save failed", error);
+        });
     } catch (e) {
       console.error(e);
       toast.error("ஜாதகம் கணக்கிட முடியவில்லை");
