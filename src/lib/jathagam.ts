@@ -75,6 +75,7 @@ export interface BirthInput {
   placeName: string;
   name: string;
   gender?: string;
+  phone?: string;
 }
 
 export interface PlanetPosition {
