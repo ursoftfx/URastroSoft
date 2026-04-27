@@ -195,7 +195,7 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
 
       <Button
         type="submit"
-        disabled={loading || !name || !date || !time || !placeData}
+        disabled={loading || !name || !phoneValid || !date || !time || !placeData}
         className="w-full bg-gradient-royal hover:opacity-95 text-primary-foreground font-tamil text-lg py-6 shadow-royal border border-gold/40"
       >
         <Sparkles className="w-5 h-5 mr-2 text-gold-bright" />
