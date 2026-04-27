@@ -5,6 +5,10 @@ import { BirthInput, computeJathagam, JathagamResult } from "@/lib/jathagam";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
+import { WhatsAppButton } from "@/components/WhatsAppButton";
+import { SEO } from "@/components/SEO";
+import { supabase } from "@/integrations/supabase/client";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const [result, setResult] = useState<JathagamResult | null>(null);
@@ -82,6 +86,29 @@ const Index = () => {
       setResult(r);
       window.scrollTo({ top: 0, behavior: "smooth" });
       streamInterpretation(r);
+
+      // Save lead (fire-and-forget; never block the user)
+      const pad = (n: number) => String(n).padStart(2, "0");
+      supabase
+        .from("jathagam_leads")
+        .insert({
+          name: input.name,
+          phone: input.phone || "",
+          gender: input.gender ?? null,
+          birth_date: `${input.year}-${pad(input.month)}-${pad(input.day)}`,
+          birth_time: `${pad(input.hour)}:${pad(input.minute)}:00`,
+          place_name: input.placeName,
+          latitude: input.latitude,
+          longitude: input.longitude,
+          tz_offset_hours: input.tzOffsetHours,
+          rasi: r.rasiTamil,
+          nakshatra: r.nakshatraTamil,
+          lagna: r.lagnaTamil,
+          user_agent: typeof navigator !== "undefined" ? navigator.userAgent.slice(0, 255) : null,
+        })
+        .then(({ error }) => {
+          if (error) console.error("lead save failed", error);
+        });
     } catch (e) {
       console.error(e);
       toast.error("ஜாதகம் கணக்கிட முடியவில்லை");
@@ -95,6 +122,17 @@ const Index = () => {
 
   return (
     <main className="min-h-screen relative">
+      <SEO
+        title="இலவச ஜாதகம் — Tamil Vedic Horoscope by Birth Date"
+        description="உங்கள் பிறப்பு தேதி, நேரம், ஊர் கொண்டு இலவச தமிழ் ஜாதகம், ராசி, நட்சத்திரம், தசை மற்றும் AI பலன் பெறுங்கள்."
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: "ஜாதக பலன்",
+          url: typeof window !== "undefined" ? window.location.origin : "",
+          inLanguage: "ta",
+        }}
+      />
       {/* Decorative background */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] rounded-full bg-gradient-gold opacity-[0.04] blur-3xl" />
@@ -118,6 +156,13 @@ const Index = () => {
             <p className="font-tamil text-lg md:text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">
               உங்கள் பிறப்பு விவரங்களின் அடிப்படையில் வேத ஜோதிட பாணியில் முழுமையான ஜாதக பலன் பெறுங்கள்
             </p>
+            <nav aria-label="Quick links" className="flex flex-wrap justify-center gap-3 mt-6 text-sm font-tamil">
+              <Link to="/free-horoscope" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">இலவச ஜாதகம்</Link>
+              <span className="text-gold-deep">•</span>
+              <Link to="/birth-horoscope" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">பிறப்பு ஜாதகம்</Link>
+              <span className="text-gold-deep">•</span>
+              <Link to="/astrology-consultation" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">இலவச ஆலோசனை</Link>
+            </nav>
             <div className="temple-divider mt-8 max-w-md mx-auto" />
           </header>
         )}
@@ -155,6 +200,7 @@ const Index = () => {
           </div>
         )}
       </div>
+      <WhatsAppButton message="வணக்கம்! எனக்கு ஜாதக ஆலோசனை வேண்டும்." />
     </main>
   );
 };

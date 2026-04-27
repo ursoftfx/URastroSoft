@@ -43,6 +43,10 @@ export default {
         },
         cream: "hsl(var(--cream))",
         ink: "hsl(var(--ink))",
+        whatsapp: {
+          DEFAULT: "hsl(var(--whatsapp))",
+          deep: "hsl(var(--whatsapp-deep))",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

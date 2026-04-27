@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { PLACES } from "@/lib/places";
 import { BirthInput } from "@/lib/jathagam";
-import { Sparkles, MapPin, Calendar, Clock, User } from "lucide-react";
+import { Sparkles, MapPin, Calendar, Clock, User, Phone } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
@@ -16,6 +16,7 @@ interface Props {
 
 export const BirthForm = ({ onSubmit, loading }: Props) => {
   const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [gender, setGender] = useState("ஆண்");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
@@ -24,9 +25,12 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
 
   const placeData = useMemo(() => PLACES.find((p) => p.name === place), [place]);
 
+  const phoneDigits = phone.replace(/\D/g, "");
+  const phoneValid = phoneDigits.length >= 7 && phoneDigits.length <= 15;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !date || !time || !placeData) return;
+    if (!name || !phoneValid || !date || !time || !placeData) return;
     const [yyyy, mm, dd] = date.split("-").map(Number);
     const [hh, min] = time.split(":").map(Number);
     onSubmit({
@@ -41,6 +45,7 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
       placeName: placeData.name,
       name,
       gender,
+      phone: phone.trim(),
     });
   };
 
@@ -69,6 +74,27 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
           placeholder="உங்கள் பெயர்"
           className="font-tamil bg-cream/50 border-gold/40 focus-visible:ring-accent"
         />
+      </div>
+
+      {/* Phone */}
+      <div className="space-y-2">
+        <Label htmlFor="phone" className="font-tamil flex items-center gap-2 text-maroon-deep">
+          <Phone className="w-4 h-4" /> தொலைபேசி எண் <span className="text-destructive">*</span>
+        </Label>
+        <Input
+          id="phone"
+          type="tel"
+          required
+          inputMode="tel"
+          autoComplete="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          placeholder="உ.ம் 9876543210"
+          className="font-tamil bg-cream/50 border-gold/40 focus-visible:ring-accent"
+        />
+        {phone && !phoneValid && (
+          <p className="text-xs text-destructive font-tamil">சரியான தொலைபேசி எண் கொடுக்கவும் (7-15 இலக்கங்கள்)</p>
+        )}
       </div>
 
       {/* Gender */}
@@ -169,7 +195,7 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
 
       <Button
         type="submit"
-        disabled={loading || !name || !date || !time || !placeData}
+        disabled={loading || !name || !phoneValid || !date || !time || !placeData}
         className="w-full bg-gradient-royal hover:opacity-95 text-primary-foreground font-tamil text-lg py-6 shadow-royal border border-gold/40"
       >
         <Sparkles className="w-5 h-5 mr-2 text-gold-bright" />
