@@ -604,14 +604,40 @@ export function computeJathagam(input: BirthInput): JathagamResult {
   const dasha = computeDasha(moon.longitude, localDate);
   const lordIdx = NAK_TO_DASHA_INDEX[moon.nakshatraIndex];
 
+  // Multi-level dasha
+  const dashaTreeData = computeDashaTree(moon.longitude, localDate);
+
+  // Navamsa chart
+  const navamsaPositions = [...planets, ascendant].map((p) => {
+    const navIdx = navamsaRasi(p.longitude);
+    return { key: p.key, nameTamil: p.nameTamil, rasiIndex: navIdx, rasiTamil: RASIS_TAMIL[navIdx] };
+  });
+  const navamsaChart: string[][] = Array.from({ length: 12 }, () => []);
+  for (const np of navamsaPositions) {
+    if (np.key === "ascendant") navamsaChart[np.rasiIndex].unshift("ascendant");
+    else navamsaChart[np.rasiIndex].push(np.key);
+  }
+
+  // Sunrise / sunset / panchangam
+  const { sunrise, sunset } = sunriseSunset(input.year, input.month, input.day, input.latitude, input.longitude, input.tzOffsetHours);
+  const birthMs = Date.UTC(input.year, input.month - 1, input.day, input.hour - input.tzOffsetHours, input.minute);
+  const isDaytime = birthMs >= sunrise.getTime() && birthMs < sunset.getTime();
+  const panchangam = computePanchangam(sun.longitude, moon.longitude, sunrise, sunset, localDate);
+
+  // Mandi & Gulika
+  const weekday = sunrise.getUTCDay();
+  const gulikaFrac = isDaytime ? GULIKA_DAY_FRAC[weekday] : GULIKA_NIGHT_FRAC[weekday];
+  const gulikaLon = computeUpagrahaLon(sunrise, sunset, input.latitude, input.longitude, ayanamsa, gulikaFrac, isDaytime);
+  // Mandi traditionally = same Saturn-portion (some traditions equate them)
+  const mandiLon = gulikaLon;
+  const gulika = makeMandiData(gulikaLon);
+  const mandi = makeMandiData(mandiLon);
+
+  // Ashtakavarga
+  const ashtakavarga = computeAshtakavarga(planets, ascendant);
+
   return {
-    input,
-    jd,
-    ayanamsa,
-    ascendant,
-    planets,
-    moon,
-    sun,
+    input, jd, ayanamsa, ascendant, planets, moon, sun,
     rasiTamil: moon.rasiTamil,
     nakshatraTamil: moon.nakshatraTamil,
     pada: moon.pada,
@@ -619,7 +645,15 @@ export function computeJathagam(input: BirthInput): JathagamResult {
     lagnaTamil: ascendant.rasiTamil,
     currentDasha: dasha.current,
     dashaSequence: dasha.sequence,
+    dashaTree: dashaTreeData.tree,
+    currentDashaPath: dashaTreeData.current,
     rasiChart,
+    navamsaChart,
+    navamsaPositions,
+    panchangam,
+    mandi,
+    gulika,
+    ashtakavarga,
   };
 }
 
