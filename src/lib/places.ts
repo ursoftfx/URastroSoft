@@ -7,7 +7,7 @@ export interface PlaceData {
 }
 
 export const PLACES: PlaceData[] = [
-  // Tamil Nadu major
+  // Tamil Nadu - districts, taluks & major towns
   { name: "Chennai, Tamil Nadu, India", lat: 13.0827, lon: 80.2707, tz: 5.5 },
   { name: "Coimbatore, Tamil Nadu, India", lat: 11.0168, lon: 76.9558, tz: 5.5 },
   { name: "Madurai, Tamil Nadu, India", lat: 9.9252, lon: 78.1198, tz: 5.5 },
