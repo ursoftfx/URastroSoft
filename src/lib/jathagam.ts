@@ -92,6 +92,62 @@ export interface PlanetPosition {
   retrograde?: boolean;
 }
 
+export const TITHIS_TAMIL = [
+  "பிரதமை","துவிதியை","திருதியை","சதுர்த்தி","பஞ்சமி","சஷ்டி","சப்தமி","அஷ்டமி",
+  "நவமி","தசமி","ஏகாதசி","துவாதசி","திரயோதசி","சதுர்த்தசி","பௌர்ணமி",
+  "பிரதமை","துவிதியை","திருதியை","சதுர்த்தி","பஞ்சமி","சஷ்டி","சப்தமி","அஷ்டமி",
+  "நவமி","தசமி","ஏகாதசி","துவாதசி","திரயோதசி","சதுர்த்தசி","அமாவாசை",
+];
+
+export const YOGAS_TAMIL = [
+  "விஷ்கம்பம்","ப்ரீதி","ஆயுஷ்மான்","சௌபாக்கியம்","சோபனம்","அதிகண்டம்","சுகர்மம்","திருதி",
+  "சூலம்","கண்டம்","விருத்தி","துருவம்","வியாகாதம்","ஹர்ஷணம்","வஜ்ரம்","சித்தி",
+  "வியதீபாதம்","வரியான்","பரிகம்","சிவம்","சித்தம்","சாத்தியம்","சுபம்","சுக்லம்",
+  "ப்ரம்மம்","ஐந்திரம்","வைதிருதி",
+];
+
+// 11 karanas: 7 movable repeat 8 times then 4 fixed at end of cycle (60 half-tithis)
+export const KARANAS_TAMIL = [
+  "பவ","பாலவ","கௌலவ","தைதுல","கரஜ","வணிஜ","விஷ்டி (பத்ரா)",
+  "சகுனி","சதுஷ்பாத","நாகவ","கிம்ஸ்துக்னம்",
+];
+
+export interface PanchangamData {
+  tithiIndex: number; // 0-29
+  tithiTamil: string;
+  paksha: "சுக்ல" | "கிருஷ்ண";
+  yogaIndex: number; // 0-26
+  yogaTamil: string;
+  karanaIndex: number; // 0-10
+  karanaTamil: string;
+  vaaraTamil: string; // weekday
+  sunriseLocal: Date;
+  sunsetLocal: Date;
+}
+
+export interface MandiData {
+  longitude: number;
+  rasiIndex: number;
+  rasiTamil: string;
+  degreeInRasi: number;
+  nakshatraTamil: string;
+  pada: number;
+}
+
+export interface DashaNode {
+  lord: string;
+  startDate: Date;
+  endDate: Date;
+  children?: DashaNode[];
+}
+
+export interface AshtakavargaData {
+  // Bhinna: per-planet bindus by rasi (7 planets x 12 rasis)
+  bhinna: Record<string, number[]>;
+  // Sarva: combined bindus per rasi
+  sarva: number[];
+}
+
 export interface JathagamResult {
   input: BirthInput;
   jd: number;
@@ -108,8 +164,21 @@ export interface JathagamResult {
   // Vimshottari dasha
   currentDasha: { lord: string; startDate: Date; endDate: Date };
   dashaSequence: { lord: string; startDate: Date; endDate: Date }[];
+  // Multi-level dasha tree (Maha → Bhukti → Antara → Sookshma → Athi-Sookshma)
+  dashaTree: DashaNode[];
+  currentDashaPath: { maha: string; bhukti: string; antara: string; sookshma: string; athiSookshma: string };
   // Rasi chart - 12 houses with planet keys
   rasiChart: string[][];
+  // Navamsa chart D9 - 12 houses
+  navamsaChart: string[][];
+  navamsaPositions: { key: string; nameTamil: string; rasiIndex: number; rasiTamil: string }[];
+  // Panchangam
+  panchangam: PanchangamData;
+  // Mandi / Gulika
+  mandi: MandiData;
+  gulika: MandiData;
+  // Ashtakavarga
+  ashtakavarga: AshtakavargaData;
 }
 
 function toJulianUT(input: BirthInput): number {
@@ -219,6 +288,232 @@ function addYears(date: Date, years: number): Date {
   return new Date(date.getTime() + ms);
 }
 
+// ----- Multi-level Vimshottari Dasha (5 levels) -----
+function buildSubDasha(
+  parentLord: string,
+  parentStart: Date,
+  parentEnd: Date,
+  depth: number,
+  maxDepth: number
+): DashaNode[] {
+  if (depth >= maxDepth) return [];
+  const totalMs = parentEnd.getTime() - parentStart.getTime();
+  const startIdx = DASHA_LORDS.indexOf(parentLord);
+  const nodes: DashaNode[] = [];
+  let cursor = new Date(parentStart);
+  for (let i = 0; i < 9; i++) {
+    const idx = (startIdx + i) % 9;
+    const lord = DASHA_LORDS[idx];
+    const fraction = DASHA_YEARS[idx] / 120;
+    const subMs = totalMs * fraction;
+    const end = new Date(cursor.getTime() + subMs);
+    const node: DashaNode = { lord, startDate: new Date(cursor), endDate: end };
+    if (depth + 1 < maxDepth) {
+      node.children = buildSubDasha(lord, new Date(cursor), end, depth + 1, maxDepth);
+    }
+    nodes.push(node);
+    cursor = end;
+  }
+  return nodes;
+}
+
+function computeDashaTree(moonLongitude: number, birthDate: Date): { tree: DashaNode[]; current: { maha: string; bhukti: string; antara: string; sookshma: string; athiSookshma: string } } {
+  const padaSize = 360 / 27;
+  const nakIndex = Math.floor(moonLongitude / padaSize);
+  const posInNak = moonLongitude - nakIndex * padaSize;
+  const fractionElapsed = posInNak / padaSize;
+  const startLordIdx = NAK_TO_DASHA_INDEX[nakIndex];
+
+  const tree: DashaNode[] = [];
+  let cursor = new Date(birthDate);
+  for (let i = 0; i < 9; i++) {
+    const idx = (startLordIdx + i) % 9;
+    const lord = DASHA_LORDS[idx];
+    let yrs = DASHA_YEARS[idx];
+    if (i === 0) yrs = yrs * (1 - fractionElapsed);
+    const end = addYears(cursor, yrs);
+    const node: DashaNode = { lord, startDate: new Date(cursor), endDate: end };
+    node.children = buildSubDasha(lord, new Date(cursor), end, 1, 5);
+    tree.push(node);
+    cursor = end;
+  }
+
+  const now = new Date();
+  const findCurrent = (nodes: DashaNode[]): DashaNode | null => {
+    for (const n of nodes) if (now >= n.startDate && now < n.endDate) return n;
+    return null;
+  };
+  const maha = findCurrent(tree);
+  const bhukti = maha?.children ? findCurrent(maha.children) : null;
+  const antara = bhukti?.children ? findCurrent(bhukti.children) : null;
+  const sookshma = antara?.children ? findCurrent(antara.children) : null;
+  const athi = sookshma?.children ? findCurrent(sookshma.children) : null;
+
+  return {
+    tree,
+    current: {
+      maha: maha?.lord ?? "",
+      bhukti: bhukti?.lord ?? "",
+      antara: antara?.lord ?? "",
+      sookshma: sookshma?.lord ?? "",
+      athiSookshma: athi?.lord ?? "",
+    },
+  };
+}
+
+// ----- Navamsa (D9) -----
+function navamsaRasi(siderealLon: number): number {
+  const rasi = Math.floor(siderealLon / 30);
+  const degInRasi = siderealLon - rasi * 30;
+  const navIdx = Math.floor(degInRasi / (30 / 9));
+  const startMap = [0, 8, 4, 0, 8, 4, 0, 8, 4, 0, 8, 4];
+  return (startMap[rasi] + navIdx) % 12;
+}
+
+// ----- Sunrise / Sunset (NOAA approximation) -----
+function sunriseSunset(year: number, month: number, day: number, lat: number, lon: number, tzHours: number): { sunrise: Date; sunset: Date } {
+  const dt = new Date(Date.UTC(year, month - 1, day));
+  const start = new Date(Date.UTC(year, 0, 1));
+  const N = Math.floor((dt.getTime() - start.getTime()) / 86400000) + 1;
+  const calc = (rising: boolean): number => {
+    const lonHour = lon / 15;
+    const t = N + ((rising ? 6 : 18) - lonHour) / 24;
+    const M = 0.9856 * t - 3.289;
+    let L = M + 1.916 * Math.sin((M * Math.PI) / 180) + 0.02 * Math.sin((2 * M * Math.PI) / 180) + 282.634;
+    L = norm360(L);
+    let RA = (Math.atan(0.91764 * Math.tan((L * Math.PI) / 180)) * 180) / Math.PI;
+    RA = norm360(RA);
+    const Lq = Math.floor(L / 90) * 90;
+    const RAq = Math.floor(RA / 90) * 90;
+    RA = RA + (Lq - RAq);
+    RA = RA / 15;
+    const sinDec = 0.39782 * Math.sin((L * Math.PI) / 180);
+    const cosDec = Math.cos(Math.asin(sinDec));
+    const zenith = 90.833;
+    const cosH = (Math.cos((zenith * Math.PI) / 180) - sinDec * Math.sin((lat * Math.PI) / 180)) / (cosDec * Math.cos((lat * Math.PI) / 180));
+    if (cosH > 1 || cosH < -1) return rising ? 6 : 18;
+    let H = (Math.acos(cosH) * 180) / Math.PI;
+    if (rising) H = 360 - H;
+    H = H / 15;
+    const T = H + RA - 0.06571 * t - 6.622;
+    let UT = T - lonHour;
+    UT = ((UT % 24) + 24) % 24;
+    return UT + tzHours;
+  };
+  const sr = calc(true);
+  const ss = calc(false);
+  const toDate = (h: number) => {
+    let dayOff = 0;
+    let hLocal = h;
+    if (hLocal >= 24) { hLocal -= 24; dayOff = 1; }
+    if (hLocal < 0) { hLocal += 24; dayOff = -1; }
+    const hh = Math.floor(hLocal);
+    const mm = Math.floor((hLocal - hh) * 60);
+    const ss2 = Math.floor(((hLocal - hh) * 60 - mm) * 60);
+    return new Date(Date.UTC(year, month - 1, day + dayOff, hh - tzHours, mm, ss2));
+  };
+  return { sunrise: toDate(sr), sunset: toDate(ss) };
+}
+
+const VAARA_TAMIL = ["ஞாயிறு", "திங்கள்", "செவ்வாய்", "புதன்", "வியாழன்", "வெள்ளி", "சனி"];
+
+function computePanchangam(sunSidereal: number, moonSidereal: number, sunrise: Date, sunset: Date, birthLocal: Date): PanchangamData {
+  const diff = norm360(moonSidereal - sunSidereal);
+  const tithiIndex = Math.floor(diff / 12);
+  const paksha: "சுக்ல" | "கிருஷ்ண" = tithiIndex < 15 ? "சுக்ல" : "கிருஷ்ண";
+  const yogaSum = norm360(sunSidereal + moonSidereal);
+  const yogaIndex = Math.floor(yogaSum / (360 / 27));
+  const halfIdx = Math.floor(diff / 6);
+  let karanaIndex: number;
+  if (halfIdx === 0) karanaIndex = 10;
+  else if (halfIdx >= 1 && halfIdx <= 56) karanaIndex = (halfIdx - 1) % 7;
+  else if (halfIdx === 57) karanaIndex = 7;
+  else if (halfIdx === 58) karanaIndex = 8;
+  else karanaIndex = 9;
+  const vaaraTamil = VAARA_TAMIL[birthLocal.getUTCDay()];
+  return {
+    tithiIndex, tithiTamil: TITHIS_TAMIL[tithiIndex], paksha,
+    yogaIndex, yogaTamil: YOGAS_TAMIL[yogaIndex],
+    karanaIndex, karanaTamil: KARANAS_TAMIL[karanaIndex],
+    vaaraTamil, sunriseLocal: sunrise, sunsetLocal: sunset,
+  };
+}
+
+// ----- Mandi / Gulika (traditional fractions of day/night, weekday Sun..Sat) -----
+const GULIKA_DAY_FRAC = [26 / 30, 22 / 30, 18 / 30, 14 / 30, 10 / 30, 6 / 30, 2 / 30];
+const GULIKA_NIGHT_FRAC = [10 / 30, 6 / 30, 2 / 30, 26 / 30, 22 / 30, 18 / 30, 14 / 30];
+
+function computeUpagrahaLon(sunrise: Date, sunset: Date, lat: number, lon: number, ayanamsa: number, frac: number, isDaytime: boolean): number {
+  const periodMs = isDaytime
+    ? sunset.getTime() - sunrise.getTime()
+    : 24 * 3600 * 1000 - (sunset.getTime() - sunrise.getTime());
+  const startTime = isDaytime
+    ? new Date(sunrise.getTime() + periodMs * frac)
+    : new Date(sunset.getTime() + periodMs * frac);
+  const jdGul = julian.CalendarGregorianToJD(
+    startTime.getUTCFullYear(),
+    startTime.getUTCMonth() + 1,
+    startTime.getUTCDate() + (startTime.getUTCHours() + startTime.getUTCMinutes() / 60 + startTime.getUTCSeconds() / 3600) / 24
+  );
+  const lstG = localSiderealTime(jdGul, lon);
+  const T = (jdGul - 2451545.0) / 36525;
+  const obl = 23.4392911 - 0.0130042 * T;
+  const ascTrop = computeAscendant(lstG, lat, obl);
+  return norm360(ascTrop - ayanamsa);
+}
+
+function makeMandiData(siderealLon: number): MandiData {
+  const rasiIndex = Math.floor(siderealLon / 30);
+  const degreeInRasi = siderealLon - rasiIndex * 30;
+  const nakIdx = Math.floor(siderealLon / (360 / 27));
+  const padaSize = (360 / 27) / 4;
+  const pada = Math.floor((siderealLon - nakIdx * (360 / 27)) / padaSize) + 1;
+  return {
+    longitude: siderealLon, rasiIndex, rasiTamil: RASIS_TAMIL[rasiIndex],
+    degreeInRasi, nakshatraTamil: NAKSHATRAS_TAMIL[nakIdx], pada,
+  };
+}
+
+// ----- Ashtakavarga (Bhinnashtakavarga - classical Parashara rules) -----
+const ASHTAK_RULES: Record<string, Record<string, number[]>> = {
+  sun: { sun: [1,2,4,7,8,9,10,11], moon: [3,6,10,11], mars: [1,2,4,7,8,9,10,11], mercury: [3,5,6,9,10,11,12], jupiter: [5,6,9,11], venus: [6,7,12], saturn: [1,2,4,7,8,9,10,11], ascendant: [3,4,6,10,11,12] },
+  moon: { sun: [3,6,7,8,10,11], moon: [1,3,6,7,9,10,11], mars: [2,3,5,6,9,10,11], mercury: [1,3,4,5,7,8,10,11], jupiter: [1,4,7,8,10,11,12], venus: [3,4,5,7,9,10,11], saturn: [3,5,6,11], ascendant: [3,6,10,11] },
+  mars: { sun: [3,5,6,10,11], moon: [3,6,11], mars: [1,2,4,7,8,10,11], mercury: [3,5,6,11], jupiter: [6,10,11,12], venus: [6,8,11,12], saturn: [1,4,7,8,9,10,11], ascendant: [1,3,6,10,11] },
+  mercury: { sun: [5,6,9,11,12], moon: [2,4,6,8,10,11], mars: [1,2,4,7,8,9,10,11], mercury: [1,3,5,6,9,10,11,12], jupiter: [6,8,11,12], venus: [1,2,3,4,5,8,9,11], saturn: [1,2,4,7,8,9,10,11], ascendant: [1,2,4,6,8,10,11] },
+  jupiter: { sun: [1,2,3,4,7,8,9,10,11], moon: [2,5,7,9,11], mars: [1,2,4,7,8,10,11], mercury: [1,2,4,5,6,9,10,11], jupiter: [1,2,3,4,7,8,10,11], venus: [2,5,6,9,10,11], saturn: [3,5,6,12], ascendant: [1,2,4,5,6,7,9,10,11] },
+  venus: { sun: [8,11,12], moon: [1,2,3,4,5,8,9,11,12], mars: [3,5,6,9,11,12], mercury: [3,5,6,9,11], jupiter: [5,8,9,10,11], venus: [1,2,3,4,5,8,9,10,11], saturn: [3,4,5,8,9,10,11], ascendant: [1,2,3,4,5,8,9,11] },
+  saturn: { sun: [1,2,4,7,8,10,11], moon: [3,6,11], mars: [3,5,6,10,11,12], mercury: [6,8,9,10,11,12], jupiter: [5,6,11,12], venus: [6,11,12], saturn: [3,5,6,11], ascendant: [1,3,4,6,10,11] },
+};
+
+function computeAshtakavarga(planets: PlanetPosition[], ascendant: PlanetPosition): AshtakavargaData {
+  const bhinna: Record<string, number[]> = {};
+  const sarva = new Array(12).fill(0);
+  const refMap: Record<string, number> = {
+    sun: planets.find(p => p.key === "sun")!.rasiIndex,
+    moon: planets.find(p => p.key === "moon")!.rasiIndex,
+    mars: planets.find(p => p.key === "mars")!.rasiIndex,
+    mercury: planets.find(p => p.key === "mercury")!.rasiIndex,
+    jupiter: planets.find(p => p.key === "jupiter")!.rasiIndex,
+    venus: planets.find(p => p.key === "venus")!.rasiIndex,
+    saturn: planets.find(p => p.key === "saturn")!.rasiIndex,
+    ascendant: ascendant.rasiIndex,
+  };
+  for (const target of Object.keys(ASHTAK_RULES)) {
+    const bindus = new Array(12).fill(0);
+    const rules = ASHTAK_RULES[target];
+    for (const contributor of Object.keys(rules)) {
+      const refRasi = refMap[contributor];
+      for (const houseNum of rules[contributor]) {
+        const targetRasi = (refRasi + houseNum - 1) % 12;
+        bindus[targetRasi] += 1;
+      }
+    }
+    bhinna[target] = bindus;
+    for (let i = 0; i < 12; i++) sarva[i] += bindus[i];
+  }
+  return { bhinna, sarva };
+}
+
 export function computeJathagam(input: BirthInput): JathagamResult {
   const jd = toJulianUT(input);
   const ayanamsa = lahiriAyanamsa(jd);
@@ -309,14 +604,40 @@ export function computeJathagam(input: BirthInput): JathagamResult {
   const dasha = computeDasha(moon.longitude, localDate);
   const lordIdx = NAK_TO_DASHA_INDEX[moon.nakshatraIndex];
 
+  // Multi-level dasha
+  const dashaTreeData = computeDashaTree(moon.longitude, localDate);
+
+  // Navamsa chart
+  const navamsaPositions = [...planets, ascendant].map((p) => {
+    const navIdx = navamsaRasi(p.longitude);
+    return { key: p.key, nameTamil: p.nameTamil, rasiIndex: navIdx, rasiTamil: RASIS_TAMIL[navIdx] };
+  });
+  const navamsaChart: string[][] = Array.from({ length: 12 }, () => []);
+  for (const np of navamsaPositions) {
+    if (np.key === "ascendant") navamsaChart[np.rasiIndex].unshift("ascendant");
+    else navamsaChart[np.rasiIndex].push(np.key);
+  }
+
+  // Sunrise / sunset / panchangam
+  const { sunrise, sunset } = sunriseSunset(input.year, input.month, input.day, input.latitude, input.longitude, input.tzOffsetHours);
+  const birthMs = Date.UTC(input.year, input.month - 1, input.day, input.hour - input.tzOffsetHours, input.minute);
+  const isDaytime = birthMs >= sunrise.getTime() && birthMs < sunset.getTime();
+  const panchangam = computePanchangam(sun.longitude, moon.longitude, sunrise, sunset, localDate);
+
+  // Mandi & Gulika
+  const weekday = sunrise.getUTCDay();
+  const gulikaFrac = isDaytime ? GULIKA_DAY_FRAC[weekday] : GULIKA_NIGHT_FRAC[weekday];
+  const gulikaLon = computeUpagrahaLon(sunrise, sunset, input.latitude, input.longitude, ayanamsa, gulikaFrac, isDaytime);
+  // Mandi traditionally = same Saturn-portion (some traditions equate them)
+  const mandiLon = gulikaLon;
+  const gulika = makeMandiData(gulikaLon);
+  const mandi = makeMandiData(mandiLon);
+
+  // Ashtakavarga
+  const ashtakavarga = computeAshtakavarga(planets, ascendant);
+
   return {
-    input,
-    jd,
-    ayanamsa,
-    ascendant,
-    planets,
-    moon,
-    sun,
+    input, jd, ayanamsa, ascendant, planets, moon, sun,
     rasiTamil: moon.rasiTamil,
     nakshatraTamil: moon.nakshatraTamil,
     pada: moon.pada,
@@ -324,7 +645,15 @@ export function computeJathagam(input: BirthInput): JathagamResult {
     lagnaTamil: ascendant.rasiTamil,
     currentDasha: dasha.current,
     dashaSequence: dasha.sequence,
+    dashaTree: dashaTreeData.tree,
+    currentDashaPath: dashaTreeData.current,
     rasiChart,
+    navamsaChart,
+    navamsaPositions,
+    panchangam,
+    mandi,
+    gulika,
+    ashtakavarga,
   };
 }
 
