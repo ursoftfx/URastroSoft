@@ -1,5 +1,6 @@
-import { JathagamResult, formatDegree } from "@/lib/jathagam";
+import { JathagamResult, formatDegree, RASIS_TAMIL } from "@/lib/jathagam";
 import { RasiChart } from "./RasiChart";
+import { NavamsaChart } from "./NavamsaChart";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sparkles, Star, Sun, Moon } from "lucide-react";
 
