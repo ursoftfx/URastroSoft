@@ -94,6 +94,78 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
         </div>
       </div>
 
+      {/* Panchangam */}
+      <div>
+        <SectionHeading>பஞ்சாங்கம்</SectionHeading>
+        <div className="parchment rounded-xl p-5 grid grid-cols-2 md:grid-cols-4 gap-4 font-tamil text-sm">
+          <PanchaItem label="வாரம்" value={result.panchangam.vaaraTamil} />
+          <PanchaItem label="திதி" value={`${result.panchangam.tithiTamil} (${result.panchangam.paksha})`} />
+          <PanchaItem label="யோகம்" value={result.panchangam.yogaTamil} />
+          <PanchaItem label="கரணம்" value={result.panchangam.karanaTamil} />
+          <PanchaItem label="சூரிய உதயம்" value={fmtTime(result.panchangam.sunriseLocal, result.input.tzOffsetHours)} />
+          <PanchaItem label="சூரிய அஸ்தமனம்" value={fmtTime(result.panchangam.sunsetLocal, result.input.tzOffsetHours)} />
+          <PanchaItem label="ராசி" value={result.rasiTamil} />
+          <PanchaItem label="நட்சத்திரம்" value={`${result.nakshatraTamil} ${result.pada}-ம் பாதம்`} />
+        </div>
+      </div>
+
+      {/* Navamsa + Mandi/Gulika + Current Dasha */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div>
+          <SectionHeading>நவாம்ச சக்கரம் (D9)</SectionHeading>
+          <NavamsaChart result={result} />
+        </div>
+        <div className="space-y-4">
+          <div>
+            <SectionHeading>மாந்தி & குளிகை</SectionHeading>
+            <div className="parchment rounded-xl p-5 font-tamil text-sm space-y-3">
+              <UpaRow label="மாந்தி" data={result.mandi} />
+              <UpaRow label="குளிகை" data={result.gulika} />
+            </div>
+          </div>
+          <div>
+            <SectionHeading>தற்போதைய தசை</SectionHeading>
+            <div className="parchment rounded-xl p-5 font-tamil text-sm grid grid-cols-2 gap-3">
+              <PanchaItem label="மகா" value={result.currentDashaPath.maha} />
+              <PanchaItem label="புத்தி" value={result.currentDashaPath.bhukti} />
+              <PanchaItem label="அந்தரம்" value={result.currentDashaPath.antara} />
+              <PanchaItem label="சூட்சமம்" value={result.currentDashaPath.sookshma} />
+              <PanchaItem label="அதி சூட்சமம்" value={result.currentDashaPath.athiSookshma} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Ashtakavarga */}
+      <div>
+        <SectionHeading>அஷ்டகவர்க்கம்</SectionHeading>
+        <div className="parchment rounded-xl p-4 overflow-x-auto">
+          <table className="w-full text-xs font-tamil min-w-[640px]">
+            <thead className="bg-gradient-royal text-primary-foreground">
+              <tr>
+                <th className="text-left p-2">கிரகம்</th>
+                {RASIS_TAMIL.map((r) => <th key={r} className="p-2 text-center">{r}</th>)}
+                <th className="p-2 text-center">மொத்தம்</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(result.ashtakavarga.bhinna).map(([planet, bindus]) => (
+                <tr key={planet} className="border-t border-gold/20">
+                  <td className="p-2 font-semibold text-maroon-deep capitalize">{planet}</td>
+                  {bindus.map((b, i) => <td key={i} className="p-2 text-center">{b}</td>)}
+                  <td className="p-2 text-center font-bold">{bindus.reduce((a, b) => a + b, 0)}</td>
+                </tr>
+              ))}
+              <tr className="border-t-2 border-gold/60 bg-gold/10">
+                <td className="p-2 font-bold text-maroon-deep">சர்வாஷ்டகவர்க்கம்</td>
+                {result.ashtakavarga.sarva.map((b, i) => <td key={i} className="p-2 text-center font-bold">{b}</td>)}
+                <td className="p-2 text-center font-bold">{result.ashtakavarga.sarva.reduce((a, b) => a + b, 0)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
       {/* Dasha */}
       <div>
         <SectionHeading>விம்சோத்தரி தசை</SectionHeading>
