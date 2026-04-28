@@ -248,3 +248,27 @@ const SectionHeading = ({ children }: { children: React.ReactNode }) => (
     <div className="h-px flex-1 bg-gradient-to-l from-transparent to-gold/40" />
   </div>
 );
+
+const PanchaItem = ({ label, value }: { label: string; value: string }) => (
+  <div>
+    <div className="text-xs text-muted-foreground">{label}</div>
+    <div className="font-semibold text-maroon-deep">{value || "—"}</div>
+  </div>
+);
+
+const UpaRow = ({ label, data }: { label: string; data: { rasiTamil: string; degreeInRasi: number; nakshatraTamil: string; pada: number } }) => (
+  <div className="flex items-center justify-between border-b border-gold/20 pb-2 last:border-0">
+    <div className="font-semibold text-maroon-deep">{label}</div>
+    <div className="text-right text-xs">
+      <div>{data.rasiTamil} • {formatDegree(data.degreeInRasi)}</div>
+      <div className="text-muted-foreground">{data.nakshatraTamil} {data.pada}-ம் பாதம்</div>
+    </div>
+  </div>
+);
+
+const fmtTime = (d: Date, tzHours: number) => {
+  const local = new Date(d.getTime() + tzHours * 3600 * 1000);
+  const hh = String(local.getUTCHours()).padStart(2, "0");
+  const mm = String(local.getUTCMinutes()).padStart(2, "0");
+  return `${hh}:${mm}`;
+};
