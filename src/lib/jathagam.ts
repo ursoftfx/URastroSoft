@@ -92,6 +92,62 @@ export interface PlanetPosition {
   retrograde?: boolean;
 }
 
+export const TITHIS_TAMIL = [
+  "பிரதமை","துவிதியை","திருதியை","சதுர்த்தி","பஞ்சமி","சஷ்டி","சப்தமி","அஷ்டமி",
+  "நவமி","தசமி","ஏகாதசி","துவாதசி","திரயோதசி","சதுர்த்தசி","பௌர்ணமி",
+  "பிரதமை","துவிதியை","திருதியை","சதுர்த்தி","பஞ்சமி","சஷ்டி","சப்தமி","அஷ்டமி",
+  "நவமி","தசமி","ஏகாதசி","துவாதசி","திரயோதசி","சதுர்த்தசி","அமாவாசை",
+];
+
+export const YOGAS_TAMIL = [
+  "விஷ்கம்பம்","ப்ரீதி","ஆயுஷ்மான்","சௌபாக்கியம்","சோபனம்","அதிகண்டம்","சுகர்மம்","திருதி",
+  "சூலம்","கண்டம்","விருத்தி","துருவம்","வியாகாதம்","ஹர்ஷணம்","வஜ்ரம்","சித்தி",
+  "வியதீபாதம்","வரியான்","பரிகம்","சிவம்","சித்தம்","சாத்தியம்","சுபம்","சுக்லம்",
+  "ப்ரம்மம்","ஐந்திரம்","வைதிருதி",
+];
+
+// 11 karanas: 7 movable repeat 8 times then 4 fixed at end of cycle (60 half-tithis)
+export const KARANAS_TAMIL = [
+  "பவ","பாலவ","கௌலவ","தைதுல","கரஜ","வணிஜ","விஷ்டி (பத்ரா)",
+  "சகுனி","சதுஷ்பாத","நாகவ","கிம்ஸ்துக்னம்",
+];
+
+export interface PanchangamData {
+  tithiIndex: number; // 0-29
+  tithiTamil: string;
+  paksha: "சுக்ல" | "கிருஷ்ண";
+  yogaIndex: number; // 0-26
+  yogaTamil: string;
+  karanaIndex: number; // 0-10
+  karanaTamil: string;
+  vaaraTamil: string; // weekday
+  sunriseLocal: Date;
+  sunsetLocal: Date;
+}
+
+export interface MandiData {
+  longitude: number;
+  rasiIndex: number;
+  rasiTamil: string;
+  degreeInRasi: number;
+  nakshatraTamil: string;
+  pada: number;
+}
+
+export interface DashaNode {
+  lord: string;
+  startDate: Date;
+  endDate: Date;
+  children?: DashaNode[];
+}
+
+export interface AshtakavargaData {
+  // Bhinna: per-planet bindus by rasi (7 planets x 12 rasis)
+  bhinna: Record<string, number[]>;
+  // Sarva: combined bindus per rasi
+  sarva: number[];
+}
+
 export interface JathagamResult {
   input: BirthInput;
   jd: number;
@@ -108,8 +164,21 @@ export interface JathagamResult {
   // Vimshottari dasha
   currentDasha: { lord: string; startDate: Date; endDate: Date };
   dashaSequence: { lord: string; startDate: Date; endDate: Date }[];
+  // Multi-level dasha tree (Maha → Bhukti → Antara → Sookshma → Athi-Sookshma)
+  dashaTree: DashaNode[];
+  currentDashaPath: { maha: string; bhukti: string; antara: string; sookshma: string; athiSookshma: string };
   // Rasi chart - 12 houses with planet keys
   rasiChart: string[][];
+  // Navamsa chart D9 - 12 houses
+  navamsaChart: string[][];
+  navamsaPositions: { key: string; nameTamil: string; rasiIndex: number; rasiTamil: string }[];
+  // Panchangam
+  panchangam: PanchangamData;
+  // Mandi / Gulika
+  mandi: MandiData;
+  gulika: MandiData;
+  // Ashtakavarga
+  ashtakavarga: AshtakavargaData;
 }
 
 function toJulianUT(input: BirthInput): number {
