@@ -8,6 +8,7 @@ import NotFound from "./pages/NotFound.tsx";
 import FreeHoroscope from "./pages/FreeHoroscope.tsx";
 import BirthHoroscope from "./pages/BirthHoroscope.tsx";
 import AstrologyConsultation from "./pages/AstrologyConsultation.tsx";
+import Porutham from "./pages/Porutham.tsx";
 
 const queryClient = new QueryClient();
 
@@ -22,6 +23,7 @@ const App = () => (
           <Route path="/free-horoscope" element={<FreeHoroscope />} />
           <Route path="/birth-horoscope" element={<BirthHoroscope />} />
           <Route path="/astrology-consultation" element={<AstrologyConsultation />} />
+          <Route path="/porutham" element={<Porutham />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

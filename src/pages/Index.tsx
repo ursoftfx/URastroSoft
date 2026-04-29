@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SEO } from "@/components/SEO";
+import { DownloadReport } from "@/components/DownloadReport";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 
@@ -162,6 +163,8 @@ const Index = () => {
               <Link to="/birth-horoscope" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">பிறப்பு ஜாதகம்</Link>
               <span className="text-gold-deep">•</span>
               <Link to="/astrology-consultation" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">இலவச ஆலோசனை</Link>
+              <span className="text-gold-deep">•</span>
+              <Link to="/porutham" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">திருமண பொருத்தம்</Link>
             </nav>
             <div className="temple-divider mt-8 max-w-md mx-auto" />
           </header>
@@ -185,18 +188,26 @@ const Index = () => {
           </div>
         ) : (
           <div className="space-y-4">
-            <Button
-              variant="ghost"
-              onClick={handleReset}
-              className="font-tamil text-maroon-deep hover:bg-cream"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" /> புதிய ஜாதகம்
-            </Button>
-            <JathagamReport
-              result={result}
-              interpretation={interpretation}
-              interpretationLoading={interpretationLoading}
-            />
+            <div className="flex items-center justify-between flex-wrap gap-3">
+              <Button
+                variant="ghost"
+                onClick={handleReset}
+                className="font-tamil text-maroon-deep hover:bg-cream"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" /> புதிய ஜாதகம்
+              </Button>
+              <DownloadReport
+                targetId="jathagam-report-root"
+                fileName={`jathagam-${result.input.name.replace(/\s+/g, "-")}.pdf`}
+              />
+            </div>
+            <div id="jathagam-report-root">
+              <JathagamReport
+                result={result}
+                interpretation={interpretation}
+                interpretationLoading={interpretationLoading}
+              />
+            </div>
           </div>
         )}
       </div>
