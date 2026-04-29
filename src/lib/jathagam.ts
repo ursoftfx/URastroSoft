@@ -8,6 +8,8 @@ import vsop87Bearth from "astronomia/data/vsop87Bearth";
 import vsop87Bmars from "astronomia/data/vsop87Bmars";
 import vsop87Bjupiter from "astronomia/data/vsop87Bjupiter";
 import vsop87Bsaturn from "astronomia/data/vsop87Bsaturn";
+import { computeUpagrahas } from "./upagrahas";
+import { VARGAS, buildVargaChart } from "./vargas";
 
 export const RASIS_TAMIL = [
   "மேஷம்", "ரிஷபம்", "மிதுனம்", "கடகம்", "சிம்மம்", "கன்னி",
@@ -179,6 +181,10 @@ export interface JathagamResult {
   gulika: MandiData;
   // Ashtakavarga
   ashtakavarga: AshtakavargaData;
+  // Upagrahas (Dhuma, Vyatipata, Parivesha, Indrachapa, Upaketu)
+  upagrahas: { key: string; name: string; longitude: number; rasiIndex: number; rasiTamil: string }[];
+  // 16 Varga charts (D1..D60)
+  vargaCharts: { key: string; label: string; tamilLabel: string; chart: string[][] }[];
 }
 
 function toJulianUT(input: BirthInput): number {
@@ -636,6 +642,20 @@ export function computeJathagam(input: BirthInput): JathagamResult {
   // Ashtakavarga
   const ashtakavarga = computeAshtakavarga(planets, ascendant);
 
+  // Upagrahas
+  const upagrahas = computeUpagrahas(sun.longitude).map((u) => ({
+    ...u, rasiTamil: RASIS_TAMIL[u.rasiIndex],
+  }));
+
+  // 16 Varga charts
+  const planetLons = planets.map((p) => ({ key: p.key, longitude: p.longitude }));
+  const vargaCharts = VARGAS.map((v) => ({
+    key: v.key,
+    label: v.label,
+    tamilLabel: v.tamilLabel,
+    chart: buildVargaChart(v.fn, planetLons, ascendant.longitude),
+  }));
+
   return {
     input, jd, ayanamsa, ascendant, planets, moon, sun,
     rasiTamil: moon.rasiTamil,
@@ -654,6 +674,8 @@ export function computeJathagam(input: BirthInput): JathagamResult {
     mandi,
     gulika,
     ashtakavarga,
+    upagrahas,
+    vargaCharts,
   };
 }
 
