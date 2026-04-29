@@ -1,8 +1,13 @@
-import { JathagamResult, formatDegree, RASIS_TAMIL } from "@/lib/jathagam";
+import { JathagamResult, formatDegree, RASIS_TAMIL, PLANETS_TAMIL } from "@/lib/jathagam";
 import { RasiChart } from "./RasiChart";
 import { NavamsaChart } from "./NavamsaChart";
+import { VargaChart } from "./VargaChart";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Sparkles, Star, Sun, Moon } from "lucide-react";
+import { Sparkles, Star, Sun, Moon, Heart, Award, AlertTriangle, Hash, Bird } from "lucide-react";
+import { detectDoshams } from "@/lib/dosham";
+import { computeNumerology, nameSuggestions } from "@/lib/numerology";
+import { panchaPakshi } from "@/lib/pancha-pakshi";
+import { LAGNA_PALAN, NAKSHATRA_PALAN, bhavaPalans, guruBalamToday } from "@/lib/predictions";
 
 interface Props {
   result: JathagamResult;
