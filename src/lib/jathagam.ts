@@ -179,6 +179,10 @@ export interface JathagamResult {
   gulika: MandiData;
   // Ashtakavarga
   ashtakavarga: AshtakavargaData;
+  // Upagrahas (Dhuma, Vyatipata, Parivesha, Indrachapa, Upaketu)
+  upagrahas: { key: string; name: string; longitude: number; rasiIndex: number; rasiTamil: string }[];
+  // 16 Varga charts (D1..D60)
+  vargaCharts: { key: string; label: string; tamilLabel: string; chart: string[][] }[];
 }
 
 function toJulianUT(input: BirthInput): number {
@@ -636,6 +640,22 @@ export function computeJathagam(input: BirthInput): JathagamResult {
   // Ashtakavarga
   const ashtakavarga = computeAshtakavarga(planets, ascendant);
 
+  // Upagrahas
+  const { computeUpagrahas } = require("./upagrahas") as typeof import("./upagrahas");
+  const upagrahas = computeUpagrahas(sun.longitude).map((u) => ({
+    ...u, rasiTamil: RASIS_TAMIL[u.rasiIndex],
+  }));
+
+  // 16 Varga charts
+  const { VARGAS, buildVargaChart } = require("./vargas") as typeof import("./vargas");
+  const planetLons = planets.map((p) => ({ key: p.key, longitude: p.longitude }));
+  const vargaCharts = VARGAS.map((v) => ({
+    key: v.key,
+    label: v.label,
+    tamilLabel: v.tamilLabel,
+    chart: buildVargaChart(v.fn, planetLons, ascendant.longitude),
+  }));
+
   return {
     input, jd, ayanamsa, ascendant, planets, moon, sun,
     rasiTamil: moon.rasiTamil,
@@ -654,6 +674,8 @@ export function computeJathagam(input: BirthInput): JathagamResult {
     mandi,
     gulika,
     ashtakavarga,
+    upagrahas,
+    vargaCharts,
   };
 }
 
