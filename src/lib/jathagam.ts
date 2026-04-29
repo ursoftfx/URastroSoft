@@ -8,6 +8,8 @@ import vsop87Bearth from "astronomia/data/vsop87Bearth";
 import vsop87Bmars from "astronomia/data/vsop87Bmars";
 import vsop87Bjupiter from "astronomia/data/vsop87Bjupiter";
 import vsop87Bsaturn from "astronomia/data/vsop87Bsaturn";
+import { computeUpagrahas } from "./upagrahas";
+import { VARGAS, buildVargaChart } from "./vargas";
 
 export const RASIS_TAMIL = [
   "மேஷம்", "ரிஷபம்", "மிதுனம்", "கடகம்", "சிம்மம்", "கன்னி",
@@ -641,13 +643,11 @@ export function computeJathagam(input: BirthInput): JathagamResult {
   const ashtakavarga = computeAshtakavarga(planets, ascendant);
 
   // Upagrahas
-  const { computeUpagrahas } = require("./upagrahas") as typeof import("./upagrahas");
   const upagrahas = computeUpagrahas(sun.longitude).map((u) => ({
     ...u, rasiTamil: RASIS_TAMIL[u.rasiIndex],
   }));
 
   // 16 Varga charts
-  const { VARGAS, buildVargaChart } = require("./vargas") as typeof import("./vargas");
   const planetLons = planets.map((p) => ({ key: p.key, longitude: p.longitude }));
   const vargaCharts = VARGAS.map((v) => ({
     key: v.key,
