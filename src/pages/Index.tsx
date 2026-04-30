@@ -155,7 +155,7 @@ const Index = () => {
             <div className="font-display text-xs tracking-[0.5em] text-gold-deep mb-3">
               ✦ TAMIL VEDIC ASTROLOGY ✦
             </div>
-            <h1 className="font-tamil text-5xl md:text-7xl font-bold text-maroon-deep leading-tight">
+            <h1 className="font-tamil text-4xl sm:text-5xl md:text-7xl font-bold text-maroon-deep leading-tight">
               ஜாதக<span className="text-gold"> பலன்</span>
             </h1>
             <p className="font-tamil text-lg md:text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">
