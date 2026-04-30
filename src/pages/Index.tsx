@@ -10,8 +10,12 @@ import { SEO } from "@/components/SEO";
 import { DownloadReport } from "@/components/DownloadReport";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
+import { AnnouncementsBanner } from "@/components/AnnouncementsBanner";
+import { useAuth } from "@/hooks/useAuth";
+import { Shield } from "lucide-react";
 
 const Index = () => {
+  const { isAdmin } = useAuth();
   const [result, setResult] = useState<JathagamResult | null>(null);
   const [interpretation, setInterpretation] = useState("");
   const [interpretationLoading, setInterpretationLoading] = useState(false);
@@ -151,13 +155,13 @@ const Index = () => {
             <div className="font-display text-xs tracking-[0.5em] text-gold-deep mb-3">
               ✦ TAMIL VEDIC ASTROLOGY ✦
             </div>
-            <h1 className="font-tamil text-5xl md:text-7xl font-bold text-maroon-deep leading-tight">
+            <h1 className="font-tamil text-4xl sm:text-5xl md:text-7xl font-bold text-maroon-deep leading-tight">
               ஜாதக<span className="text-gold"> பலன்</span>
             </h1>
             <p className="font-tamil text-lg md:text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">
               உங்கள் பிறப்பு விவரங்களின் அடிப்படையில் வேத ஜோதிட பாணியில் முழுமையான ஜாதக பலன் பெறுங்கள்
             </p>
-            <nav aria-label="Quick links" className="flex flex-wrap justify-center gap-3 mt-6 text-sm font-tamil">
+            <nav aria-label="Quick links" className="flex flex-wrap justify-center gap-x-3 gap-y-2 mt-6 text-sm font-tamil">
               <Link to="/free-horoscope" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">இலவச ஜாதகம்</Link>
               <span className="text-gold-deep">•</span>
               <Link to="/birth-horoscope" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">பிறப்பு ஜாதகம்</Link>
@@ -165,10 +169,22 @@ const Index = () => {
               <Link to="/astrology-consultation" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">இலவச ஆலோசனை</Link>
               <span className="text-gold-deep">•</span>
               <Link to="/porutham" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">திருமண பொருத்தம்</Link>
+              <span className="text-gold-deep">•</span>
+              <Link to="/posts" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">கட்டுரைகள்</Link>
+              {isAdmin && (
+                <>
+                  <span className="text-gold-deep">•</span>
+                  <Link to="/admin" className="inline-flex items-center gap-1 text-maroon-deep hover:text-gold underline-offset-4 hover:underline">
+                    <Shield className="w-3 h-3" /> நிர்வாகம்
+                  </Link>
+                </>
+              )}
             </nav>
             <div className="temple-divider mt-8 max-w-md mx-auto" />
           </header>
         )}
+
+        {!result && <AnnouncementsBanner />}
 
         {!result ? (
           <div className="max-w-xl mx-auto">
