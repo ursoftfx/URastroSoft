@@ -10,8 +10,12 @@ import { SEO } from "@/components/SEO";
 import { DownloadReport } from "@/components/DownloadReport";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
+import { AnnouncementsBanner } from "@/components/AnnouncementsBanner";
+import { useAuth } from "@/hooks/useAuth";
+import { Shield } from "lucide-react";
 
 const Index = () => {
+  const { isAdmin } = useAuth();
   const [result, setResult] = useState<JathagamResult | null>(null);
   const [interpretation, setInterpretation] = useState("");
   const [interpretationLoading, setInterpretationLoading] = useState(false);
