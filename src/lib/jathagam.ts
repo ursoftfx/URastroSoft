@@ -367,12 +367,16 @@ function computeDashaTree(moonLongitude: number, birthDate: Date): { tree: Dasha
   };
 }
 
-// ----- Navamsa (D9) -----
+// ----- Navamsa (D9) - Parashara rule -----
+// Movable signs (Aries, Cancer, Libra, Capricorn) → navamsa starts from same sign
+// Fixed signs (Taurus, Leo, Scorpio, Aquarius)    → navamsa starts from 9th sign
+// Dual signs (Gemini, Virgo, Sagittarius, Pisces) → navamsa starts from 5th sign
+// Resulting start map: [Aries, Capricorn, Libra, Cancer, Aries, Capricorn, Libra, Cancer, ...]
 function navamsaRasi(siderealLon: number): number {
   const rasi = Math.floor(siderealLon / 30);
   const degInRasi = siderealLon - rasi * 30;
-  const navIdx = Math.floor(degInRasi / (30 / 9));
-  const startMap = [0, 8, 4, 0, 8, 4, 0, 8, 4, 0, 8, 4];
+  const navIdx = Math.floor(degInRasi / (30 / 9)); // 0..8
+  const startMap = [0, 9, 6, 3, 0, 9, 6, 3, 0, 9, 6, 3];
   return (startMap[rasi] + navIdx) % 12;
 }
 
@@ -604,8 +608,10 @@ export function computeJathagam(input: BirthInput): JathagamResult {
   for (const p of planets) rasiChart[p.rasiIndex].push(p.key);
   rasiChart[ascendant.rasiIndex].unshift("ascendant");
 
-  // Birth date as JS Date (UTC adjusted)
-  const localDate = new Date(Date.UTC(input.year, input.month - 1, input.day, input.hour - input.tzOffsetHours, input.minute));
+  // Birth date as JS Date (UT adjusted). tzOffsetHours can be fractional (e.g. 5.5) so
+  // convert the offset into whole minutes to avoid passing fractional hours to Date.UTC.
+  const utMinutes = Math.round((input.hour * 60 + input.minute) - input.tzOffsetHours * 60);
+  const localDate = new Date(Date.UTC(input.year, input.month - 1, input.day, 0, utMinutes));
 
   const dasha = computeDasha(moon.longitude, localDate);
   const lordIdx = NAK_TO_DASHA_INDEX[moon.nakshatraIndex];
@@ -626,7 +632,7 @@ export function computeJathagam(input: BirthInput): JathagamResult {
 
   // Sunrise / sunset / panchangam
   const { sunrise, sunset } = sunriseSunset(input.year, input.month, input.day, input.latitude, input.longitude, input.tzOffsetHours);
-  const birthMs = Date.UTC(input.year, input.month - 1, input.day, input.hour - input.tzOffsetHours, input.minute);
+  const birthMs = localDate.getTime();
   const isDaytime = birthMs >= sunrise.getTime() && birthMs < sunset.getTime();
   const panchangam = computePanchangam(sun.longitude, moon.longitude, sunrise, sunset, localDate);
 
