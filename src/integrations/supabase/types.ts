@@ -14,6 +14,42 @@ export type Database = {
   }
   public: {
     Tables: {
+      announcements: {
+        Row: {
+          active: boolean
+          active_date: string
+          author_id: string
+          created_at: string
+          id: string
+          message: string
+          rasi: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          active_date?: string
+          author_id: string
+          created_at?: string
+          id?: string
+          message: string
+          rasi?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          active_date?: string
+          author_id?: string
+          created_at?: string
+          id?: string
+          message?: string
+          rasi?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       jathagam_leads: {
         Row: {
           birth_date: string
@@ -65,6 +101,48 @@ export type Database = {
           rasi?: string | null
           tz_offset_hours?: number | null
           user_agent?: string | null
+        }
+        Relationships: []
+      }
+      posts: {
+        Row: {
+          author_id: string
+          body: string
+          cover_image_url: string | null
+          created_at: string
+          excerpt: string | null
+          id: string
+          published: boolean
+          published_at: string | null
+          slug: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_id: string
+          body: string
+          cover_image_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          published?: boolean
+          published_at?: string | null
+          slug: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_id?: string
+          body?: string
+          cover_image_url?: string | null
+          created_at?: string
+          excerpt?: string | null
+          id?: string
+          published?: boolean
+          published_at?: string | null
+          slug?: string
+          title?: string
+          updated_at?: string
         }
         Relationships: []
       }
