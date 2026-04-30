@@ -4,15 +4,15 @@ import { JathagamReport } from "@/components/JathagamReport";
 import { BirthInput, computeJathagam, JathagamResult } from "@/lib/jathagam";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Printer, FileText, LayoutList, Shield } from "lucide-react";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SEO } from "@/components/SEO";
 import { DownloadReport } from "@/components/DownloadReport";
+import { OnePageReport } from "@/components/OnePageReport";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { AnnouncementsBanner } from "@/components/AnnouncementsBanner";
 import { useAuth } from "@/hooks/useAuth";
-import { Shield } from "lucide-react";
 
 const Index = () => {
   const { isAdmin } = useAuth();
@@ -203,32 +203,74 @@ const Index = () => {
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between flex-wrap gap-3">
-              <Button
-                variant="ghost"
-                onClick={handleReset}
-                className="font-tamil text-maroon-deep hover:bg-cream"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" /> புதிய ஜாதகம்
-              </Button>
-              <DownloadReport
-                targetId="jathagam-report-root"
-                fileName={`jathagam-${result.input.name.replace(/\s+/g, "-")}.pdf`}
-              />
-            </div>
-            <div id="jathagam-report-root">
-              <JathagamReport
-                result={result}
-                interpretation={interpretation}
-                interpretationLoading={interpretationLoading}
-              />
-            </div>
-          </div>
+          <ResultView
+            result={result}
+            interpretation={interpretation}
+            interpretationLoading={interpretationLoading}
+            onReset={handleReset}
+          />
         )}
       </div>
       <WhatsAppButton message="வணக்கம்! எனக்கு ஜாதக ஆலோசனை வேண்டும்." />
     </main>
+  );
+};
+
+const ResultView = ({
+  result,
+  interpretation,
+  interpretationLoading,
+  onReset,
+}: {
+  result: JathagamResult;
+  interpretation: string;
+  interpretationLoading: boolean;
+  onReset: () => void;
+}) => {
+  const [view, setView] = useState<"detailed" | "onepage">("onepage");
+  const handlePrint = () => window.print();
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between flex-wrap gap-3 no-print">
+        <Button variant="ghost" onClick={onReset} className="font-tamil text-maroon-deep hover:bg-cream">
+          <ArrowLeft className="w-4 h-4 mr-2" /> புதிய ஜாதகம்
+        </Button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <div className="inline-flex rounded-md border border-gold/40 bg-cream/50 p-1">
+            <button
+              onClick={() => setView("onepage")}
+              className={`px-3 py-1.5 text-xs font-tamil rounded ${view === "onepage" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
+            >
+              <FileText className="w-3.5 h-3.5 inline mr-1" /> ஒரு பக்கம் (A4)
+            </button>
+            <button
+              onClick={() => setView("detailed")}
+              className={`px-3 py-1.5 text-xs font-tamil rounded ${view === "detailed" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
+            >
+              <LayoutList className="w-3.5 h-3.5 inline mr-1" /> முழு அறிக்கை
+            </button>
+          </div>
+          <Button onClick={handlePrint} className="bg-gradient-royal text-primary-foreground font-tamil" size="sm">
+            <Printer className="w-4 h-4 mr-1" /> அச்சிடு
+          </Button>
+          <DownloadReport
+            targetId={view === "onepage" ? "onepage-report-root" : "jathagam-report-root"}
+            fileName={`jathagam-${result.input.name.replace(/\s+/g, "-")}.pdf`}
+          />
+        </div>
+      </div>
+
+      {view === "onepage" ? (
+        <div id="onepage-report-root" className="overflow-x-auto">
+          <OnePageReport result={result} />
+        </div>
+      ) : (
+        <div id="jathagam-report-root">
+          <JathagamReport result={result} interpretation={interpretation} interpretationLoading={interpretationLoading} />
+        </div>
+      )}
+    </div>
   );
 };
 
