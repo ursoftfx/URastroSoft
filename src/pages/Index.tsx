@@ -203,28 +203,12 @@ const Index = () => {
             </div>
           </div>
         ) : (
-          <div className="space-y-4">
-            <div className="flex items-center justify-between flex-wrap gap-3">
-              <Button
-                variant="ghost"
-                onClick={handleReset}
-                className="font-tamil text-maroon-deep hover:bg-cream"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" /> புதிய ஜாதகம்
-              </Button>
-              <DownloadReport
-                targetId="jathagam-report-root"
-                fileName={`jathagam-${result.input.name.replace(/\s+/g, "-")}.pdf`}
-              />
-            </div>
-            <div id="jathagam-report-root">
-              <JathagamReport
-                result={result}
-                interpretation={interpretation}
-                interpretationLoading={interpretationLoading}
-              />
-            </div>
-          </div>
+          <ResultView
+            result={result}
+            interpretation={interpretation}
+            interpretationLoading={interpretationLoading}
+            onReset={handleReset}
+          />
         )}
       </div>
       <WhatsAppButton message="வணக்கம்! எனக்கு ஜாதக ஆலோசனை வேண்டும்." />
