@@ -8,15 +8,29 @@ const FreeHoroscope = () => {
   return (
     <main className="min-h-screen relative">
       <SEO
-        title="இலவச ஜாதகம் — Free Tamil Jathagam Online"
-        description="பிறந்த தேதி, நேரம், ஊர் கொடுத்து இலவசமாக துல்லியமான தமிழ் ஜாதகம் பெறுங்கள். ராசி, நட்சத்திரம், தசை, AI பலன்."
+        title="UR ASTRO SOFT — இலவச ஜாதகம் | Free Tamil Horoscope"
+        description="UR ASTRO SOFT இலவச தமிழ் ஜாதகம் — ராசி, நட்சத்திரம், லக்னம், திதி, யோகம், கரணம், தசை, நவாம்சம், சூரிய உதயம்/மறைவு A4 அச்சு."
+        canonical="https://kanagadara.lovable.app/free-horoscope"
         jsonLd={{
           "@context": "https://schema.org",
-          "@type": "Service",
-          name: "இலவச ஜாதகம்",
-          serviceType: "Tamil Vedic Horoscope",
-          areaServed: "IN",
-          provider: { "@type": "Organization", name: "Kanagadara Jathagam" },
+          "@graph": [
+            {
+              "@type": "Service",
+              name: "இலவச ஜாதகம் — Free Tamil Horoscope",
+              serviceType: "Tamil Vedic Horoscope",
+              areaServed: "IN",
+              provider: { "@type": "Organization", name: "UR ASTRO SOFT", url: "https://kanagadara.lovable.app/" },
+              offers: { "@type": "Offer", price: "0", priceCurrency: "INR" },
+            },
+            {
+              "@type": "FAQPage",
+              mainEntity: [
+                { "@type": "Question", name: "இது உண்மையாகவே இலவசமா?", acceptedAnswer: { "@type": "Answer", text: "ஆம். UR ASTRO SOFT-இல் ஜாதகம் கணிக்க எந்த கட்டணமும் இல்லை." } },
+                { "@type": "Question", name: "பிறந்த நேரம் சரியாக தெரியவில்லையே?", acceptedAnswer: { "@type": "Answer", text: "தோராய நேரம் கொடுத்தாலும் ராசி, நட்சத்திரம் கணக்கிட முடியும்." } },
+                { "@type": "Question", name: "என் தனிப்பட்ட விவரங்கள் பாதுகாப்பானதா?", acceptedAnswer: { "@type": "Answer", text: "ஆம். உங்கள் விவரங்கள் encrypted ஆக சேமிக்கப்படுகிறது." } },
+              ],
+            },
+          ],
         }}
       />
 
