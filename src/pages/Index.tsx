@@ -128,14 +128,17 @@ const Index = () => {
   return (
     <main className="min-h-screen relative">
       <SEO
-        title="இலவச ஜாதகம் — Tamil Vedic Horoscope by Birth Date"
-        description="உங்கள் பிறப்பு தேதி, நேரம், ஊர் கொண்டு இலவச தமிழ் ஜாதகம், ராசி, நட்சத்திரம், தசை மற்றும் AI பலன் பெறுங்கள்."
+        title="UR ASTRO SOFT — இலவச தமிழ் ஜாதகம் | Free Horoscope"
+        description="UR ASTRO SOFT — பிறந்த தேதி, நேரம், ஊர் கொண்டு இலவச தமிழ் ஜாதகம், ராசி, நட்சத்திரம், லக்னம், திதி, யோகம், கரணம், தசை, நவாம்சம் A4 அச்சு."
         jsonLd={{
           "@context": "https://schema.org",
-          "@type": "WebSite",
-          name: "ஜாதக பலன்",
-          url: typeof window !== "undefined" ? window.location.origin : "",
+          "@type": "WebApplication",
+          name: "UR ASTRO SOFT",
+          applicationCategory: "LifestyleApplication",
+          operatingSystem: "Any",
           inLanguage: "ta",
+          offers: { "@type": "Offer", price: "0", priceCurrency: "INR" },
+          url: typeof window !== "undefined" ? window.location.origin : "",
         }}
       />
       {/* Decorative background */}
