@@ -80,6 +80,34 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
         />
       </div>
 
+      {/* Father / Mother name */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="space-y-2">
+          <Label htmlFor="fatherName" className="font-tamil flex items-center gap-2 text-maroon-deep">
+            <User className="w-4 h-4" /> தந்தை பெயர்
+          </Label>
+          <Input
+            id="fatherName"
+            value={fatherName}
+            onChange={(e) => setFatherName(e.target.value)}
+            placeholder="தந்தை பெயர்"
+            className="font-tamil bg-cream/50 border-gold/40 focus-visible:ring-accent"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="motherName" className="font-tamil flex items-center gap-2 text-maroon-deep">
+            <User className="w-4 h-4" /> தாய் பெயர்
+          </Label>
+          <Input
+            id="motherName"
+            value={motherName}
+            onChange={(e) => setMotherName(e.target.value)}
+            placeholder="தாய் பெயர்"
+            className="font-tamil bg-cream/50 border-gold/40 focus-visible:ring-accent"
+          />
+        </div>
+      </div>
+
       {/* Phone */}
       <div className="space-y-2">
         <Label htmlFor="phone" className="font-tamil flex items-center gap-2 text-maroon-deep">
