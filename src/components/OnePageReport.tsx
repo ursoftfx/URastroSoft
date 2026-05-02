@@ -167,9 +167,9 @@ export const OnePageReport = ({ result }: Props) => {
   const navAsc = result.navamsaPositions.find((n) => n.key === "ascendant")?.rasiIndex ?? 0;
 
   const rows = [
-    { label: "லக்னம்", lon: result.ascendant.longitude, nak: result.ascendant.nakshatraTamil, rasiIdx: result.ascendant.rasiIndex, pada: result.ascendant.pada },
-    ...result.planets.map((p) => ({ label: PLANET_FULL_TA[p.key] || p.nameTamil, lon: p.longitude, nak: p.nakshatraTamil, rasiIdx: p.rasiIndex, pada: p.pada })),
-    { label: "மாந்தி", lon: result.mandi.longitude, nak: result.mandi.nakshatraTamil, rasiIdx: result.mandi.rasiIndex, pada: result.mandi.pada },
+    { key: "ascendant", label: "லக்னம்", lon: result.ascendant.longitude, nak: result.ascendant.nakshatraTamil, rasiIdx: result.ascendant.rasiIndex, pada: result.ascendant.pada },
+    ...result.planets.map((p) => ({ key: p.key, label: PLANET_FULL_TA[p.key] || p.nameTamil, lon: p.longitude, nak: p.nakshatraTamil, rasiIdx: p.rasiIndex, pada: p.pada })),
+    { key: "mandi", label: "மாந்தி", lon: result.mandi.longitude, nak: result.mandi.nakshatraTamil, rasiIdx: result.mandi.rasiIndex, pada: result.mandi.pada },
   ];
 
   return (
@@ -274,40 +274,50 @@ export const OnePageReport = ({ result }: Props) => {
         </tbody>
       </table>
 
-      {/* Charts + Planet table side by side */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 8 }}>
+      {/* Charts side by side */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 8 }}>
         <div>
-          <div style={{ fontSize: 10, fontWeight: 700, textAlign: "center", marginBottom: 2 }}>ராசி கட்டம்</div>
+          <div style={{ fontSize: 11, fontWeight: 700, textAlign: "center", marginBottom: 2 }}>ராசி கட்டம் (D-1)</div>
           {renderChart("ராசி", result.rasiChart, result.ascendant.rasiIndex)}
         </div>
         <div>
-          <div style={{ fontSize: 10, fontWeight: 700, textAlign: "center", marginBottom: 2 }}>நவாம்சம்</div>
+          <div style={{ fontSize: 11, fontWeight: 700, textAlign: "center", marginBottom: 2 }}>நவாம்சம் (D-9)</div>
           {renderChart("நவாம்சம்", result.navamsaChart, navAsc)}
         </div>
-        <div>
-          <div style={{ fontSize: 10, fontWeight: 700, textAlign: "center", marginBottom: 2 }}>கிரக நிலைகள்</div>
-          <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #000" }}>
-            <thead>
-              <tr style={{ background: "#fbe9d0" }}>
-                <th style={{ border: "1px solid #000", padding: 1, textAlign: "left" }}>கிரகம்</th>
-                <th style={{ border: "1px solid #000", padding: 1 }}>ராசி</th>
-                <th style={{ border: "1px solid #000", padding: 1 }}>பாகை</th>
-                <th style={{ border: "1px solid #000", padding: 1 }}>நட்.</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r, idx) => (
-                <tr key={idx}>
-                  <td style={{ border: "1px solid #000", padding: 1 }}>{r.label}</td>
-                  <td style={{ border: "1px solid #000", padding: 1 }}>{RASIS_TAMIL[r.rasiIdx]}</td>
-                  <td style={{ border: "1px solid #000", padding: 1, fontSize: 8 }}>{dms(r.lon - r.rasiIdx * 30)}</td>
-                  <td style={{ border: "1px solid #000", padding: 1 }}>{r.pada}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
       </div>
+
+      {/* Planet positions table - full width below charts */}
+      <div style={{ marginTop: 8, fontSize: 11, fontWeight: 700, textAlign: "center", background: "#fbe9d0", padding: "3px 0", border: "1px solid #c9a050" }}>
+        கிரக நிலைகள் (Planetary Positions)
+      </div>
+      <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+        <thead>
+          <tr style={{ background: "#fff8ee" }}>
+            <th style={{ border: "1px solid #c9a050", padding: 3, textAlign: "left" }}>கிரகம்</th>
+            <th style={{ border: "1px solid #c9a050", padding: 3 }}>ராசி</th>
+            <th style={{ border: "1px solid #c9a050", padding: 3 }}>பாகை</th>
+            <th style={{ border: "1px solid #c9a050", padding: 3 }}>நட்சத்திரம்</th>
+            <th style={{ border: "1px solid #c9a050", padding: 3 }}>பாதம்</th>
+            <th style={{ border: "1px solid #c9a050", padding: 3 }}>நவாம்சம்</th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((r, idx) => {
+            const navKey = (r as any).key;
+            const navPos = result.navamsaPositions.find((n) => n.key === navKey);
+            return (
+              <tr key={idx}>
+                <td style={{ border: "1px solid #c9a050", padding: 3 }}>{r.label}</td>
+                <td style={{ border: "1px solid #c9a050", padding: 3 }}>{RASIS_TAMIL[r.rasiIdx]}</td>
+                <td style={{ border: "1px solid #c9a050", padding: 3 }}>{dms(r.lon - r.rasiIdx * 30)}</td>
+                <td style={{ border: "1px solid #c9a050", padding: 3 }}>{r.nak}</td>
+                <td style={{ border: "1px solid #c9a050", padding: 3, textAlign: "center" }}>{r.pada}</td>
+                <td style={{ border: "1px solid #c9a050", padding: 3 }}>{navPos ? RASIS_TAMIL[navPos.rasiIndex] : "—"}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
 
       {/* Dasha summary table */}
       <div style={{ marginTop: 8, fontSize: 10, fontWeight: 700, textAlign: "center", background: "#fbe9d0", padding: "2px 0", border: "1px solid #c9a050" }}>

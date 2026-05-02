@@ -639,11 +639,13 @@ export function computeJathagam(input: BirthInput): JathagamResult {
   const panchangam = computePanchangam(sun.longitude, moon.longitude, sunrise, sunset, localDate);
 
   // Mandi & Gulika
+  // Gulika = start of Saturn's portion. Mandi = end of Saturn's portion (= Gulika start + 4/30 of day or night span).
   const weekday = sunrise.getUTCDay();
   const gulikaFrac = isDaytime ? GULIKA_DAY_FRAC[weekday] : GULIKA_NIGHT_FRAC[weekday];
   const gulikaLon = computeUpagrahaLon(sunrise, sunset, input.latitude, input.longitude, ayanamsa, gulikaFrac, isDaytime);
-  // Mandi traditionally = same Saturn-portion (some traditions equate them)
-  const mandiLon = gulikaLon;
+  // Mandi: add 4/30 (one Saturn portion) to Gulika fraction (mod 1 for safety)
+  const mandiFrac = Math.min(0.999, gulikaFrac + 4 / 30);
+  const mandiLon = computeUpagrahaLon(sunrise, sunset, input.latitude, input.longitude, ayanamsa, mandiFrac, isDaytime);
   const gulika = makeMandiData(gulikaLon);
   const mandi = makeMandiData(mandiLon);
 
