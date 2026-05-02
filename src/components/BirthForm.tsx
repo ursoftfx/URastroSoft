@@ -16,6 +16,8 @@ interface Props {
 
 export const BirthForm = ({ onSubmit, loading }: Props) => {
   const [name, setName] = useState("");
+  const [fatherName, setFatherName] = useState("");
+  const [motherName, setMotherName] = useState("");
   const [phone, setPhone] = useState("");
   const [gender, setGender] = useState("ஆண்");
   const [date, setDate] = useState("");
@@ -46,6 +48,8 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
       name,
       gender,
       phone: phone.trim(),
+      fatherName: fatherName.trim() || undefined,
+      motherName: motherName.trim() || undefined,
     });
   };
 

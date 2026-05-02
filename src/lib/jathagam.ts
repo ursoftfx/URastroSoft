@@ -78,6 +78,8 @@ export interface BirthInput {
   name: string;
   gender?: string;
   phone?: string;
+  fatherName?: string;
+  motherName?: string;
 }
 
 export interface PlanetPosition {
