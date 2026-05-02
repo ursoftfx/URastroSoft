@@ -167,9 +167,9 @@ export const OnePageReport = ({ result }: Props) => {
   const navAsc = result.navamsaPositions.find((n) => n.key === "ascendant")?.rasiIndex ?? 0;
 
   const rows = [
-    { label: "லக்னம்", lon: result.ascendant.longitude, nak: result.ascendant.nakshatraTamil, rasiIdx: result.ascendant.rasiIndex, pada: result.ascendant.pada },
-    ...result.planets.map((p) => ({ label: PLANET_FULL_TA[p.key] || p.nameTamil, lon: p.longitude, nak: p.nakshatraTamil, rasiIdx: p.rasiIndex, pada: p.pada })),
-    { label: "மாந்தி", lon: result.mandi.longitude, nak: result.mandi.nakshatraTamil, rasiIdx: result.mandi.rasiIndex, pada: result.mandi.pada },
+    { key: "ascendant", label: "லக்னம்", lon: result.ascendant.longitude, nak: result.ascendant.nakshatraTamil, rasiIdx: result.ascendant.rasiIndex, pada: result.ascendant.pada },
+    ...result.planets.map((p) => ({ key: p.key, label: PLANET_FULL_TA[p.key] || p.nameTamil, lon: p.longitude, nak: p.nakshatraTamil, rasiIdx: p.rasiIndex, pada: p.pada })),
+    { key: "mandi", label: "மாந்தி", lon: result.mandi.longitude, nak: result.mandi.nakshatraTamil, rasiIdx: result.mandi.rasiIndex, pada: result.mandi.pada },
   ];
 
   return (
