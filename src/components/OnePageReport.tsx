@@ -1,4 +1,4 @@
-import { JathagamResult, RASIS_TAMIL } from "@/lib/jathagam";
+import { JathagamResult, RASIS_TAMIL, NAKSHATRAS_TAMIL } from "@/lib/jathagam";
 
 interface Props {
   result: JathagamResult;
@@ -8,25 +8,33 @@ const PLANET_SHORT_TA: Record<string, string> = {
   sun: "சூரி",
   moon: "சந்",
   mars: "செவ்",
-  mercury: "புத(வ)",
+  mercury: "புத",
   jupiter: "குரு",
   venus: "சுக்",
   saturn: "சனி",
   rahu: "ராகு",
   ketu: "கேது",
-  ascendant: "1-லக்",
+  ascendant: "லக்",
 };
 
 const PLANET_FULL_TA: Record<string, string> = {
   sun: "சூரியன்",
   moon: "சந்திரன்",
   mars: "செவ்வாய்",
-  mercury: "புதன்(வ)",
+  mercury: "புதன்",
   jupiter: "குரு",
   venus: "சுக்கிரன்",
   saturn: "சனி",
   rahu: "ராகு",
   ketu: "கேது",
+};
+
+const VAARAS = ["ஞாயிறு", "திங்கள்", "செவ்வாய்", "புதன்", "வியாழன்", "வெள்ளி", "சனி"];
+// Chaldean order for Horai (planetary hour) - day lord starts the day, then this order repeats
+const HORAI_ORDER = ["சூரியன்", "சுக்கிரன்", "புதன்", "சந்திரன்", "சனி", "குரு", "செவ்வாய்"];
+const DAY_LORD_TA: Record<number, string> = {
+  0: "சூரியன்", 1: "சந்திரன்", 2: "செவ்வாய்", 3: "புதன்",
+  4: "குரு", 5: "சுக்கிரன்", 6: "சனி",
 };
 
 const dms = (deg: number): string => {
@@ -35,62 +43,7 @@ const dms = (deg: number): string => {
   const m = Math.floor(mF);
   const s = Math.round((mF - m) * 60);
   const pad = (n: number) => String(n).padStart(2, "0");
-  return `${pad(d)}:${pad(m)}:${pad(s)}`;
-};
-
-const padaParen = (lon: number): string => {
-  const padaSize = (360 / 27) / 4;
-  const nakIdx = Math.floor(lon / (360 / 27));
-  const pada = Math.floor((lon - nakIdx * (360 / 27)) / padaSize) + 1;
-  return `(${pada})`;
-};
-
-const RELATION_LABELS: Record<string, string> = {
-  own: "ஆட்சி",
-  exalt: "உச்சம்",
-  debil: "நீசம்",
-  friend: "நட்பு",
-  neutral: "சமம்",
-  enemy: "பகை",
-};
-
-const SIGN_LORD: Record<number, string> = {
-  0: "mars", 1: "venus", 2: "mercury", 3: "moon", 4: "sun", 5: "mercury",
-  6: "venus", 7: "mars", 8: "jupiter", 9: "saturn", 10: "saturn", 11: "jupiter",
-};
-const OWN_SIGNS: Record<string, number[]> = {
-  sun: [4], moon: [3], mars: [0, 7], mercury: [2, 5], jupiter: [8, 11],
-  venus: [1, 6], saturn: [9, 10],
-};
-const EXALT_SIGN: Record<string, number> = { sun: 0, moon: 1, mars: 9, mercury: 5, jupiter: 3, venus: 11, saturn: 6 };
-const DEBIL_SIGN: Record<string, number> = { sun: 6, moon: 7, mars: 3, mercury: 11, jupiter: 9, venus: 5, saturn: 0 };
-const NATURAL_FRIENDS: Record<string, string[]> = {
-  sun: ["moon", "mars", "jupiter"],
-  moon: ["sun", "mercury"],
-  mars: ["sun", "moon", "jupiter"],
-  mercury: ["sun", "venus"],
-  jupiter: ["sun", "moon", "mars"],
-  venus: ["mercury", "saturn"],
-  saturn: ["mercury", "venus"],
-};
-const NATURAL_ENEMIES: Record<string, string[]> = {
-  sun: ["venus", "saturn"],
-  moon: [],
-  mars: ["mercury"],
-  mercury: ["moon"],
-  jupiter: ["mercury", "venus"],
-  venus: ["sun", "moon"],
-  saturn: ["sun", "moon", "mars"],
-};
-const relationOf = (planet: string, rasiIdx: number): string => {
-  if (OWN_SIGNS[planet]?.includes(rasiIdx)) return RELATION_LABELS.own;
-  if (EXALT_SIGN[planet] === rasiIdx) return RELATION_LABELS.exalt;
-  if (DEBIL_SIGN[planet] === rasiIdx) return RELATION_LABELS.debil;
-  const lord = SIGN_LORD[rasiIdx];
-  if (lord === planet) return RELATION_LABELS.own;
-  if (NATURAL_FRIENDS[planet]?.includes(lord)) return RELATION_LABELS.friend;
-  if (NATURAL_ENEMIES[planet]?.includes(lord)) return RELATION_LABELS.enemy;
-  return RELATION_LABELS.neutral;
+  return `${pad(d)}°${pad(m)}'${pad(s)}"`;
 };
 
 const fmtDate = (d: Date) => {
@@ -103,8 +56,8 @@ const fmtTimeStr = (h: number, m: number) => {
   const h12 = h % 12 === 0 ? 12 : h % 12;
   return `${pad(h12)}:${pad(m)} ${ampm}`;
 };
-
-const VAARAS = ["ஞாயிறு", "திங்கள்", "செவ்வாய்", "புதன்", "வியாழன்", "வெள்ளி", "சனி"];
+const fmtDateLong = (d: Date) =>
+  `${String(d.getDate()).padStart(2, "0")}-${String(d.getMonth() + 1).padStart(2, "0")}-${d.getFullYear()}`;
 
 const SI_LAYOUT: (number | null)[][] = [
   [11, 0, 1, 2],
@@ -113,11 +66,7 @@ const SI_LAYOUT: (number | null)[][] = [
   [8, 7, 6, 5],
 ];
 
-const renderChart = (
-  title: string,
-  chart: string[][],
-  ascRasi: number,
-) => (
+const renderChart = (title: string, chart: string[][], ascRasi: number) => (
   <table className="w-full" style={{ borderCollapse: "collapse" }}>
     <tbody>
       {SI_LAYOUT.map((row, r) => (
@@ -126,8 +75,8 @@ const renderChart = (
             if (rasiIdx === null) {
               if (r === 1 && c === 1) {
                 return (
-                  <td key={c} colSpan={2} rowSpan={2} className="chart-center">
-                    <div style={{ fontSize: 14, fontWeight: 700 }}>{title}</div>
+                  <td key={c} colSpan={2} rowSpan={2} style={{ border: "1px solid #000", textAlign: "center", verticalAlign: "middle" }}>
+                    <div style={{ fontSize: 13, fontWeight: 700 }}>{title}</div>
                   </td>
                 );
               }
@@ -136,28 +85,12 @@ const renderChart = (
             const planets = chart[rasiIdx] || [];
             const isLagna = rasiIdx === ascRasi;
             return (
-              <td key={c} className="chart-cell" style={{ position: "relative", border: "1px solid #000", height: 60, width: "25%" }}>
+              <td key={c} style={{ position: "relative", border: "1px solid #000", height: 60, width: "25%", verticalAlign: "top" }}>
                 {isLagna && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: 0,
-                      height: 0,
-                      borderTop: "8px solid #1a1a1a",
-                      borderRight: "8px solid transparent",
-                    }}
-                  />
+                  <div style={{ position: "absolute", top: 0, left: 0, width: 0, height: 0, borderTop: "10px solid #7a1a2b", borderRight: "10px solid transparent" }} />
                 )}
-                <div style={{ fontSize: 9, padding: 2 }}>
-                  {planets
-                    .filter((p) => p !== "ascendant")
-                    .map((p) => PLANET_SHORT_TA[p])
-                    .join(" ")}
-                  {planets.includes("ascendant") && (
-                    <span style={{ display: "block" }}>{PLANET_SHORT_TA.ascendant}</span>
-                  )}
+                <div style={{ fontSize: 9, padding: 3, lineHeight: 1.3 }}>
+                  {planets.map((p) => PLANET_SHORT_TA[p] || p).join(" ")}
                 </div>
               </td>
             );
@@ -171,91 +104,247 @@ const renderChart = (
 export const OnePageReport = ({ result }: Props) => {
   const i = result.input;
   const birthDate = new Date(i.year, i.month - 1, i.day);
-  const tamilDate = `குரோதன கார்த்திகை-${i.day}`;
-  const sunrise = result.panchangam.sunriseLocal;
-  const sunset = result.panchangam.sunsetLocal;
-  const srLocal = new Date(sunrise.getTime() + i.tzOffsetHours * 3600 * 1000);
-  const ssLocal = new Date(sunset.getTime() + i.tzOffsetHours * 3600 * 1000);
-  const srStr = fmtTimeStr(srLocal.getUTCHours(), srLocal.getUTCMinutes());
-  const ssStr = fmtTimeStr(ssLocal.getUTCHours(), ssLocal.getUTCMinutes());
+  const dayIdx = birthDate.getDay();
+
+  // Local sunrise/sunset (already returned in UTC ms from sunriseSunset; render as local TZ)
+  const sr = result.panchangam.sunriseLocal;
+  const ss = result.panchangam.sunsetLocal;
+  const offMs = i.tzOffsetHours * 3600 * 1000;
+  const srL = new Date(sr.getTime() + offMs);
+  const ssL = new Date(ss.getTime() + offMs);
+  const srStr = fmtTimeStr(srL.getUTCHours(), srL.getUTCMinutes());
+  const ssStr = fmtTimeStr(ssL.getUTCHours(), ssL.getUTCMinutes());
+
+  // Nakshatra Horai (planetary hour at birth)
+  const birthMs = new Date(Date.UTC(i.year, i.month - 1, i.day, i.hour, i.minute) - i.tzOffsetHours * 3600 * 1000).getTime();
+  let horai = "—";
+  try {
+    const dayMs = sr.getTime();
+    const nightStart = ss.getTime();
+    const nextSrApprox = sr.getTime() + 24 * 3600 * 1000;
+    const isDay = birthMs >= dayMs && birthMs < nightStart;
+    const dayLen = (nightStart - dayMs) / 12;
+    const nightLen = (nextSrApprox - nightStart) / 12;
+    const dayLordTa = DAY_LORD_TA[dayIdx];
+    const startIdx = HORAI_ORDER.indexOf(dayLordTa);
+    let horaIdx = 0;
+    if (isDay) {
+      horaIdx = Math.floor((birthMs - dayMs) / dayLen);
+    } else if (birthMs >= nightStart) {
+      horaIdx = 12 + Math.floor((birthMs - nightStart) / nightLen);
+    }
+    horai = HORAI_ORDER[(startIdx + horaIdx) % 7];
+  } catch {}
+
+  // Janana kala iruppu thisai (dasha balance at birth)
+  const firstDasha = result.dashaSequence[0];
+  let balanceStr = "—";
+  if (firstDasha) {
+    const totalMs = firstDasha.endDate.getTime() - firstDasha.startDate.getTime();
+    const remMs = firstDasha.endDate.getTime() - birthMs;
+    if (remMs > 0 && totalMs > 0) {
+      const yrs = remMs / (1000 * 60 * 60 * 24 * 365.25);
+      const y = Math.floor(yrs);
+      const m = Math.floor((yrs - y) * 12);
+      const d = Math.floor(((yrs - y) * 12 - m) * 30.4375);
+      balanceStr = `${firstDasha.lord} திசை — ${y} வரு ${m} மா ${d} நா`;
+    }
+  }
+
+  // Current dasha end date
+  const cdEnd = fmtDateLong(result.currentDasha.endDate);
+
+  // Tropical→Sidereal => ayanamsa = paavaka maatram
+  const ayanam = result.ayanamsa;
+  const ayanamStr = dms(ayanam);
+
   const tzSign = i.tzOffsetHours >= 0 ? "+" : "-";
   const tzAbs = Math.abs(i.tzOffsetHours);
   const tzH = Math.floor(tzAbs);
   const tzM = Math.round((tzAbs - tzH) * 60);
-  const tzStr = `${tzH}:${String(tzM).padStart(2, "0")} ${tzSign === "+" ? "E" : "W"}`;
+  const tzStr = `GMT ${tzSign}${tzH}:${String(tzM).padStart(2, "0")}`;
 
-  const yogaLord = result.panchangam.yogaTamil;
+  const navAsc = result.navamsaPositions.find((n) => n.key === "ascendant")?.rasiIndex ?? 0;
 
   const rows = [
-    { key: "ascendant", lon: result.ascendant.longitude, label: "1-லக்னம்", rasiIdx: result.ascendant.rasiIndex, p: result.ascendant },
-    ...result.planets.map((p) => ({ key: p.key, lon: p.longitude, label: PLANET_FULL_TA[p.key] || p.nameTamil, rasiIdx: p.rasiIndex, p })),
-    { key: "mandi", lon: result.mandi.longitude, label: "மாந்தி", rasiIdx: result.mandi.rasiIndex, p: { nakshatraTamil: result.mandi.nakshatraTamil, pada: result.mandi.pada, degreeInRasi: result.mandi.degreeInRasi } as any },
+    { label: "லக்னம்", lon: result.ascendant.longitude, nak: result.ascendant.nakshatraTamil, rasiIdx: result.ascendant.rasiIndex, pada: result.ascendant.pada },
+    ...result.planets.map((p) => ({ label: PLANET_FULL_TA[p.key] || p.nameTamil, lon: p.longitude, nak: p.nakshatraTamil, rasiIdx: p.rasiIndex, pada: p.pada })),
+    { label: "மாந்தி", lon: result.mandi.longitude, nak: result.mandi.nakshatraTamil, rasiIdx: result.mandi.rasiIndex, pada: result.mandi.pada },
   ];
 
   return (
-    <div className="a4-sheet print-area" style={{ width: "210mm", minHeight: "297mm", padding: "10mm", margin: "auto", background: "white", color: "#000" }}>
-      <style>{`@media print { .print-area { margin: 0; } @page { size: A4; margin: 10mm; } }`}</style>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", borderBottom: "2px solid #000", paddingBottom: 4 }}>
+    <div className="a4-sheet print-area" style={{ width: "210mm", minHeight: "297mm", padding: "8mm 10mm", margin: "auto", background: "white", color: "#000", fontFamily: "'Latha','Tahoma',sans-serif" }}>
+      <style>{`@media print { .print-area { margin: 0; box-shadow: none; } @page { size: A4 portrait; margin: 8mm; } .no-print { display: none !important; } }`}</style>
+
+      {/* Header */}
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "2px solid #7a1a2b", paddingBottom: 6 }}>
         <div>
-          <div style={{ fontSize: 20, fontWeight: 700, letterSpacing: 1 }}>UR ASTRO SOFT</div>
-          <div style={{ fontSize: 12, color: "#444" }}>தமிழ் வேத ஜோதிட ஜாதகம்</div>
+          <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: 1.5, color: "#7a1a2b" }}>UR ASTRO SOFT</div>
+          <div style={{ fontSize: 11, color: "#555" }}>தமிழ் வேத ஜோதிட ஜாதகம் • Tamil Vedic Horoscope</div>
         </div>
-        <button onClick={() => window.print()} style={{ padding: "5px 10px", cursor: "pointer" }}>Print Report</button>
+        <div style={{ textAlign: "right", fontSize: 10, color: "#555" }}>
+          <div>www.urastrosoft.com</div>
+          <div>{fmtDate(new Date())}</div>
+        </div>
       </div>
 
-      <div style={{ marginTop: 10, fontSize: 16, fontWeight: 700 }}>{i.name}</div>
-
-      <table style={{ width: "100%", marginTop: 10, fontSize: 12 }}>
+      {/* Personal */}
+      <table style={{ width: "100%", marginTop: 8, fontSize: 11, borderCollapse: "collapse" }}>
         <tbody>
           <tr>
-            <td>பாலினம்: {i.gender || "—"}</td>
-            <td>தேதி: {fmtDate(birthDate)} {VAARAS[birthDate.getDay()]}</td>
+            <td style={{ padding: "2px 4px", width: "18%" }}><b>பெயர்</b></td>
+            <td style={{ padding: "2px 4px", width: "32%" }}>: {i.name}</td>
+            <td style={{ padding: "2px 4px", width: "18%" }}><b>பாலினம்</b></td>
+            <td style={{ padding: "2px 4px", width: "32%" }}>: {i.gender || "—"}</td>
           </tr>
           <tr>
-            <td>தொலைபேசி: {i.phone || "—"}</td>
-            <td>நேரம்: {fmtTimeStr(i.hour, i.minute)}</td>
+            <td style={{ padding: "2px 4px" }}><b>தந்தை பெயர்</b></td>
+            <td style={{ padding: "2px 4px" }}>: {i.fatherName || "—"}</td>
+            <td style={{ padding: "2px 4px" }}><b>தாய் பெயர்</b></td>
+            <td style={{ padding: "2px 4px" }}>: {i.motherName || "—"}</td>
           </tr>
           <tr>
-            <td>சொந்த ஊர்: {i.placeName}</td>
-            <td>லக்னம்: {result.lagnaTamil}</td>
+            <td style={{ padding: "2px 4px" }}><b>பிறந்த தேதி</b></td>
+            <td style={{ padding: "2px 4px" }}>: {fmtDate(birthDate)} ({VAARAS[dayIdx]})</td>
+            <td style={{ padding: "2px 4px" }}><b>பிறந்த நேரம்</b></td>
+            <td style={{ padding: "2px 4px" }}>: {fmtTimeStr(i.hour, i.minute)}</td>
           </tr>
           <tr>
-            <td>ராசி: {result.rasiTamil}</td>
-            <td>நட்சத்திரம்: {result.nakshatraTamil} பாதம் {result.pada}</td>
+            <td style={{ padding: "2px 4px" }}><b>பிறந்த ஊர்</b></td>
+            <td style={{ padding: "2px 4px" }}>: {i.placeName}</td>
+            <td style={{ padding: "2px 4px" }}><b>நேர மண்டலம்</b></td>
+            <td style={{ padding: "2px 4px" }}>: {tzStr}</td>
+          </tr>
+          <tr>
+            <td style={{ padding: "2px 4px" }}><b>அட்சரேகை</b></td>
+            <td style={{ padding: "2px 4px" }}>: {i.latitude.toFixed(4)}°N</td>
+            <td style={{ padding: "2px 4px" }}><b>தீர்க்கரேகை</b></td>
+            <td style={{ padding: "2px 4px" }}>: {i.longitude.toFixed(4)}°E</td>
           </tr>
         </tbody>
       </table>
 
-      <div style={{ marginTop: 10, fontSize: 12, fontWeight: 700, textAlign: "center", borderBottom: "1px solid #000" }}>துல்லியமான நிராயண கிரக நிலைகள்</div>
-      <table style={{ width: "100%", marginTop: 5, fontSize: 11, borderCollapse: "collapse" }}>
+      {/* Panchangam summary */}
+      <div style={{ marginTop: 8, fontSize: 11, fontWeight: 700, textAlign: "center", background: "#fbe9d0", padding: "3px 0", border: "1px solid #c9a050" }}>
+        பஞ்சாங்கம் & பிறப்பு விவரம்
+      </div>
+      <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+        <tbody>
+          <tr>
+            <td style={{ padding: "3px 6px", width: "25%" }}><b>ஜென்ம ராசி</b></td>
+            <td style={{ padding: "3px 6px", width: "25%" }}>: {result.rasiTamil}</td>
+            <td style={{ padding: "3px 6px", width: "25%" }}><b>ஜென்ம லக்னம்</b></td>
+            <td style={{ padding: "3px 6px", width: "25%" }}>: {result.lagnaTamil}</td>
+          </tr>
+          <tr>
+            <td style={{ padding: "3px 6px" }}><b>ஜென்ம நட்சத்திரம்</b></td>
+            <td style={{ padding: "3px 6px" }}>: {result.nakshatraTamil} - பாதம் {result.pada}</td>
+            <td style={{ padding: "3px 6px" }}><b>நட்சத்திர ஹோரை</b></td>
+            <td style={{ padding: "3px 6px" }}>: {horai}</td>
+          </tr>
+          <tr>
+            <td style={{ padding: "3px 6px" }}><b>திதி</b></td>
+            <td style={{ padding: "3px 6px" }}>: {result.panchangam.tithiTamil} ({result.panchangam.paksha})</td>
+            <td style={{ padding: "3px 6px" }}><b>யோகம்</b></td>
+            <td style={{ padding: "3px 6px" }}>: {result.panchangam.yogaTamil}</td>
+          </tr>
+          <tr>
+            <td style={{ padding: "3px 6px" }}><b>கரணம்</b></td>
+            <td style={{ padding: "3px 6px" }}>: {result.panchangam.karanaTamil}</td>
+            <td style={{ padding: "3px 6px" }}><b>வாரம்</b></td>
+            <td style={{ padding: "3px 6px" }}>: {result.panchangam.vaaraTamil}</td>
+          </tr>
+          <tr>
+            <td style={{ padding: "3px 6px" }}><b>சூரிய உதயம்</b></td>
+            <td style={{ padding: "3px 6px" }}>: {srStr}</td>
+            <td style={{ padding: "3px 6px" }}><b>சூரிய மறைவு</b></td>
+            <td style={{ padding: "3px 6px" }}>: {ssStr}</td>
+          </tr>
+          <tr>
+            <td style={{ padding: "3px 6px" }}><b>அயனம்</b></td>
+            <td style={{ padding: "3px 6px" }}>: {dayIdx >= 0 && (i.month >= 1 && i.month <= 6 ? "உத்தராயணம்" : "தட்சிணாயணம்")}</td>
+            <td style={{ padding: "3px 6px" }}><b>பாவக மாற்றம் (அயனாம்சம்)</b></td>
+            <td style={{ padding: "3px 6px" }}>: {ayanamStr}</td>
+          </tr>
+          <tr>
+            <td style={{ padding: "3px 6px" }} colSpan={2}><b>ஜனன கால இருப்பு திசை</b> : {balanceStr}</td>
+            <td style={{ padding: "3px 6px" }}><b>நடப்பு தசா-புத்தி முடிவு</b></td>
+            <td style={{ padding: "3px 6px" }}>: {cdEnd}</td>
+          </tr>
+        </tbody>
+      </table>
+
+      {/* Charts + Planet table side by side */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 8 }}>
+        <div>
+          <div style={{ fontSize: 10, fontWeight: 700, textAlign: "center", marginBottom: 2 }}>ராசி கட்டம்</div>
+          {renderChart("ராசி", result.rasiChart, result.ascendant.rasiIndex)}
+        </div>
+        <div>
+          <div style={{ fontSize: 10, fontWeight: 700, textAlign: "center", marginBottom: 2 }}>நவாம்சம்</div>
+          {renderChart("நவாம்சம்", result.navamsaChart, navAsc)}
+        </div>
+        <div>
+          <div style={{ fontSize: 10, fontWeight: 700, textAlign: "center", marginBottom: 2 }}>கிரக நிலைகள்</div>
+          <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #000" }}>
+            <thead>
+              <tr style={{ background: "#fbe9d0" }}>
+                <th style={{ border: "1px solid #000", padding: 1, textAlign: "left" }}>கிரகம்</th>
+                <th style={{ border: "1px solid #000", padding: 1 }}>ராசி</th>
+                <th style={{ border: "1px solid #000", padding: 1 }}>பாகை</th>
+                <th style={{ border: "1px solid #000", padding: 1 }}>நட்.</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((r, idx) => (
+                <tr key={idx}>
+                  <td style={{ border: "1px solid #000", padding: 1 }}>{r.label}</td>
+                  <td style={{ border: "1px solid #000", padding: 1 }}>{RASIS_TAMIL[r.rasiIdx]}</td>
+                  <td style={{ border: "1px solid #000", padding: 1, fontSize: 8 }}>{dms(r.lon - r.rasiIdx * 30)}</td>
+                  <td style={{ border: "1px solid #000", padding: 1 }}>{r.pada}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Dasha summary table */}
+      <div style={{ marginTop: 8, fontSize: 10, fontWeight: 700, textAlign: "center", background: "#fbe9d0", padding: "2px 0", border: "1px solid #c9a050" }}>
+        விம்சோத்தரி தசா வரிசை
+      </div>
+      <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
         <thead>
-          <tr style={{ borderBottom: "1px solid #000" }}>
-            <th style={{ textAlign: "left" }}>கிரகம்</th>
-            <th style={{ textAlign: "left" }}>பாகை</th>
-            <th style={{ textAlign: "left" }}>நட்சத்திரம்</th>
-            <th style={{ textAlign: "left" }}>ராசி</th>
+          <tr style={{ background: "#fff8ee" }}>
+            <th style={{ border: "1px solid #c9a050", padding: 2 }}>தசை</th>
+            <th style={{ border: "1px solid #c9a050", padding: 2 }}>தொடக்கம்</th>
+            <th style={{ border: "1px solid #c9a050", padding: 2 }}>முடிவு</th>
+            <th style={{ border: "1px solid #c9a050", padding: 2 }}>தசை</th>
+            <th style={{ border: "1px solid #c9a050", padding: 2 }}>தொடக்கம்</th>
+            <th style={{ border: "1px solid #c9a050", padding: 2 }}>முடிவு</th>
           </tr>
         </thead>
         <tbody>
-          {rows.map((r, idx) => (
-            <tr key={idx} style={{ borderBottom: "1px dotted #ccc" }}>
-              <td>{r.label}</td>
-              <td>{dms(r.lon)}</td>
-              <td>{(r.p as any).nakshatraTamil}</td>
-              <td>{RASIS_TAMIL[r.rasiIdx]}</td>
-            </tr>
-          ))}
+          {Array.from({ length: Math.ceil(result.dashaSequence.length / 2) }).map((_, rowIdx) => {
+            const a = result.dashaSequence[rowIdx * 2];
+            const b = result.dashaSequence[rowIdx * 2 + 1];
+            return (
+              <tr key={rowIdx}>
+                <td style={{ border: "1px solid #c9a050", padding: 2 }}>{a?.lord || ""}</td>
+                <td style={{ border: "1px solid #c9a050", padding: 2 }}>{a ? fmtDateLong(a.startDate) : ""}</td>
+                <td style={{ border: "1px solid #c9a050", padding: 2 }}>{a ? fmtDateLong(a.endDate) : ""}</td>
+                <td style={{ border: "1px solid #c9a050", padding: 2 }}>{b?.lord || ""}</td>
+                <td style={{ border: "1px solid #c9a050", padding: 2 }}>{b ? fmtDateLong(b.startDate) : ""}</td>
+                <td style={{ border: "1px solid #c9a050", padding: 2 }}>{b ? fmtDateLong(b.endDate) : ""}</td>
+              </tr>
+            );
+          })}
         </tbody>
       </table>
 
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginTop: 20 }}>
-        <div>{renderChart("ராசி", result.rasiChart, result.ascendant.rasiIndex)}</div>
-        <div>{renderChart("நவாம்சம்", result.navamsaChart, result.navamsaPositions.find((n) => n.key === "ascendant")?.rasiIndex ?? 0)}</div>
-      </div>
-
-      <div style={{ marginTop: 20, fontSize: 11, borderTop: "1px solid #000", paddingTop: 10 }}>
-        <div>திசை இருப்பு: {result.currentDasha.lord} திசையில் {Math.max(0, Math.floor((result.currentDasha.endDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24 * 365.25)))} வரு, {Math.max(0, Math.floor(((result.currentDasha.endDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24 * 30.4375)) % 12))} மா</div>
-        <div style={{ marginTop: 10, textAlign: "center" }}>இது சுத்த திருக்கணித பஞ்சாங்கத்தின்படி கணிக்கப்பெற்றது. UR ASTRO SOFT</div>
+      {/* Footer */}
+      <div style={{ marginTop: 8, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 4, color: "#555" }}>
+        இது சுத்த திருக்கணித பஞ்சாங்கப்படி கணிக்கப்பெற்ற இலவச ஜாதகம் — © UR ASTRO SOFT
       </div>
     </div>
   );
