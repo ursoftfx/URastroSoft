@@ -15,6 +15,7 @@ const PLANET_SHORT_TA: Record<string, string> = {
   rahu: "ராகு",
   ketu: "கேது",
   ascendant: "லக்",
+  mandi: "மாந்",
 };
 
 const PLANET_FULL_TA: Record<string, string> = {

@@ -48,6 +48,7 @@ export const PLANETS_TAMIL = {
   rahu: "ராகு",
   ketu: "கேது",
   ascendant: "லக்னம்",
+  mandi: "மாந்தி",
 };
 
 // Lahiri ayanamsa approximation (degrees)
@@ -374,9 +375,10 @@ function computeDashaTree(moonLongitude: number, birthDate: Date): { tree: Dasha
 // Fixed signs (Taurus, Leo, Scorpio, Aquarius)    → navamsa starts from 9th sign
 // Dual signs (Gemini, Virgo, Sagittarius, Pisces) → navamsa starts from 5th sign
 // Resulting start map: [Aries, Capricorn, Libra, Cancer, Aries, Capricorn, Libra, Cancer, ...]
-function navamsaRasi(siderealLon: number): number {
-  const rasi = Math.floor(siderealLon / 30);
-  const degInRasi = siderealLon - rasi * 30;
+export function navamsaRasi(siderealLon: number): number {
+  const lon = norm360(siderealLon);
+  const rasi = Math.floor(lon / 30);
+  const degInRasi = lon - rasi * 30;
   const navIdx = Math.floor(degInRasi / (30 / 9)); // 0..8
   const startMap = [0, 9, 6, 3, 0, 9, 6, 3, 0, 9, 6, 3];
   return (startMap[rasi] + navIdx) % 12;
@@ -621,17 +623,6 @@ export function computeJathagam(input: BirthInput): JathagamResult {
   // Multi-level dasha
   const dashaTreeData = computeDashaTree(moon.longitude, localDate);
 
-  // Navamsa chart
-  const navamsaPositions = [...planets, ascendant].map((p) => {
-    const navIdx = navamsaRasi(p.longitude);
-    return { key: p.key, nameTamil: p.nameTamil, rasiIndex: navIdx, rasiTamil: RASIS_TAMIL[navIdx] };
-  });
-  const navamsaChart: string[][] = Array.from({ length: 12 }, () => []);
-  for (const np of navamsaPositions) {
-    if (np.key === "ascendant") navamsaChart[np.rasiIndex].unshift("ascendant");
-    else navamsaChart[np.rasiIndex].push(np.key);
-  }
-
   // Sunrise / sunset / panchangam
   const { sunrise, sunset } = sunriseSunset(input.year, input.month, input.day, input.latitude, input.longitude, input.tzOffsetHours);
   const birthMs = localDate.getTime();
@@ -648,6 +639,19 @@ export function computeJathagam(input: BirthInput): JathagamResult {
   const mandiLon = computeUpagrahaLon(sunrise, sunset, input.latitude, input.longitude, ayanamsa, mandiFrac, isDaytime);
   const gulika = makeMandiData(gulikaLon);
   const mandi = makeMandiData(mandiLon);
+  rasiChart[mandi.rasiIndex].push("mandi");
+
+  // Navamsa chart (D-9). Rahu/Ketu and Mandi use the same longitude-based D-9 rule as other grahas.
+  const navamsaSource = [...planets, ascendant, { key: "mandi", nameTamil: "மாந்தி", longitude: mandi.longitude }];
+  const navamsaPositions = navamsaSource.map((p) => {
+    const navIdx = navamsaRasi(p.longitude);
+    return { key: p.key, nameTamil: p.nameTamil, rasiIndex: navIdx, rasiTamil: RASIS_TAMIL[navIdx] };
+  });
+  const navamsaChart: string[][] = Array.from({ length: 12 }, () => []);
+  for (const np of navamsaPositions) {
+    if (np.key === "ascendant") navamsaChart[np.rasiIndex].unshift("ascendant");
+    else navamsaChart[np.rasiIndex].push(np.key);
+  }
 
   // Ashtakavarga
   const ashtakavarga = computeAshtakavarga(planets, ascendant);

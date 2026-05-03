@@ -19,6 +19,33 @@ const formatDate = (d: Date) =>
   d.toLocaleDateString("ta-IN", { year: "numeric", month: "long", day: "numeric" });
 
 export const JathagamReport = ({ result, interpretation, interpretationLoading }: Props) => {
+  const planetRows = [
+    result.ascendant,
+    ...result.planets,
+    {
+      key: "mandi",
+      nameTamil: "மாந்தி",
+      rasiTamil: result.mandi.rasiTamil,
+      degreeInRasi: result.mandi.degreeInRasi,
+      nakshatraTamil: result.mandi.nakshatraTamil,
+      pada: result.mandi.pada,
+      retrograde: false,
+    },
+  ];
+  const birthMs = new Date(Date.UTC(result.input.year, result.input.month - 1, result.input.day, result.input.hour, result.input.minute) - result.input.tzOffsetHours * 3600 * 1000).getTime();
+  const firstDasha = result.dashaSequence[0];
+  const jananaIruppuThisai = firstDasha
+    ? (() => {
+        const remMs = firstDasha.endDate.getTime() - birthMs;
+        if (remMs <= 0) return `${firstDasha.lord} திசை`;
+        const yrs = remMs / (1000 * 60 * 60 * 24 * 365.25);
+        const y = Math.floor(yrs);
+        const m = Math.floor((yrs - y) * 12);
+        const d = Math.floor(((yrs - y) * 12 - m) * 30.4375);
+        return `${firstDasha.lord} திசை — ${y} வருடம் ${m} மாதம் ${d} நாள்`;
+      })()
+    : "—";
+
   return (
     <div className="space-y-6 animate-fade-up">
       {/* Header */}
@@ -82,7 +109,7 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
                 </tr>
               </thead>
               <tbody>
-                {[result.ascendant, ...result.planets].map((p) => (
+                {planetRows.map((p) => (
                   <tr key={p.key} className="border-t border-gold/20 hover:bg-gold/5">
                     <td className="p-3 font-semibold text-maroon-deep">
                       {p.nameTamil}
@@ -131,6 +158,9 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
           <div>
             <SectionHeading>தற்போதைய தசை</SectionHeading>
             <div className="parchment rounded-xl p-5 font-tamil text-sm grid grid-cols-2 gap-3">
+              <div className="col-span-2 rounded-lg bg-gold/10 p-3">
+                <PanchaItem label="ஜனன கால இருப்பு திசை" value={jananaIruppuThisai} />
+              </div>
               <PanchaItem label="மகா" value={result.currentDashaPath.maha} />
               <PanchaItem label="புத்தி" value={result.currentDashaPath.bhukti} />
               <PanchaItem label="அந்தரம்" value={result.currentDashaPath.antara} />
