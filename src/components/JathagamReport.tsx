@@ -158,6 +158,9 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
           <div>
             <SectionHeading>தற்போதைய தசை</SectionHeading>
             <div className="parchment rounded-xl p-5 font-tamil text-sm grid grid-cols-2 gap-3">
+              <div className="col-span-2 rounded-lg bg-gold/10 p-3">
+                <PanchaItem label="ஜனன கால இருப்பு திசை" value={jananaIruppuThisai} />
+              </div>
               <PanchaItem label="மகா" value={result.currentDashaPath.maha} />
               <PanchaItem label="புத்தி" value={result.currentDashaPath.bhukti} />
               <PanchaItem label="அந்தரம்" value={result.currentDashaPath.antara} />
