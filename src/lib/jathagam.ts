@@ -642,8 +642,8 @@ export function computeJathagam(input: BirthInput): JathagamResult {
   const weekday = sunrise.getUTCDay();
   const gulikaFrac = isDaytime ? GULIKA_DAY_FRAC[weekday] : GULIKA_NIGHT_FRAC[weekday];
   const gulikaLon = computeUpagrahaLon(sunrise, sunset, input.latitude, input.longitude, ayanamsa, gulikaFrac, isDaytime);
-  // Mandi: add 4/30 (one Saturn portion) to Gulika fraction (mod 1 for safety)
-  const mandiFrac = Math.min(0.999, gulikaFrac + 4 / 30);
+  // Mandi: 8-part division, start of Saturn's portion (classical Maandi)
+  const mandiFrac = isDaytime ? MANDI_DAY_FRAC[weekday] : MANDI_NIGHT_FRAC[weekday];
   const mandiLon = computeUpagrahaLon(sunrise, sunset, input.latitude, input.longitude, ayanamsa, mandiFrac, isDaytime);
   const gulika = makeMandiData(gulikaLon);
   const mandi = makeMandiData(mandiLon);
