@@ -639,6 +639,7 @@ export function computeJathagam(input: BirthInput): JathagamResult {
   const mandiLon = computeUpagrahaLon(sunrise, sunset, input.latitude, input.longitude, ayanamsa, mandiFrac, isDaytime);
   const gulika = makeMandiData(gulikaLon);
   const mandi = makeMandiData(mandiLon);
+  rasiChart[mandi.rasiIndex].push("mandi");
 
   // Navamsa chart (D-9). Rahu/Ketu and Mandi use the same longitude-based D-9 rule as other grahas.
   const navamsaSource = [...planets, ascendant, { key: "mandi", nameTamil: "மாந்தி", longitude: mandi.longitude }];
