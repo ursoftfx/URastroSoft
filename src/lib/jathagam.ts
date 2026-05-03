@@ -453,9 +453,17 @@ function computePanchangam(sunSidereal: number, moonSidereal: number, sunrise: D
   };
 }
 
-// ----- Mandi / Gulika (traditional fractions of day/night, weekday Sun..Sat) -----
+// ----- Mandi / Gulika -----
+// Gulika: 30-part division (Saturn's portion start). Day weekday Sun..Sat.
 const GULIKA_DAY_FRAC = [26 / 30, 22 / 30, 18 / 30, 14 / 30, 10 / 30, 6 / 30, 2 / 30];
 const GULIKA_NIGHT_FRAC = [10 / 30, 6 / 30, 2 / 30, 26 / 30, 22 / 30, 18 / 30, 14 / 30];
+// Mandi (Maandi): classical 8-part division. Day part-of-Saturn START, weekday Sun..Sat.
+// Day lord order starts from weekday lord; sequence Sun→Ven→Mer→Moon→Sat→Jup→Mars (cyclic).
+// Sun:Sat at part 5 → 4/8; Mon:1/8; Tue:5/8; Wed:2/8; Thu:6/8; Fri:3/8; Sat:0.
+const MANDI_DAY_FRAC = [4 / 8, 1 / 8, 5 / 8, 2 / 8, 6 / 8, 3 / 8, 0 / 8];
+// Night order starts from 5th lord from day lord.
+// Sun:6/8; Mon:3/8; Tue:0; Wed:4/8; Thu:1/8; Fri:5/8; Sat:2/8.
+const MANDI_NIGHT_FRAC = [6 / 8, 3 / 8, 0 / 8, 4 / 8, 1 / 8, 5 / 8, 2 / 8];
 
 function computeUpagrahaLon(sunrise: Date, sunset: Date, lat: number, lon: number, ayanamsa: number, frac: number, isDaytime: boolean): number {
   const periodMs = isDaytime
@@ -634,8 +642,8 @@ export function computeJathagam(input: BirthInput): JathagamResult {
   const weekday = sunrise.getUTCDay();
   const gulikaFrac = isDaytime ? GULIKA_DAY_FRAC[weekday] : GULIKA_NIGHT_FRAC[weekday];
   const gulikaLon = computeUpagrahaLon(sunrise, sunset, input.latitude, input.longitude, ayanamsa, gulikaFrac, isDaytime);
-  // Mandi: add 4/30 (one Saturn portion) to Gulika fraction (mod 1 for safety)
-  const mandiFrac = Math.min(0.999, gulikaFrac + 4 / 30);
+  // Mandi: 8-part division, start of Saturn's portion (classical Maandi)
+  const mandiFrac = isDaytime ? MANDI_DAY_FRAC[weekday] : MANDI_NIGHT_FRAC[weekday];
   const mandiLon = computeUpagrahaLon(sunrise, sunset, input.latitude, input.longitude, ayanamsa, mandiFrac, isDaytime);
   const gulika = makeMandiData(gulikaLon);
   const mandi = makeMandiData(mandiLon);
