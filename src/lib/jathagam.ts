@@ -48,6 +48,7 @@ export const PLANETS_TAMIL = {
   rahu: "ராகு",
   ketu: "கேது",
   ascendant: "லக்னம்",
+  mandi: "மாந்தி",
 };
 
 // Lahiri ayanamsa approximation (degrees)
@@ -374,9 +375,10 @@ function computeDashaTree(moonLongitude: number, birthDate: Date): { tree: Dasha
 // Fixed signs (Taurus, Leo, Scorpio, Aquarius)    → navamsa starts from 9th sign
 // Dual signs (Gemini, Virgo, Sagittarius, Pisces) → navamsa starts from 5th sign
 // Resulting start map: [Aries, Capricorn, Libra, Cancer, Aries, Capricorn, Libra, Cancer, ...]
-function navamsaRasi(siderealLon: number): number {
-  const rasi = Math.floor(siderealLon / 30);
-  const degInRasi = siderealLon - rasi * 30;
+export function navamsaRasi(siderealLon: number): number {
+  const lon = norm360(siderealLon);
+  const rasi = Math.floor(lon / 30);
+  const degInRasi = lon - rasi * 30;
   const navIdx = Math.floor(degInRasi / (30 / 9)); // 0..8
   const startMap = [0, 9, 6, 3, 0, 9, 6, 3, 0, 9, 6, 3];
   return (startMap[rasi] + navIdx) % 12;
