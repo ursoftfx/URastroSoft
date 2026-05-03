@@ -15,6 +15,7 @@ const PLANET_SHORT: Record<string, string> = {
   rahu: "ரா",
   ketu: "கே",
   ascendant: "லக்",
+  mandi: "மாந்",
 };
 
 // South Indian style chart layout - fixed 12 houses around outside

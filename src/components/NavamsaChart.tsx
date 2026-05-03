@@ -6,7 +6,7 @@ interface Props {
 
 const PLANET_SHORT: Record<string, string> = {
   sun: "சூ", moon: "ச", mars: "செ", mercury: "பு",
-  jupiter: "கு", venus: "சு", saturn: "சனி", rahu: "ரா", ketu: "கே", ascendant: "லக்",
+  jupiter: "கு", venus: "சு", saturn: "சனி", rahu: "ரா", ketu: "கே", ascendant: "லக்", mandi: "மாந்",
 };
 
 const SOUTH_INDIAN_LAYOUT: (number | null)[][] = [
