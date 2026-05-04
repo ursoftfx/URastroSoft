@@ -349,7 +349,7 @@ export const OnePageReport = ({ result }: Props) => {
       <div style={{ marginTop: 8, fontSize: 11, fontWeight: 700, textAlign: "center", background: "#fbe9d0", padding: "3px 0", border: "1px solid #c9a050" }}>
         கிரக நிலைகள் (Planetary Positions)
       </div>
-      <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+      <table style={{ width: "100%", fontSize: 9.5, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
         <thead>
           <tr style={{ background: "#fff8ee" }}>
             <th style={{ border: "1px solid #c9a050", padding: 3, textAlign: "left" }}>கிரகம்</th>
@@ -357,6 +357,8 @@ export const OnePageReport = ({ result }: Props) => {
             <th style={{ border: "1px solid #c9a050", padding: 3 }}>பாகை</th>
             <th style={{ border: "1px solid #c9a050", padding: 3 }}>நட்சத்திரம்</th>
             <th style={{ border: "1px solid #c9a050", padding: 3 }}>பாதம்</th>
+            <th style={{ border: "1px solid #c9a050", padding: 3 }}>அதிபதி</th>
+            <th style={{ border: "1px solid #c9a050", padding: 3 }}>நிலை</th>
             <th style={{ border: "1px solid #c9a050", padding: 3 }}>நவாம்சம்</th>
           </tr>
         </thead>
@@ -364,13 +366,17 @@ export const OnePageReport = ({ result }: Props) => {
           {rows.map((r, idx) => {
             const navKey = (r as any).key;
             const navPos = result.navamsaPositions.find((n) => n.key === navKey);
+            const athipathi = RASI_LORD_TA[r.rasiIdx];
+            const nilai = (r.key === "ascendant" || r.key === "mandi") ? "—" : dignityLabel(r.key, r.rasiIdx);
             return (
               <tr key={idx}>
-                <td style={{ border: "1px solid #c9a050", padding: 3 }}>{r.label}</td>
+                <td style={{ border: "1px solid #c9a050", padding: 3 }}>{r.label}{r.retro ? " (வ)" : ""}</td>
                 <td style={{ border: "1px solid #c9a050", padding: 3 }}>{RASIS_TAMIL[r.rasiIdx]}</td>
                 <td style={{ border: "1px solid #c9a050", padding: 3 }}>{dms(r.lon - r.rasiIdx * 30)}</td>
                 <td style={{ border: "1px solid #c9a050", padding: 3 }}>{r.nak}</td>
                 <td style={{ border: "1px solid #c9a050", padding: 3, textAlign: "center" }}>{r.pada}</td>
+                <td style={{ border: "1px solid #c9a050", padding: 3 }}>{athipathi}</td>
+                <td style={{ border: "1px solid #c9a050", padding: 3 }}>{nilai}</td>
                 <td style={{ border: "1px solid #c9a050", padding: 3 }}>{navPos ? RASIS_TAMIL[navPos.rasiIndex] : "—"}</td>
               </tr>
             );
