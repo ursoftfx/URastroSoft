@@ -375,11 +375,15 @@ function computeDashaTree(moonLongitude: number, birthDate: Date): { tree: Dasha
 // Fixed signs (Taurus, Leo, Scorpio, Aquarius)    → navamsa starts from 9th sign
 // Dual signs (Gemini, Virgo, Sagittarius, Pisces) → navamsa starts from 5th sign
 // Resulting start map: [Aries, Capricorn, Libra, Cancer, Aries, Capricorn, Libra, Cancer, ...]
-export function navamsaRasi(siderealLon: number): number {
+export function navamsaRasi(siderealLon: number, retrograde = false): number {
   const lon = norm360(siderealLon);
   const rasi = Math.floor(lon / 30);
   const degInRasi = lon - rasi * 30;
-  const navIdx = Math.floor(degInRasi / (30 / 9)); // 0..8
+  // For retrograde nodes (Rahu/Ketu) the navamsa division is counted in reverse
+  // within the sign — classical Parashara treatment used by Tamil panchangams.
+  const effectiveDeg = retrograde ? (30 - degInRasi) : degInRasi;
+  let navIdx = Math.floor(effectiveDeg / (30 / 9)); // 0..9 (clamp)
+  if (navIdx > 8) navIdx = 8;
   const startMap = [0, 9, 6, 3, 0, 9, 6, 3, 0, 9, 6, 3];
   return (startMap[rasi] + navIdx) % 12;
 }
