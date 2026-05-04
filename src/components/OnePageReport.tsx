@@ -318,6 +318,16 @@ export const OnePageReport = ({ result }: Props) => {
             <td style={{ padding: "3px 6px" }}><b>நடப்பு தசா-புத்தி முடிவு</b></td>
             <td style={{ padding: "3px 6px" }}>: {cdEnd}</td>
           </tr>
+          <tr>
+            <td style={{ padding: "3px 6px" }}><b>யோகி</b></td>
+            <td style={{ padding: "3px 6px" }}>: {yogi.yogiNak} ({yogi.yogiLord})</td>
+            <td style={{ padding: "3px 6px" }}><b>அவயோகி</b></td>
+            <td style={{ padding: "3px 6px" }}>: {yogi.avayogiNak} ({yogi.avayogiLord})</td>
+          </tr>
+          <tr>
+            <td style={{ padding: "3px 6px" }}><b>துப்லிகேட் ராசி</b></td>
+            <td style={{ padding: "3px 6px" }} colSpan={3}>: {yogi.dupRasi}</td>
+          </tr>
         </tbody>
       </table>
 
