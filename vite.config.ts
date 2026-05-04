@@ -6,6 +6,9 @@ import { VitePWA } from "vite-plugin-pwa";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
+  // Use relative base so the built index.html works when opened directly from
+  // a downloaded GitHub ZIP (file://) or hosted under a sub-path.
+  base: "./",
   server: {
     host: "::",
     port: 8080,
