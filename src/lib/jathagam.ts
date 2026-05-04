@@ -653,10 +653,11 @@ export function computeJathagam(input: BirthInput): JathagamResult {
   const gulika = makeMandiData(gulikaLon);
   rasiChart[mandi.rasiIndex].push("mandi");
 
-  // Navamsa chart (D-9). Rahu/Ketu and Mandi use the same longitude-based D-9 rule as other grahas.
+  // Navamsa chart (D-9). Rahu/Ketu use the reverse-count rule (retrograde nodes).
   const navamsaSource = [...planets, ascendant, { key: "mandi", nameTamil: "மாந்தி", longitude: mandi.longitude }];
   const navamsaPositions = navamsaSource.map((p) => {
-    const navIdx = navamsaRasi(p.longitude);
+    const isNode = p.key === "rahu" || p.key === "ketu";
+    const navIdx = navamsaRasi(p.longitude, isNode);
     return { key: p.key, nameTamil: p.nameTamil, rasiIndex: navIdx, rasiTamil: RASIS_TAMIL[navIdx] };
   });
   const navamsaChart: string[][] = Array.from({ length: 12 }, () => []);
