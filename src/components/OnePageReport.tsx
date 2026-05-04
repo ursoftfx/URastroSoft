@@ -1,8 +1,54 @@
-import { JathagamResult, RASIS_TAMIL, NAKSHATRAS_TAMIL } from "@/lib/jathagam";
+import { JathagamResult, RASIS_TAMIL, NAKSHATRAS_TAMIL, NAKSHATRA_LORDS_TAMIL } from "@/lib/jathagam";
 
 interface Props {
   result: JathagamResult;
 }
+
+// Rasi lord (athipathi) for each rasi 0..11
+const RASI_LORD_TA = [
+  "செவ்வாய்", "சுக்கிரன்", "புதன்", "சந்திரன்", "சூரியன்", "புதன்",
+  "சுக்கிரன்", "செவ்வாய்", "குரு", "சனி", "சனி", "குரு",
+];
+
+// Planet dignity (Nilai) — exaltation rasi (deg), debilitation rasi, own rasi(s), moolatrikona
+const PLANET_DIGNITY: Record<string, { exalt: number; debil: number; own: number[]; mool: number; friends: number[]; enemies: number[] }> = {
+  sun:     { exalt: 0,  debil: 6,  own: [4],     mool: 4, friends: [3,7,8],   enemies: [1,6,9,10] },
+  moon:    { exalt: 1,  debil: 7,  own: [3],     mool: 1, friends: [0,2],     enemies: [] },
+  mars:    { exalt: 9,  debil: 3,  own: [0,7],   mool: 0, friends: [4,8,3],   enemies: [2,5] },
+  mercury: { exalt: 5,  debil: 11, own: [2,5],   mool: 5, friends: [4,6],     enemies: [3] },
+  jupiter: { exalt: 3,  debil: 9,  own: [8,11],  mool: 8, friends: [0,3,4,7], enemies: [1,5,6] },
+  venus:   { exalt: 11, debil: 5,  own: [1,6],   mool: 6, friends: [2,9,10],  enemies: [0,3,4] },
+  saturn:  { exalt: 6,  debil: 0,  own: [9,10],  mool: 10,friends: [1,2,5,6], enemies: [0,3,4] },
+  rahu:    { exalt: 1,  debil: 7,  own: [10],    mool: -1, friends: [], enemies: [] },
+  ketu:    { exalt: 7,  debil: 1,  own: [7],     mool: -1, friends: [], enemies: [] },
+};
+
+const dignityLabel = (key: string, rasi: number): string => {
+  const d = PLANET_DIGNITY[key];
+  if (!d) return "—";
+  if (rasi === d.exalt) return "உச்சம்";
+  if (rasi === d.debil) return "நீசம்";
+  if (rasi === d.mool) return "மூ.தி";
+  if (d.own.includes(rasi)) return "சுய";
+  if (d.friends.includes(rasi)) return "நட்பு";
+  if (d.enemies.includes(rasi)) return "சத்ரு";
+  return "சம";
+};
+
+// Yogi / Avayogi
+const computeYogi = (sunLon: number, moonLon: number) => {
+  const yogiPoint = ((sunLon + moonLon + 93 + 20 / 60) % 360 + 360) % 360;
+  const nakSize = 360 / 27;
+  const nakIdx = Math.floor(yogiPoint / nakSize);
+  const yogiNak = NAKSHATRAS_TAMIL[nakIdx];
+  const yogiLord = NAKSHATRA_LORDS_TAMIL[nakIdx];
+  const avaIdx = (nakIdx + 6) % 27;
+  const avayogiNak = NAKSHATRAS_TAMIL[avaIdx];
+  const avayogiLord = NAKSHATRA_LORDS_TAMIL[avaIdx];
+  // Duplicate (Dagdha) Rasi: rasi of yogi point
+  const dupRasi = RASIS_TAMIL[Math.floor(yogiPoint / 30)];
+  return { yogiNak, yogiLord, avayogiNak, avayogiLord, dupRasi };
+};
 
 const PLANET_SHORT_TA: Record<string, string> = {
   sun: "சூரி",
@@ -168,14 +214,16 @@ export const OnePageReport = ({ result }: Props) => {
   const navAsc = result.navamsaPositions.find((n) => n.key === "ascendant")?.rasiIndex ?? 0;
 
   const rows = [
-    { key: "ascendant", label: "லக்னம்", lon: result.ascendant.longitude, nak: result.ascendant.nakshatraTamil, rasiIdx: result.ascendant.rasiIndex, pada: result.ascendant.pada },
-    ...result.planets.map((p) => ({ key: p.key, label: PLANET_FULL_TA[p.key] || p.nameTamil, lon: p.longitude, nak: p.nakshatraTamil, rasiIdx: p.rasiIndex, pada: p.pada })),
-    { key: "mandi", label: "மாந்தி", lon: result.mandi.longitude, nak: result.mandi.nakshatraTamil, rasiIdx: result.mandi.rasiIndex, pada: result.mandi.pada },
+    { key: "ascendant", label: "லக்னம்", lon: result.ascendant.longitude, nak: result.ascendant.nakshatraTamil, rasiIdx: result.ascendant.rasiIndex, pada: result.ascendant.pada, retro: false },
+    ...result.planets.map((p) => ({ key: p.key, label: PLANET_FULL_TA[p.key] || p.nameTamil, lon: p.longitude, nak: p.nakshatraTamil, rasiIdx: p.rasiIndex, pada: p.pada, retro: !!p.retrograde })),
+    { key: "mandi", label: "மாந்தி", lon: result.mandi.longitude, nak: result.mandi.nakshatraTamil, rasiIdx: result.mandi.rasiIndex, pada: result.mandi.pada, retro: false },
   ];
 
+  const yogi = computeYogi(result.sun.longitude, result.moon.longitude);
+
   return (
-    <div className="a4-sheet print-area" style={{ width: "210mm", minHeight: "297mm", padding: "8mm 10mm", margin: "auto", background: "white", color: "#000", fontFamily: "'Latha','Tahoma',sans-serif" }}>
-      <style>{`@media print { .print-area { margin: 0; box-shadow: none; } @page { size: A4 portrait; margin: 8mm; } .no-print { display: none !important; } }`}</style>
+    <div className="a4-sheet print-area" style={{ width: "210mm", height: "297mm", padding: "8mm 10mm", margin: "auto", background: "white", color: "#000", fontFamily: "'Latha','Tahoma',sans-serif", boxSizing: "border-box", overflow: "hidden" }}>
+      <style>{`@media print { .print-area { margin: 0; box-shadow: none; height: 297mm; } @page { size: A4 portrait; margin: 0; } .no-print { display: none !important; } body { margin: 0; } }`}</style>
 
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "2px solid #7a1a2b", paddingBottom: 6 }}>
@@ -272,6 +320,16 @@ export const OnePageReport = ({ result }: Props) => {
             <td style={{ padding: "3px 6px" }}><b>நடப்பு தசா-புத்தி முடிவு</b></td>
             <td style={{ padding: "3px 6px" }}>: {cdEnd}</td>
           </tr>
+          <tr>
+            <td style={{ padding: "3px 6px" }}><b>யோகி</b></td>
+            <td style={{ padding: "3px 6px" }}>: {yogi.yogiNak} ({yogi.yogiLord})</td>
+            <td style={{ padding: "3px 6px" }}><b>அவயோகி</b></td>
+            <td style={{ padding: "3px 6px" }}>: {yogi.avayogiNak} ({yogi.avayogiLord})</td>
+          </tr>
+          <tr>
+            <td style={{ padding: "3px 6px" }}><b>துப்லிகேட் ராசி</b></td>
+            <td style={{ padding: "3px 6px" }} colSpan={3}>: {yogi.dupRasi}</td>
+          </tr>
         </tbody>
       </table>
 
@@ -291,7 +349,7 @@ export const OnePageReport = ({ result }: Props) => {
       <div style={{ marginTop: 8, fontSize: 11, fontWeight: 700, textAlign: "center", background: "#fbe9d0", padding: "3px 0", border: "1px solid #c9a050" }}>
         கிரக நிலைகள் (Planetary Positions)
       </div>
-      <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+      <table style={{ width: "100%", fontSize: 9.5, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
         <thead>
           <tr style={{ background: "#fff8ee" }}>
             <th style={{ border: "1px solid #c9a050", padding: 3, textAlign: "left" }}>கிரகம்</th>
@@ -299,6 +357,8 @@ export const OnePageReport = ({ result }: Props) => {
             <th style={{ border: "1px solid #c9a050", padding: 3 }}>பாகை</th>
             <th style={{ border: "1px solid #c9a050", padding: 3 }}>நட்சத்திரம்</th>
             <th style={{ border: "1px solid #c9a050", padding: 3 }}>பாதம்</th>
+            <th style={{ border: "1px solid #c9a050", padding: 3 }}>அதிபதி</th>
+            <th style={{ border: "1px solid #c9a050", padding: 3 }}>நிலை</th>
             <th style={{ border: "1px solid #c9a050", padding: 3 }}>நவாம்சம்</th>
           </tr>
         </thead>
@@ -306,13 +366,17 @@ export const OnePageReport = ({ result }: Props) => {
           {rows.map((r, idx) => {
             const navKey = (r as any).key;
             const navPos = result.navamsaPositions.find((n) => n.key === navKey);
+            const athipathi = RASI_LORD_TA[r.rasiIdx];
+            const nilai = (r.key === "ascendant" || r.key === "mandi") ? "—" : dignityLabel(r.key, r.rasiIdx);
             return (
               <tr key={idx}>
-                <td style={{ border: "1px solid #c9a050", padding: 3 }}>{r.label}</td>
+                <td style={{ border: "1px solid #c9a050", padding: 3 }}>{r.label}{r.retro ? " (வ)" : ""}</td>
                 <td style={{ border: "1px solid #c9a050", padding: 3 }}>{RASIS_TAMIL[r.rasiIdx]}</td>
                 <td style={{ border: "1px solid #c9a050", padding: 3 }}>{dms(r.lon - r.rasiIdx * 30)}</td>
                 <td style={{ border: "1px solid #c9a050", padding: 3 }}>{r.nak}</td>
                 <td style={{ border: "1px solid #c9a050", padding: 3, textAlign: "center" }}>{r.pada}</td>
+                <td style={{ border: "1px solid #c9a050", padding: 3 }}>{athipathi}</td>
+                <td style={{ border: "1px solid #c9a050", padding: 3 }}>{nilai}</td>
                 <td style={{ border: "1px solid #c9a050", padding: 3 }}>{navPos ? RASIS_TAMIL[navPos.rasiIndex] : "—"}</td>
               </tr>
             );
