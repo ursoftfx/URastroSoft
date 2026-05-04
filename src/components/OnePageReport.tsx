@@ -1,8 +1,54 @@
-import { JathagamResult, RASIS_TAMIL, NAKSHATRAS_TAMIL } from "@/lib/jathagam";
+import { JathagamResult, RASIS_TAMIL, NAKSHATRAS_TAMIL, NAKSHATRA_LORDS_TAMIL } from "@/lib/jathagam";
 
 interface Props {
   result: JathagamResult;
 }
+
+// Rasi lord (athipathi) for each rasi 0..11
+const RASI_LORD_TA = [
+  "செவ்வாய்", "சுக்கிரன்", "புதன்", "சந்திரன்", "சூரியன்", "புதன்",
+  "சுக்கிரன்", "செவ்வாய்", "குரு", "சனி", "சனி", "குரு",
+];
+
+// Planet dignity (Nilai) — exaltation rasi (deg), debilitation rasi, own rasi(s), moolatrikona
+const PLANET_DIGNITY: Record<string, { exalt: number; debil: number; own: number[]; mool: number; friends: number[]; enemies: number[] }> = {
+  sun:     { exalt: 0,  debil: 6,  own: [4],     mool: 4, friends: [3,7,8],   enemies: [1,6,9,10] },
+  moon:    { exalt: 1,  debil: 7,  own: [3],     mool: 1, friends: [0,2],     enemies: [] },
+  mars:    { exalt: 9,  debil: 3,  own: [0,7],   mool: 0, friends: [4,8,3],   enemies: [2,5] },
+  mercury: { exalt: 5,  debil: 11, own: [2,5],   mool: 5, friends: [4,6],     enemies: [3] },
+  jupiter: { exalt: 3,  debil: 9,  own: [8,11],  mool: 8, friends: [0,3,4,7], enemies: [1,5,6] },
+  venus:   { exalt: 11, debil: 5,  own: [1,6],   mool: 6, friends: [2,9,10],  enemies: [0,3,4] },
+  saturn:  { exalt: 6,  debil: 0,  own: [9,10],  mool: 10,friends: [1,2,5,6], enemies: [0,3,4] },
+  rahu:    { exalt: 1,  debil: 7,  own: [10],    mool: -1, friends: [], enemies: [] },
+  ketu:    { exalt: 7,  debil: 1,  own: [7],     mool: -1, friends: [], enemies: [] },
+};
+
+const dignityLabel = (key: string, rasi: number): string => {
+  const d = PLANET_DIGNITY[key];
+  if (!d) return "—";
+  if (rasi === d.exalt) return "உச்சம்";
+  if (rasi === d.debil) return "நீசம்";
+  if (rasi === d.mool) return "மூ.தி";
+  if (d.own.includes(rasi)) return "சுய";
+  if (d.friends.includes(rasi)) return "நட்பு";
+  if (d.enemies.includes(rasi)) return "சத்ரு";
+  return "சம";
+};
+
+// Yogi / Avayogi
+const computeYogi = (sunLon: number, moonLon: number) => {
+  const yogiPoint = ((sunLon + moonLon + 93 + 20 / 60) % 360 + 360) % 360;
+  const nakSize = 360 / 27;
+  const nakIdx = Math.floor(yogiPoint / nakSize);
+  const yogiNak = NAKSHATRAS_TAMIL[nakIdx];
+  const yogiLord = NAKSHATRA_LORDS_TAMIL[nakIdx];
+  const avaIdx = (nakIdx + 6) % 27;
+  const avayogiNak = NAKSHATRAS_TAMIL[avaIdx];
+  const avayogiLord = NAKSHATRA_LORDS_TAMIL[avaIdx];
+  // Duplicate (Dagdha) Rasi: rasi of yogi point
+  const dupRasi = RASIS_TAMIL[Math.floor(yogiPoint / 30)];
+  return { yogiNak, yogiLord, avayogiNak, avayogiLord, dupRasi };
+};
 
 const PLANET_SHORT_TA: Record<string, string> = {
   sun: "சூரி",
