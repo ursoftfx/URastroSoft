@@ -2,6 +2,7 @@ import { JathagamResult, formatDegree, RASIS_TAMIL, PLANETS_TAMIL } from "@/lib/
 import { RasiChart } from "./RasiChart";
 import { NavamsaChart } from "./NavamsaChart";
 import { VargaChart } from "./VargaChart";
+import { DashaA4Pages } from "./DashaA4Pages";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sparkles, Star, Sun, Moon, Heart, Award, AlertTriangle, Hash, Bird } from "lucide-react";
 import { detectDoshams } from "@/lib/dosham";
