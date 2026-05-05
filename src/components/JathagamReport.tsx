@@ -2,6 +2,7 @@ import { JathagamResult, formatDegree, RASIS_TAMIL, PLANETS_TAMIL } from "@/lib/
 import { RasiChart } from "./RasiChart";
 import { NavamsaChart } from "./NavamsaChart";
 import { VargaChart } from "./VargaChart";
+import { DashaA4Pages } from "./DashaA4Pages";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sparkles, Star, Sun, Moon, Heart, Award, AlertTriangle, Hash, Bird } from "lucide-react";
 import { detectDoshams } from "@/lib/dosham";
@@ -47,7 +48,8 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
     : "—";
 
   return (
-    <div className="space-y-6 animate-fade-up">
+    <>
+    <div className="space-y-6 animate-fade-up a4-sheet print-area" style={{ width: "210mm", minHeight: "297mm", margin: "0 auto", background: "#fff", padding: "10mm 12mm", boxSizing: "border-box" }}>
       {/* Header */}
       <div className="parchment rounded-2xl p-6 md:p-8 text-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 pointer-events-none">
@@ -530,6 +532,8 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
         ✦ இது AI மூலம் கணிக்கப்பட்ட ஜாதகம். துல்லியமான பலன்களுக்கு அனுபவம் வாய்ந்த ஜோதிடரை அணுகவும். ✦
       </div>
     </div>
+    <DashaA4Pages result={result} />
+    </>
   );
 };
 
