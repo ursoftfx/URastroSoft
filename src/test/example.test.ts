@@ -8,9 +8,9 @@ describe("example", () => {
 });
 
 describe("navamsa calculations", () => {
-  it("keeps Rahu and Ketu opposite in D9 when retrograde-counted 180° apart", () => {
+  it("keeps Rahu and Ketu opposite (6 houses apart) in D9", () => {
     for (let lon = 0; lon < 360; lon += 1.25) {
-      expect(navamsaRasi(lon + 180, true)).toBe((navamsaRasi(lon, true) + 6) % 12);
+      expect(navamsaRasi(lon + 180)).toBe((navamsaRasi(lon) + 6) % 12);
     }
   });
 
