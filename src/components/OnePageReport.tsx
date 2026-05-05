@@ -222,6 +222,7 @@ export const OnePageReport = ({ result }: Props) => {
   const yogi = computeYogi(result.sun.longitude, result.moon.longitude);
 
   return (
+    <>
     <div className="a4-sheet print-area" style={{ width: "210mm", height: "297mm", padding: "8mm 10mm", margin: "auto", background: "white", color: "#000", fontFamily: "'Latha','Tahoma',sans-serif", boxSizing: "border-box", overflow: "hidden" }}>
       <style>{`@media print { .print-area { margin: 0; box-shadow: none; height: 297mm; } @page { size: A4 portrait; margin: 0; } .no-print { display: none !important; } body { margin: 0; } }`}</style>
 
