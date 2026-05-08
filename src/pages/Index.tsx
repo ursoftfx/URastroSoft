@@ -9,6 +9,7 @@ import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SEO } from "@/components/SEO";
 import { DownloadReport } from "@/components/DownloadReport";
 import { OnePageReport } from "@/components/OnePageReport";
+import { ProfessionalReport } from "@/components/ProfessionalReport";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { AnnouncementsBanner } from "@/components/AnnouncementsBanner";
@@ -230,7 +231,7 @@ const ResultView = ({
   interpretationLoading: boolean;
   onReset: () => void;
 }) => {
-  const [view, setView] = useState<"detailed" | "onepage">("onepage");
+  const [view, setView] = useState<"detailed" | "onepage" | "pro">("pro");
   const handlePrint = () => window.print();
 
   return (
@@ -241,6 +242,12 @@ const ResultView = ({
         </Button>
         <div className="flex items-center gap-2 flex-wrap">
           <div className="inline-flex rounded-md border border-gold/40 bg-cream/50 p-1">
+            <button
+              onClick={() => setView("pro")}
+              className={`px-3 py-1.5 text-xs font-tamil rounded ${view === "pro" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
+            >
+              <FileText className="w-3.5 h-3.5 inline mr-1" /> Professional PDF
+            </button>
             <button
               onClick={() => setView("onepage")}
               className={`px-3 py-1.5 text-xs font-tamil rounded ${view === "onepage" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
@@ -258,13 +265,17 @@ const ResultView = ({
             <Printer className="w-4 h-4 mr-1" /> அச்சிடு
           </Button>
           <DownloadReport
-            targetId={view === "onepage" ? "onepage-report-root" : "jathagam-report-root"}
+            targetId={view === "pro" ? "professional-report-root" : view === "onepage" ? "onepage-report-root" : "jathagam-report-root"}
             fileName={`jathagam-${result.input.name.replace(/\s+/g, "-")}.pdf`}
           />
         </div>
       </div>
 
-      {view === "onepage" ? (
+      {view === "pro" ? (
+        <div className="overflow-x-auto">
+          <ProfessionalReport result={result} />
+        </div>
+      ) : view === "onepage" ? (
         <div id="onepage-report-root" className="overflow-x-auto">
           <OnePageReport result={result} />
         </div>
