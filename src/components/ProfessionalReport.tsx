@@ -106,33 +106,48 @@ const Chart = ({ title, chart, ascRasi, size = "lg" }: {
   );
 };
 
-// ---------- Page wrapper ----------
+// ---------- Page wrapper (A5 landscape: 210 x 148 mm) ----------
 const Page = ({ children, title, subtitle, page, total, name }: any) => (
-  <div className="a4-sheet print-area" style={{
-    width: "210mm", minHeight: "148mm", padding: "5mm",
-    margin: "5mm auto", background: "white", color: "#000",
+  <div className="a5-sheet print-area" style={{
+    width: "210mm", height: "148mm", maxHeight: "148mm",
+    padding: "4mm", margin: "5mm auto",
+    background: "#ffffff", color: "#000",
     fontFamily: "'Latha','Tahoma',sans-serif", boxSizing: "border-box",
-    pageBreakAfter: "always",
-    fontSize: 8.5, lineHeight: 1.25,
+    pageBreakAfter: "always", overflow: "hidden",
+    fontSize: 8.5, lineHeight: 1.2,
+    display: "flex", flexDirection: "column",
   }}>
+    {/* Top text strip */}
+    <div style={{ textAlign: "center", fontSize: 7, color: "#7a1a2b", letterSpacing: 2, marginBottom: 1 }}>
+      ✦ ॐ ஸ்ரீ கணேசாய நமஹ ✦ UR ASTRO SOFT — TAMIL VEDIC HOROSCOPE ✦
+    </div>
+    {/* Designed framed box */}
     <div style={{
+      flex: 1, minHeight: 0,
       border: "2px double #7a1a2b", outline: "1px solid #c9a050", outlineOffset: 2,
-      borderRadius: 4, padding: "4mm 5mm", minHeight: "138mm",
-      background: "linear-gradient(180deg,#fffdf7 0%,#fff8ec 100%)",
+      borderRadius: 4, padding: "3mm 4mm",
+      background: "#ffffff",
       boxShadow: "inset 0 0 0 1px #f1e0b5",
+      display: "flex", flexDirection: "column", overflow: "hidden",
     }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1.5px solid #c9a050", paddingBottom: 4, marginBottom: 8 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1.5px solid #c9a050", paddingBottom: 3, marginBottom: 4 }}>
         <div>
-          <div style={{ fontSize: 16, fontWeight: 800, color: "#7a1a2b", letterSpacing: 1 }}>UR ASTRO SOFT</div>
-          <div style={{ fontSize: 9, color: "#666" }}>தமிழ் வேத ஜோதிட விரிவான ஜாதகம்</div>
+          <div style={{ fontSize: 14, fontWeight: 800, color: "#7a1a2b", letterSpacing: 1 }}>UR ASTRO SOFT</div>
+          <div style={{ fontSize: 8, color: "#666" }}>தமிழ் வேத ஜோதிட விரிவான ஜாதகம்</div>
         </div>
         <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "#7a1a2b" }}>{title}</div>
-          {subtitle && <div style={{ fontSize: 9, color: "#555" }}>{subtitle}</div>}
-          <div style={{ fontSize: 8, color: "#888" }}>{name} • பக்கம் {page} / {total}</div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "#7a1a2b" }}>{title}</div>
+          {subtitle && <div style={{ fontSize: 8, color: "#555" }}>{subtitle}</div>}
+          <div style={{ fontSize: 7, color: "#888" }}>{name} • பக்கம் {page} / {total}</div>
         </div>
       </div>
-      {children}
+      <div style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
+        {children}
+      </div>
+    </div>
+    {/* Bottom text strip */}
+    <div style={{ textAlign: "center", fontSize: 7, color: "#666", marginTop: 1 }}>
+      © UR ASTRO SOFT • urastrosoft.com • இந்த அறிக்கை ஆலோசனை நோக்கத்திற்காக மட்டுமே
     </div>
   </div>
 );
@@ -1023,59 +1038,47 @@ export const ProfessionalReport = ({ result }: Props) => {
         const lordKey = DASHA_LORD_TO_KEY[maha.lord];
         return (
           <Page key={`d-${mi}`} title={`${mi + 1}. ${maha.lord} மகா தசை`} subtitle={`வயது ${startAge} - ${endAge}`} page={next()} total={totalPages} name={i.name}>
-            <div style={{ background: "#fbe9d0", padding: "4px 8px", fontSize: 12, fontWeight: 700, border: "1px solid #c9a050", textAlign: "center" }}>
+            <div style={{ background: "#fbe9d0", padding: "2px 6px", fontSize: 9, fontWeight: 700, border: "1px solid #c9a050", textAlign: "center" }}>
               {maha.lord} மகா தசை &nbsp;•&nbsp; {fmtDate(maha.startDate)} → {fmtDate(maha.endDate)} &nbsp;•&nbsp; வயது {startAge} - {endAge}
             </div>
             {lordKey && (
-              <div style={{ border: "1px solid #c9a050", borderTop: 0, padding: 6, fontSize: 10, background: "#fff8ee" }}>
+              <div style={{ border: "1px solid #c9a050", borderTop: 0, padding: "3px 6px", fontSize: 7.5, lineHeight: 1.25, background: "#fff8ee" }}>
                 <b>{maha.lord} தசை பலன் :</b> {DASHA_LORD_PALAN[lordKey]}
               </div>
             )}
-            <table style={{ width: "100%", fontSize: 6.5, lineHeight: 1.1, borderCollapse: "collapse", border: "1px solid #c9a050", marginTop: 3, tableLayout: "fixed" }}>
-              <thead>
-                <tr style={{ background: "#fff8ee" }}>
-                  <th style={{ ...th, padding: "1px 2px", width: "12%" }}>புத்தி</th>
-                  <th style={{ ...th, padding: "1px 2px", width: "11%" }}>தொடக்கம்</th>
-                  <th style={{ ...th, padding: "1px 2px", width: "11%" }}>முடிவு</th>
-                  <th style={{ ...th, padding: "1px 2px", width: "7%" }}>வயது</th>
-                  <th style={{ ...th, padding: "1px 2px", width: "12%" }}>அந்தரம்</th>
-                  <th style={{ ...th, padding: "1px 2px", width: "11%" }}>தொடக்கம்</th>
-                  <th style={{ ...th, padding: "1px 2px", width: "11%" }}>முடிவு</th>
-                </tr>
-              </thead>
-              <tbody>
-                {(maha.children || []).flatMap((bh, bi) => {
-                  const ants = bh.children || [];
-                  const span = Math.max(ants.length, 1);
-                  const bhAge = ageAt(birthDate, bh.startDate);
-                  const cell: React.CSSProperties = { ...td, padding: "1px 2px", fontSize: 6.5 };
-                  if (ants.length === 0) {
-                    return [(
-                      <tr key={`b-${bi}`}>
-                        <td style={{ ...cell, fontWeight: 700 }}>{maha.lord}/{bh.lord}</td>
-                        <td style={cell}>{fmtDate(bh.startDate)}</td>
-                        <td style={cell}>{fmtDate(bh.endDate)}</td>
-                        <td style={cell}>{bhAge}</td>
-                        <td style={cell} colSpan={3}>—</td>
-                      </tr>
-                    )];
-                  }
-                  return ants.map((a, ai) => (
-                    <tr key={`b-${bi}-${ai}`}>
-                      {ai === 0 && (<>
-                        <td rowSpan={span} style={{ ...cell, fontWeight: 700, background: "#fff8ee", verticalAlign: "top" }}>{maha.lord}/{bh.lord}</td>
-                        <td rowSpan={span} style={{ ...cell, verticalAlign: "top" }}>{fmtDate(bh.startDate)}</td>
-                        <td rowSpan={span} style={{ ...cell, verticalAlign: "top" }}>{fmtDate(bh.endDate)}</td>
-                        <td rowSpan={span} style={{ ...cell, verticalAlign: "top" }}>{bhAge}</td>
-                      </>)}
-                      <td style={cell}>{a.lord}</td>
-                      <td style={cell}>{fmtDate(a.startDate)}</td>
-                      <td style={cell}>{fmtDate(a.endDate)}</td>
-                    </tr>
-                  ));
-                })}
-              </tbody>
-            </table>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 3, marginTop: 3 }}>
+              {(maha.children || []).map((bh, bi) => {
+                const ants = bh.children || [];
+                const bhAge = ageAt(birthDate, bh.startDate);
+                return (
+                  <div key={`b-${bi}`} style={{ border: "1px solid #c9a050", borderRadius: 2, overflow: "hidden" }}>
+                    <div style={{ background: "#fff8ee", padding: "2px 4px", fontSize: 7, fontWeight: 700, color: "#7a1a2b", borderBottom: "1px solid #c9a050" }}>
+                      {bi + 1}. {maha.lord}/{bh.lord} • வயது {bhAge} • {fmtDate(bh.startDate)} → {fmtDate(bh.endDate)}
+                    </div>
+                    <table style={{ width: "100%", fontSize: 6, lineHeight: 1.05, borderCollapse: "collapse", tableLayout: "fixed" }}>
+                      <thead>
+                        <tr style={{ background: "#fdf6e7" }}>
+                          <th style={{ ...th, padding: "1px 2px", width: "30%", fontSize: 6 }}>அந்தரம்</th>
+                          <th style={{ ...th, padding: "1px 2px", width: "35%", fontSize: 6 }}>தொடக்கம்</th>
+                          <th style={{ ...th, padding: "1px 2px", width: "35%", fontSize: 6 }}>முடிவு</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {ants.length === 0 ? (
+                          <tr><td colSpan={3} style={{ ...td, padding: "1px 2px", fontSize: 6, textAlign: "center" }}>—</td></tr>
+                        ) : ants.map((a, ai) => (
+                          <tr key={`b-${bi}-${ai}`}>
+                            <td style={{ ...td, padding: "1px 2px", fontSize: 6 }}>{a.lord}</td>
+                            <td style={{ ...td, padding: "1px 2px", fontSize: 6 }}>{fmtDate(a.startDate)}</td>
+                            <td style={{ ...td, padding: "1px 2px", fontSize: 6 }}>{fmtDate(a.endDate)}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                );
+              })}
+            </div>
           </Page>
         );
       })}
