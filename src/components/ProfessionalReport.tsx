@@ -117,9 +117,6 @@ const Page = ({ children, title, subtitle, page, total, name }: any) => (
     fontSize: 8.5, lineHeight: 1.2,
     display: "flex", flexDirection: "column",
   }}>
-    <div style={{ textAlign: "center", fontSize: 7, color: "#000", letterSpacing: 2, marginBottom: 1 }}>
-      ✦ ॐ ஸ்ரீ கணேசாய நமஹ ✦ UR ASTRO SOFT — TAMIL VEDIC HOROSCOPE ✦
-    </div>
     <div style={{
       flex: 1, minHeight: 0,
       border: "2px double #000", outline: "1px solid #000", outlineOffset: 2,
