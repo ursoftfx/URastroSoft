@@ -146,6 +146,9 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
       </div>
 
       {/* Navamsa + Mandi/Gulika + Current Dasha */}
+    </div>
+    <div className="space-y-4 a5-sheet print-area" style={sheetStyle}>
+      {/* Navamsa + Mandi/Gulika + Current Dasha */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div>
           <SectionHeading>நவாம்ச சக்கரம் (D9)</SectionHeading>
