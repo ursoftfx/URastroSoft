@@ -109,25 +109,31 @@ const Chart = ({ title, chart, ascRasi, size = "lg" }: {
 // ---------- Page wrapper ----------
 const Page = ({ children, title, subtitle, page, total, name }: any) => (
   <div className="a4-sheet print-area" style={{
-    width: "148mm", minHeight: "210mm", padding: "6mm 7mm",
+    width: "210mm", minHeight: "148mm", padding: "5mm",
     margin: "5mm auto", background: "white", color: "#000",
     fontFamily: "'Latha','Tahoma',sans-serif", boxSizing: "border-box",
-    pageBreakAfter: "always", borderTop: "3px solid #7a1a2b",
+    pageBreakAfter: "always",
     fontSize: 8.5, lineHeight: 1.25,
   }}>
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1.5px solid #c9a050", paddingBottom: 4, marginBottom: 8 }}>
-      <div>
-        <div style={{ fontSize: 16, fontWeight: 800, color: "#7a1a2b", letterSpacing: 1 }}>UR ASTRO SOFT</div>
-        <div style={{ fontSize: 9, color: "#666" }}>தமிழ் வேத ஜோதிட விரிவான ஜாதகம்</div>
+    <div style={{
+      border: "2px double #7a1a2b", outline: "1px solid #c9a050", outlineOffset: 2,
+      borderRadius: 4, padding: "4mm 5mm", minHeight: "138mm",
+      background: "linear-gradient(180deg,#fffdf7 0%,#fff8ec 100%)",
+      boxShadow: "inset 0 0 0 1px #f1e0b5",
+    }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1.5px solid #c9a050", paddingBottom: 4, marginBottom: 8 }}>
+        <div>
+          <div style={{ fontSize: 16, fontWeight: 800, color: "#7a1a2b", letterSpacing: 1 }}>UR ASTRO SOFT</div>
+          <div style={{ fontSize: 9, color: "#666" }}>தமிழ் வேத ஜோதிட விரிவான ஜாதகம்</div>
+        </div>
+        <div style={{ textAlign: "right" }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: "#7a1a2b" }}>{title}</div>
+          {subtitle && <div style={{ fontSize: 9, color: "#555" }}>{subtitle}</div>}
+          <div style={{ fontSize: 8, color: "#888" }}>{name} • பக்கம் {page} / {total}</div>
+        </div>
       </div>
-      <div style={{ textAlign: "right" }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: "#7a1a2b" }}>{title}</div>
-        {subtitle && <div style={{ fontSize: 9, color: "#555" }}>{subtitle}</div>}
-        <div style={{ fontSize: 8, color: "#888" }}>{name} • பக்கம் {page} / {total}</div>
-      </div>
+      {children}
     </div>
-    {children}
-    <div style={{ position: "absolute" }} />
   </div>
 );
 
