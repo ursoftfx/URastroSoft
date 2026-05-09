@@ -6,9 +6,10 @@ import { toast } from "sonner";
 interface Props {
   targetId: string;
   fileName?: string;
+  paperSize?: "a4" | "a5";
 }
 
-export const DownloadReport = ({ targetId, fileName = "jathagam.pdf" }: Props) => {
+export const DownloadReport = ({ targetId, fileName = "jathagam.pdf", paperSize = "a4" }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const handleDownload = async () => {
