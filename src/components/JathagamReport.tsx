@@ -49,7 +49,8 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
 
   return (
     <>
-    <div className="space-y-6 animate-fade-up a4-sheet print-area" style={{ width: "210mm", minHeight: "297mm", margin: "0 auto", background: "#fff", padding: "10mm 12mm", boxSizing: "border-box" }}>
+    <div className="space-y-4 animate-fade-up a4-sheet print-area" style={{ width: "148mm", minHeight: "210mm", margin: "0 auto", background: "#fff", padding: "7mm 8mm", boxSizing: "border-box", fontSize: 9 }}>
+      <style>{`@media print { @page { size: A5 portrait; margin: 0; } }`}</style>
       {/* Header */}
       <div className="parchment rounded-2xl p-6 md:p-8 text-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 pointer-events-none">
