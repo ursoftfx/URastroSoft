@@ -109,25 +109,31 @@ const Chart = ({ title, chart, ascRasi, size = "lg" }: {
 // ---------- Page wrapper ----------
 const Page = ({ children, title, subtitle, page, total, name }: any) => (
   <div className="a4-sheet print-area" style={{
-    width: "148mm", minHeight: "210mm", padding: "6mm 7mm",
+    width: "210mm", minHeight: "148mm", padding: "5mm",
     margin: "5mm auto", background: "white", color: "#000",
     fontFamily: "'Latha','Tahoma',sans-serif", boxSizing: "border-box",
-    pageBreakAfter: "always", borderTop: "3px solid #7a1a2b",
+    pageBreakAfter: "always",
     fontSize: 8.5, lineHeight: 1.25,
   }}>
-    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1.5px solid #c9a050", paddingBottom: 4, marginBottom: 8 }}>
-      <div>
-        <div style={{ fontSize: 16, fontWeight: 800, color: "#7a1a2b", letterSpacing: 1 }}>UR ASTRO SOFT</div>
-        <div style={{ fontSize: 9, color: "#666" }}>தமிழ் வேத ஜோதிட விரிவான ஜாதகம்</div>
+    <div style={{
+      border: "2px double #7a1a2b", outline: "1px solid #c9a050", outlineOffset: 2,
+      borderRadius: 4, padding: "4mm 5mm", minHeight: "138mm",
+      background: "linear-gradient(180deg,#fffdf7 0%,#fff8ec 100%)",
+      boxShadow: "inset 0 0 0 1px #f1e0b5",
+    }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1.5px solid #c9a050", paddingBottom: 4, marginBottom: 8 }}>
+        <div>
+          <div style={{ fontSize: 16, fontWeight: 800, color: "#7a1a2b", letterSpacing: 1 }}>UR ASTRO SOFT</div>
+          <div style={{ fontSize: 9, color: "#666" }}>தமிழ் வேத ஜோதிட விரிவான ஜாதகம்</div>
+        </div>
+        <div style={{ textAlign: "right" }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: "#7a1a2b" }}>{title}</div>
+          {subtitle && <div style={{ fontSize: 9, color: "#555" }}>{subtitle}</div>}
+          <div style={{ fontSize: 8, color: "#888" }}>{name} • பக்கம் {page} / {total}</div>
+        </div>
       </div>
-      <div style={{ textAlign: "right" }}>
-        <div style={{ fontSize: 12, fontWeight: 700, color: "#7a1a2b" }}>{title}</div>
-        {subtitle && <div style={{ fontSize: 9, color: "#555" }}>{subtitle}</div>}
-        <div style={{ fontSize: 8, color: "#888" }}>{name} • பக்கம் {page} / {total}</div>
-      </div>
+      {children}
     </div>
-    {children}
-    <div style={{ position: "absolute" }} />
   </div>
 );
 
@@ -147,7 +153,7 @@ export const ProfessionalReport = ({ result }: Props) => {
   const vargasPages = Math.ceil(result.vargaCharts.length / 6);
   const lifeAreaPages = 11; // career, marriage, wealth, children, education, health, foreign, property, family, spiritual, personality
   const bhavaDeepPages = 6; // 12 houses, 2 per page
-  const extraPages = 1 /*yogas*/ + 1 /*aspects*/ + 1 /*friendship*/ + 1 /*year forecast*/ + 1 /*sade sati*/ + 1 /*gemstones*/ + 1 /*mantras*/ + 1 /*lucky*/ + 1 /*career fields*/ + 1 /*weekday remedies*/ + 1 /*karmic*/ + 1 /*planet strength*/ + 1 /*monthly transit*/ + 1 /*punya*/ + 1 /*compatibility*/;
+  const extraPages = 1 /*yogas*/ + 1 /*aspects*/ + 1 /*friendship*/ + 1 /*year forecast*/ + 1 /*sade sati*/ + 1 /*gemstones*/ + 1 /*mantras*/ + 1 /*lucky*/ + 1 /*career fields*/ + 1 /*weekday remedies*/ + 1 /*karmic*/ + 1 /*planet strength*/ + 1 /*monthly transit*/ + 1 /*punya*/ + 1 /*compatibility*/ + 3 /*additional predictions I/II/III*/;
   const totalPages = 1 /*cover*/ + 1 /*positions*/ + 1 /*charts+kp*/ + vargasPages + 1 /*ashtak+sani*/ + 1 /*lagna+nak+bhava*/ + 1 /*planet-in-house*/ + 1 /*planet-in-rasi*/ + 1 /*doshas+remedies*/ + lifeAreaPages + bhavaDeepPages + extraPages + dashaPages;
 
   let pn = 0;
@@ -160,7 +166,7 @@ export const ProfessionalReport = ({ result }: Props) => {
 
   return (
     <div id="professional-report-root">
-      <style>{`@media print { @page { size: A5 portrait; margin: 0; } .print-area { margin: 0 !important; box-shadow: none !important; page-break-after: always; } body { margin: 0; } .no-print { display: none !important; } } #professional-report-root table { font-size: 8px; } #professional-report-root th, #professional-report-root td { padding: 1px 2px !important; }`}</style>
+      <style>{`@media print { @page { size: A5 landscape; margin: 0; } .print-area { margin: 0 !important; box-shadow: none !important; page-break-after: always; } body { margin: 0; } .no-print { display: none !important; } } #professional-report-root table { font-size: 8px; } #professional-report-root th, #professional-report-root td { padding: 1px 2px !important; }`}</style>
 
       {/* === COVER === */}
       <Page title="அட்டை" page={next()} total={totalPages} name={i.name}>
@@ -936,6 +942,77 @@ export const ProfessionalReport = ({ result }: Props) => {
           • வயது வித்தியாசம் 3-7 ஆண்டு உகந்தது.<br/>
           • பல திசை கொண்ட (காதல், மரியாதை, உளத் தொடர்பு) உறவே நீடிக்கும்.<br/>
           • திருமணத்திற்கு முன் ஜாதக பொருத்தம் (10 / 36) கட்டாயம்.
+        </Box>
+      </Page>
+
+      {/* === Additional Predictions Page 1 === */}
+      <Page title="மேலதிக பலன்கள் — I" subtitle="தொழில் • வாகனம் • புகழ்" page={next()} total={totalPages} name={i.name}>
+        <SectionBar>தொழில் (Business) பலன்</SectionBar>
+        <Box>
+          • {result.ascendant.rasiTamil} லக்னத்திற்கு 7,10,11ம் வீட்டு பலம் தொழிலில் வெற்றியை தரும்.<br/>
+          • கூட்டுத் தொழிலை விட சொந்தத் தொழிலே சிறந்தது; சனி/செவ்வாய் பலமாயின் ரியல் எஸ்டேட், கட்டுமானம், உலோகம் சாதகம்.<br/>
+          • புதன் பலமாயின் வர்த்தகம், ஏற்றுமதி, தொடர்பு சார்ந்த தொழில் நன்றாக அமையும்.<br/>
+          • 30-42 வயதில் தொழில் விரிவாக்கம் சிறப்பாக நடக்கும்.
+        </Box>
+        <SectionBar>வாகன பாக்கியம்</SectionBar>
+        <Box>
+          • 4ம் வீடு வலுவாக இருந்தால் இரு / நான்கு சக்கர வாகனம் இளம் வயதிலேயே அமையும்.<br/>
+          • சுக்ரன் பலம் சொகுசு வாகனத்தை, செவ்வாய் பலம் வேக வாகனத்தை குறிக்கிறது.<br/>
+          • ராகு / கேது 4ல் இருப்பின் கவனமாக ஓட்ட வேண்டும்; கணேச வழிபாடு பாதுகாப்பு.
+        </Box>
+        <SectionBar>புகழ் & சமூக அந்தஸ்து</SectionBar>
+        <Box>
+          • சூரிய பலம் அரசு / பொது தொடர்பு துறையில் அங்கீகாரம் தரும்.<br/>
+          • 10ம் அதிபதி உச்சம் / ஸ்வக்ஷேத்திரத்தில் இருப்பின் சமூகத்தில் தனி இடம்.<br/>
+          • குரு திசை / புத்தியில் விருதுகள், பாராட்டுகள் கிடைக்கும்.
+        </Box>
+      </Page>
+
+      {/* === Additional Predictions Page 2 === */}
+      <Page title="மேலதிக பலன்கள் — II" subtitle="ஆயுள் • வழக்கு • எதிரிகள்" page={next()} total={totalPages} name={i.name}>
+        <SectionBar>ஆயுள் (Longevity)</SectionBar>
+        <Box>
+          • லக்னாதிபதி, 8ம் அதிபதி, சனி பலன் கொண்டு ஆயுள் கணிக்கப்படுகிறது.<br/>
+          • பால்யம் (0-32), மத்திமம் (32-64), முதிர்ச்சி (64-96) என மூன்று கட்டங்கள்.<br/>
+          • சனி & குரு திருஷ்டி நீண்ட ஆயுளை உறுதிப்படுத்தும்.<br/>
+          • யோகா, பிராணாயாமம் ஆயுள் பலத்தை உயர்த்தும்.
+        </Box>
+        <SectionBar>வழக்குகள் & சட்ட பிரச்சினைகள்</SectionBar>
+        <Box>
+          • 6ம் வீடு பலமாக இருப்பின் வழக்குகளில் வெற்றி.<br/>
+          • செவ்வாய், சனி 6ல் இருப்பின் சொத்து தகராறு வரக்கூடும்.<br/>
+          • ராகு திசை / புத்தியில் சட்ட சிக்கல் கவனிக்கவும்.<br/>
+          • ஹனுமன் சாலிசா, சுப்பிரமணியர் வழிபாடு பாதுகாப்பு தரும்.
+        </Box>
+        <SectionBar>எதிரிகள் & போட்டியாளர்கள்</SectionBar>
+        <Box>
+          • 6ம் அதிபதியின் நிலை எதிரிகளை வெல்லும் ஆற்றலை குறிக்கும்.<br/>
+          • மறைமுக நபர்களே அதிக பாதிப்பை தருவர்.<br/>
+          • செவ்வாய் கிழமை குங்கும அர்ச்சனை விரோதிகளை தணிக்கும்.
+        </Box>
+      </Page>
+
+      {/* === Additional Predictions Page 3 === */}
+      <Page title="மேலதிக பலன்கள் — III" subtitle="பயணம் • முதலீடு • முகூர்த்தம்" page={next()} total={totalPages} name={i.name}>
+        <SectionBar>பயண பலன்</SectionBar>
+        <Box>
+          • 3, 9, 12ம் வீடுகள் பயண காரகங்கள்; 12ம் அதிபதி பலமாக இருப்பின் வெளிநாட்டு வாய்ப்பு.<br/>
+          • ராகு 9 / 12ல் இருப்பின் வெளிநாட்டில் நிரந்தர குடியேற்றம் சாத்தியம்.<br/>
+          • குரு திசை / புத்தியில் புனித யாத்திரை, ஆன்மீக பயணம் அமையும்.
+        </Box>
+        <SectionBar>முதலீடு (Investments)</SectionBar>
+        <Box>
+          • குரு பலம் — தங்கம், நிலம், கல்வி பத்திரம் முதலீடு லாபம்.<br/>
+          • சுக்ரன் பலம் — பங்குச்சந்தை, ஆடம்பர சொத்துகள் சாதகம்.<br/>
+          • சனி பலம் — நீண்டகால சேமிப்பு, காப்பீடு, ஓய்வூதிய திட்டம்.<br/>
+          • ராகு திசையில் வேக லாபம்-நஷ்டம்; ஊகவியாபாரம் தவிர்க்கவும்.
+        </Box>
+        <SectionBar>சுபமுகூர்த்த பரிந்துரை</SectionBar>
+        <Box>
+          • திருமணம், கிரகப்பிரவேசம் — குரு / சுக்ர ஹோரை, ரிஷபம் / கன்னி / மீன லக்னம்.<br/>
+          • பயண ஆரம்பம் — புதன், வியாழன், வெள்ளி காலை வேளை.<br/>
+          • புதிய தொழில் தொடக்கம் — சுக்கில பக்ஷ பஞ்சமி, தசமி, த்ரயோதசி.<br/>
+          • ராகுகாலம், எமகண்டம், குளிகை நேரம் தவிர்க்கவும்.
         </Box>
       </Page>
 

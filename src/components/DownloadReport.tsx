@@ -7,9 +7,10 @@ interface Props {
   targetId: string;
   fileName?: string;
   paperSize?: "a4" | "a5";
+  orientation?: "p" | "l";
 }
 
-export const DownloadReport = ({ targetId, fileName = "jathagam.pdf", paperSize = "a4" }: Props) => {
+export const DownloadReport = ({ targetId, fileName = "jathagam.pdf", paperSize = "a4", orientation = "p" }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const handleDownload = async () => {
@@ -33,7 +34,7 @@ export const DownloadReport = ({ targetId, fileName = "jathagam.pdf", paperSize 
       });
 
       const imgData = canvas.toDataURL("image/jpeg", 0.92);
-      const pdf = new jsPDF({ orientation: "p", unit: "mm", format: paperSize });
+      const pdf = new jsPDF({ orientation, unit: "mm", format: paperSize });
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
 
