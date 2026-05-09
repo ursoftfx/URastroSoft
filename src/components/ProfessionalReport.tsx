@@ -109,20 +109,22 @@ const Chart = ({ title, chart, ascRasi, size = "lg" }: {
 // ---------- Page wrapper (A5 landscape: 210 x 148 mm) — B/W ----------
 const Page = ({ children, title, subtitle, page, total, name }: any) => (
   <div className="a5-sheet print-area" style={{
-    width: "210mm", minHeight: "148mm",
-    padding: "4mm", margin: "5mm auto",
+    width: "210mm", height: "148mm", maxHeight: "148mm",
+    padding: "3mm", margin: "5mm auto",
     background: "#ffffff", color: "#000",
     fontFamily: "'Latha','Tahoma',sans-serif", boxSizing: "border-box",
+    pageBreakAfter: "always", breakAfter: "page",
     pageBreakInside: "avoid", breakInside: "avoid",
+    overflow: "hidden",
     fontSize: 8.5, lineHeight: 1.2,
     display: "flex", flexDirection: "column",
   }}>
     <div style={{
-      flex: 1, minHeight: "138mm",
+      flex: 1, minHeight: 0,
       border: "2px double #000", outline: "1px solid #000", outlineOffset: 2,
-      borderRadius: 0, padding: "3mm 4mm",
+      borderRadius: 0, padding: "2.5mm 3.5mm",
       background: "#ffffff",
-      display: "flex", flexDirection: "column",
+      display: "flex", flexDirection: "column", overflow: "hidden",
     }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1px solid #000", paddingBottom: 3, marginBottom: 4 }}>
         <div>
@@ -135,7 +137,7 @@ const Page = ({ children, title, subtitle, page, total, name }: any) => (
           <div style={{ fontSize: 7, color: "#000" }}>{name} • பக்கம் {page} / {total}</div>
         </div>
       </div>
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
         {children}
       </div>
     </div>
@@ -207,21 +209,21 @@ export const ProfessionalReport = ({ result }: Props) => {
 
       {/* === COVER === */}
       <Page title="அட்டை" page={next()} total={totalPages} name={i.name}>
-        <div style={{ textAlign: "center", padding: "40mm 0 20mm" }}>
-          <div style={{ fontSize: 14, color: "#c9a050", letterSpacing: 4 }}>✦ ॐ ✦</div>
-          <div style={{ fontSize: 36, fontWeight: 900, color: "#7a1a2b", marginTop: 10, fontFamily: "serif" }}>ஜாதக அறிக்கை</div>
-          <div style={{ fontSize: 14, color: "#555", marginTop: 4 }}>Professional Vedic Astrology Report</div>
-          <div style={{ height: 2, background: "#c9a050", margin: "20mm auto", width: "60%" }} />
-          <div style={{ fontSize: 28, fontWeight: 800, color: "#000" }}>{i.name}</div>
-          {i.gender && <div style={{ fontSize: 14, color: "#555", marginTop: 4 }}>{i.gender}</div>}
-          <div style={{ marginTop: "15mm", fontSize: 13, lineHeight: 2 }}>
+        <div style={{ textAlign: "center", padding: "4mm 0 2mm" }}>
+          <div style={{ fontSize: 12, letterSpacing: 4 }}>✦ ॐ ✦</div>
+          <div style={{ fontSize: 22, fontWeight: 900, marginTop: 4, fontFamily: "serif" }}>ஜாதக அறிக்கை</div>
+          <div style={{ fontSize: 10, marginTop: 2 }}>Professional Vedic Astrology Report</div>
+          <div style={{ height: 1, background: "#000", margin: "5mm auto", width: "60%" }} />
+          <div style={{ fontSize: 18, fontWeight: 800 }}>{i.name}</div>
+          {i.gender && <div style={{ fontSize: 10, marginTop: 1 }}>{i.gender}</div>}
+          <div style={{ marginTop: "5mm", fontSize: 10, lineHeight: 1.6 }}>
             <div><b>பிறந்த தேதி :</b> {fmtDate(birthDate)}</div>
             <div><b>பிறந்த நேரம் :</b> {fmtTime12(i.hour, i.minute)}</div>
             <div><b>பிறந்த இடம் :</b> {i.placeName}</div>
             <div><b>ராசி / நட்சத்திரம் :</b> {result.rasiTamil} / {result.nakshatraTamil} ({result.pada}-ம் பாதம்)</div>
             <div><b>லக்னம் :</b> {result.lagnaTamil}</div>
           </div>
-          <div style={{ marginTop: "20mm", fontSize: 10, color: "#888" }}>
+          <div style={{ marginTop: "5mm", fontSize: 8 }}>
             இது சுத்த திருக்கணித பஞ்சாங்கப்படி, லாஹிரி அயனாம்சம் கொண்டு கணிக்கப்பெற்றது.<br/>
             © UR ASTRO SOFT • www.urastrosoft.com
           </div>
