@@ -362,8 +362,8 @@ export const ProfessionalReport = ({ result }: Props) => {
         </table>
       </Page>
 
-      {/* === PAGE 3 : Rasi + Navamsa + Bhava chart === */}
-      <Page title="ராசி • நவாம்சம் • பாவ சக்கரம்" page={next()} total={totalPages} name={i.name}>
+      {/* === Rasi + Navamsa chart === */}
+      <Page title="ராசி • நவாம்ச கட்டம்" page={next()} total={totalPages} name={i.name}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           <div>
             <div style={chartTitle}>ராசி கட்டம் (D-1)</div>
@@ -374,11 +374,14 @@ export const ProfessionalReport = ({ result }: Props) => {
             <Chart title="நவாம்சம்" chart={result.navamsaChart} ascRasi={navAsc} />
           </div>
         </div>
+      </Page>
 
-        <div style={{ marginTop: 8, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+      {/* === Bhava chart === */}
+      <Page title="பாவ சக்கரம்" page={next()} total={totalPages} name={i.name}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           <div>
             <div style={chartTitle}>பாவ சக்கரம் (Bhava)</div>
-            <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+            <table style={{ width: "100%", fontSize: 8, lineHeight: 1.15, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
               <thead><tr style={{ background: "#fff8ee" }}>
                 <th style={th}>பாவம்</th><th style={th}>ராசி</th><th style={th}>அதிபதி</th><th style={th}>இடம்</th>
               </tr></thead>
@@ -394,7 +397,7 @@ export const ProfessionalReport = ({ result }: Props) => {
           </div>
           <div>
             <div style={chartTitle}>12 பாவ விளக்கம்</div>
-            <table style={{ width: "100%", fontSize: 8, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+            <table style={{ width: "100%", fontSize: 7.4, lineHeight: 1.12, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
               <tbody>
                 {Object.entries(HOUSE_SIGNIFICATIONS).map(([k, v]) => (
                   <tr key={k}><td style={{ ...td, width: 22, fontWeight: 700, background: "#fff8ee" }}>{k}</td><td style={td}>{v}</td></tr>
