@@ -954,11 +954,16 @@ export const ProfessionalReport = ({ result }: Props) => {
                 <b>{maha.lord} தசை பலன் :</b> {DASHA_LORD_PALAN[lordKey]}
               </div>
             )}
-            <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #c9a050", marginTop: 4 }}>
+            <table style={{ width: "100%", fontSize: 6.5, lineHeight: 1.1, borderCollapse: "collapse", border: "1px solid #c9a050", marginTop: 3, tableLayout: "fixed" }}>
               <thead>
                 <tr style={{ background: "#fff8ee" }}>
-                  <th style={th}>புத்தி</th><th style={th}>தொடக்கம்</th><th style={th}>முடிவு</th><th style={th}>வயது</th>
-                  <th style={th}>அந்தரம்</th><th style={th}>தொடக்கம்</th><th style={th}>முடிவு</th>
+                  <th style={{ ...th, padding: "1px 2px", width: "12%" }}>புத்தி</th>
+                  <th style={{ ...th, padding: "1px 2px", width: "11%" }}>தொடக்கம்</th>
+                  <th style={{ ...th, padding: "1px 2px", width: "11%" }}>முடிவு</th>
+                  <th style={{ ...th, padding: "1px 2px", width: "7%" }}>வயது</th>
+                  <th style={{ ...th, padding: "1px 2px", width: "12%" }}>அந்தரம்</th>
+                  <th style={{ ...th, padding: "1px 2px", width: "11%" }}>தொடக்கம்</th>
+                  <th style={{ ...th, padding: "1px 2px", width: "11%" }}>முடிவு</th>
                 </tr>
               </thead>
               <tbody>
@@ -966,28 +971,29 @@ export const ProfessionalReport = ({ result }: Props) => {
                   const ants = bh.children || [];
                   const span = Math.max(ants.length, 1);
                   const bhAge = ageAt(birthDate, bh.startDate);
+                  const cell: React.CSSProperties = { ...td, padding: "1px 2px", fontSize: 6.5 };
                   if (ants.length === 0) {
                     return [(
                       <tr key={`b-${bi}`}>
-                        <td style={{ ...td, fontWeight: 700 }}>{maha.lord}/{bh.lord}</td>
-                        <td style={td}>{fmtDate(bh.startDate)}</td>
-                        <td style={td}>{fmtDate(bh.endDate)}</td>
-                        <td style={td}>{bhAge}</td>
-                        <td style={td} colSpan={3}>—</td>
+                        <td style={{ ...cell, fontWeight: 700 }}>{maha.lord}/{bh.lord}</td>
+                        <td style={cell}>{fmtDate(bh.startDate)}</td>
+                        <td style={cell}>{fmtDate(bh.endDate)}</td>
+                        <td style={cell}>{bhAge}</td>
+                        <td style={cell} colSpan={3}>—</td>
                       </tr>
                     )];
                   }
                   return ants.map((a, ai) => (
                     <tr key={`b-${bi}-${ai}`}>
                       {ai === 0 && (<>
-                        <td rowSpan={span} style={{ ...td, fontWeight: 700, background: "#fff8ee", verticalAlign: "top" }}>{maha.lord}/{bh.lord}</td>
-                        <td rowSpan={span} style={{ ...td, verticalAlign: "top" }}>{fmtDate(bh.startDate)}</td>
-                        <td rowSpan={span} style={{ ...td, verticalAlign: "top" }}>{fmtDate(bh.endDate)}</td>
-                        <td rowSpan={span} style={{ ...td, verticalAlign: "top" }}>{bhAge}</td>
+                        <td rowSpan={span} style={{ ...cell, fontWeight: 700, background: "#fff8ee", verticalAlign: "top" }}>{maha.lord}/{bh.lord}</td>
+                        <td rowSpan={span} style={{ ...cell, verticalAlign: "top" }}>{fmtDate(bh.startDate)}</td>
+                        <td rowSpan={span} style={{ ...cell, verticalAlign: "top" }}>{fmtDate(bh.endDate)}</td>
+                        <td rowSpan={span} style={{ ...cell, verticalAlign: "top" }}>{bhAge}</td>
                       </>)}
-                      <td style={td}>{a.lord}</td>
-                      <td style={td}>{fmtDate(a.startDate)}</td>
-                      <td style={td}>{fmtDate(a.endDate)}</td>
+                      <td style={cell}>{a.lord}</td>
+                      <td style={cell}>{fmtDate(a.startDate)}</td>
+                      <td style={cell}>{fmtDate(a.endDate)}</td>
                     </tr>
                   ));
                 })}
