@@ -106,7 +106,7 @@ const Chart = ({ title, chart, ascRasi, size = "lg" }: {
   );
 };
 
-// ---------- Page wrapper (A5 landscape: 210 x 148 mm) ----------
+// ---------- Page wrapper (A5 landscape: 210 x 148 mm) — B/W ----------
 const Page = ({ children, title, subtitle, page, total, name }: any) => (
   <div className="a5-sheet print-area" style={{
     width: "210mm", height: "148mm", maxHeight: "148mm",
@@ -117,36 +117,32 @@ const Page = ({ children, title, subtitle, page, total, name }: any) => (
     fontSize: 8.5, lineHeight: 1.2,
     display: "flex", flexDirection: "column",
   }}>
-    {/* Top text strip */}
-    <div style={{ textAlign: "center", fontSize: 7, color: "#7a1a2b", letterSpacing: 2, marginBottom: 1 }}>
+    <div style={{ textAlign: "center", fontSize: 7, color: "#000", letterSpacing: 2, marginBottom: 1 }}>
       ✦ ॐ ஸ்ரீ கணேசாய நமஹ ✦ UR ASTRO SOFT — TAMIL VEDIC HOROSCOPE ✦
     </div>
-    {/* Designed framed box */}
     <div style={{
       flex: 1, minHeight: 0,
-      border: "2px double #7a1a2b", outline: "1px solid #c9a050", outlineOffset: 2,
-      borderRadius: 4, padding: "3mm 4mm",
+      border: "2px double #000", outline: "1px solid #000", outlineOffset: 2,
+      borderRadius: 0, padding: "3mm 4mm",
       background: "#ffffff",
-      boxShadow: "inset 0 0 0 1px #f1e0b5",
       display: "flex", flexDirection: "column", overflow: "hidden",
     }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1.5px solid #c9a050", paddingBottom: 3, marginBottom: 4 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1px solid #000", paddingBottom: 3, marginBottom: 4 }}>
         <div>
-          <div style={{ fontSize: 14, fontWeight: 800, color: "#7a1a2b", letterSpacing: 1 }}>UR ASTRO SOFT</div>
-          <div style={{ fontSize: 8, color: "#666" }}>தமிழ் வேத ஜோதிட விரிவான ஜாதகம்</div>
+          <div style={{ fontSize: 14, fontWeight: 800, color: "#000", letterSpacing: 1 }}>UR ASTRO SOFT</div>
+          <div style={{ fontSize: 8, color: "#000" }}>தமிழ் வேத ஜோதிட விரிவான ஜாதகம்</div>
         </div>
         <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: "#7a1a2b" }}>{title}</div>
-          {subtitle && <div style={{ fontSize: 8, color: "#555" }}>{subtitle}</div>}
-          <div style={{ fontSize: 7, color: "#888" }}>{name} • பக்கம் {page} / {total}</div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "#000" }}>{title}</div>
+          {subtitle && <div style={{ fontSize: 8, color: "#000" }}>{subtitle}</div>}
+          <div style={{ fontSize: 7, color: "#000" }}>{name} • பக்கம் {page} / {total}</div>
         </div>
       </div>
       <div style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
         {children}
       </div>
     </div>
-    {/* Bottom text strip */}
-    <div style={{ textAlign: "center", fontSize: 7, color: "#666", marginTop: 1 }}>
+    <div style={{ textAlign: "center", fontSize: 7, color: "#000", marginTop: 1 }}>
       © UR ASTRO SOFT • urastrosoft.com • இந்த அறிக்கை ஆலோசனை நோக்கத்திற்காக மட்டுமே
     </div>
   </div>
@@ -164,12 +160,38 @@ export const ProfessionalReport = ({ result }: Props) => {
   const palans = bhavaPalans(result.ascendant.rasiIndex, planetRasis, RASIS_TAMIL);
 
   // Total page count
-  const dashaPages = result.dashaTree.length;
+  // Build flat dasha rows per maha and chunk into pages
+  const DASHA_ROWS_PER_PAGE = 28;
+  const dashaPagesData = result.dashaTree.map((maha) => {
+    const rows: { bhukti: string; ant: string; start: string; end: string; age: number | string }[] = [];
+    (maha.children || []).forEach((bh) => {
+      const ants = bh.children || [];
+      const bhAge = ageAt(birthDate, bh.startDate);
+      if (ants.length === 0) {
+        rows.push({ bhukti: `${maha.lord}/${bh.lord}`, ant: "—", start: fmtDate(bh.startDate), end: fmtDate(bh.endDate), age: bhAge });
+      } else {
+        ants.forEach((a, ai) => {
+          rows.push({
+            bhukti: ai === 0 ? `${maha.lord}/${bh.lord}` : "",
+            ant: a.lord,
+            start: fmtDate(a.startDate),
+            end: fmtDate(a.endDate),
+            age: ai === 0 ? bhAge : "",
+          });
+        });
+      }
+    });
+    const chunks: typeof rows[] = [];
+    for (let s = 0; s < rows.length; s += DASHA_ROWS_PER_PAGE) chunks.push(rows.slice(s, s + DASHA_ROWS_PER_PAGE));
+    if (chunks.length === 0) chunks.push([]);
+    return { maha, chunks };
+  });
+  const dashaPages = dashaPagesData.reduce((s, m) => s + m.chunks.length, 0);
   const vargasPages = Math.ceil(result.vargaCharts.length / 6);
-  const lifeAreaPages = 11; // career, marriage, wealth, children, education, health, foreign, property, family, spiritual, personality
-  const bhavaDeepPages = 6; // 12 houses, 2 per page
-  const extraPages = 1 /*yogas*/ + 1 /*aspects*/ + 1 /*friendship*/ + 1 /*year forecast*/ + 1 /*sade sati*/ + 1 /*gemstones*/ + 1 /*mantras*/ + 1 /*lucky*/ + 1 /*career fields*/ + 1 /*weekday remedies*/ + 1 /*karmic*/ + 1 /*planet strength*/ + 1 /*monthly transit*/ + 1 /*punya*/ + 1 /*compatibility*/ + 3 /*additional predictions I/II/III*/;
-  const totalPages = 1 /*cover*/ + 1 /*positions*/ + 1 /*charts+kp*/ + vargasPages + 1 /*ashtak+sani*/ + 1 /*lagna+nak+bhava*/ + 1 /*planet-in-house*/ + 1 /*planet-in-rasi*/ + 1 /*doshas+remedies*/ + lifeAreaPages + bhavaDeepPages + extraPages + dashaPages;
+  const lifeAreaPages = 11;
+  const bhavaDeepPages = 6;
+  const extraPages = 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 3;
+  const totalPages = 1 + 1 + 1 + vargasPages + 1 + 1 + 1 + 1 + 1 + lifeAreaPages + bhavaDeepPages + extraPages + dashaPages;
 
   let pn = 0;
   const next = () => ++pn;
@@ -181,7 +203,13 @@ export const ProfessionalReport = ({ result }: Props) => {
 
   return (
     <div id="professional-report-root">
-      <style>{`@media print { @page { size: A5 landscape; margin: 0; } .print-area { margin: 0 !important; box-shadow: none !important; page-break-after: always; } body { margin: 0; } .no-print { display: none !important; } } #professional-report-root table { font-size: 8px; } #professional-report-root th, #professional-report-root td { padding: 1px 2px !important; }`}</style>
+      <style>{`
+        @media print { @page { size: A5 landscape; margin: 0; } .print-area { margin: 0 !important; box-shadow: none !important; page-break-after: always; } body { margin: 0; } .no-print { display: none !important; } }
+        #professional-report-root, #professional-report-root * { color: #000 !important; background-color: transparent !important; border-color: #000 !important; box-shadow: none !important; outline-color: #000 !important; }
+        #professional-report-root .print-area { background-color: #fff !important; }
+        #professional-report-root table { font-size: 8px; }
+        #professional-report-root th, #professional-report-root td { padding: 1px 2px !important; }
+      `}</style>
 
       {/* === COVER === */}
       <Page title="அட்டை" page={next()} total={totalPages} name={i.name}>
@@ -1031,56 +1059,56 @@ export const ProfessionalReport = ({ result }: Props) => {
         </Box>
       </Page>
 
-      {/* === Dasha pages — one per Mahadasha with age === */}
-      {result.dashaTree.map((maha, mi) => {
+      {/* === Dasha pages — continuous flat table chunked across A5 pages === */}
+      {dashaPagesData.map(({ maha, chunks }, mi) => {
         const startAge = ageAt(birthDate, maha.startDate);
         const endAge = ageAt(birthDate, maha.endDate);
         const lordKey = DASHA_LORD_TO_KEY[maha.lord];
-        return (
-          <Page key={`d-${mi}`} title={`${mi + 1}. ${maha.lord} மகா தசை`} subtitle={`வயது ${startAge} - ${endAge}`} page={next()} total={totalPages} name={i.name}>
-            <div style={{ background: "#fbe9d0", padding: "2px 6px", fontSize: 9, fontWeight: 700, border: "1px solid #c9a050", textAlign: "center" }}>
-              {maha.lord} மகா தசை &nbsp;•&nbsp; {fmtDate(maha.startDate)} → {fmtDate(maha.endDate)} &nbsp;•&nbsp; வயது {startAge} - {endAge}
-            </div>
-            {lordKey && (
-              <div style={{ border: "1px solid #c9a050", borderTop: 0, padding: "3px 6px", fontSize: 7.5, lineHeight: 1.25, background: "#fff8ee" }}>
-                <b>{maha.lord} தசை பலன் :</b> {DASHA_LORD_PALAN[lordKey]}
-              </div>
-            )}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 3, marginTop: 3 }}>
-              {(maha.children || []).map((bh, bi) => {
-                const ants = bh.children || [];
-                const bhAge = ageAt(birthDate, bh.startDate);
-                return (
-                  <div key={`b-${bi}`} style={{ border: "1px solid #c9a050", borderRadius: 2, overflow: "hidden" }}>
-                    <div style={{ background: "#fff8ee", padding: "2px 4px", fontSize: 7, fontWeight: 700, color: "#7a1a2b", borderBottom: "1px solid #c9a050" }}>
-                      {bi + 1}. {maha.lord}/{bh.lord} • வயது {bhAge} • {fmtDate(bh.startDate)} → {fmtDate(bh.endDate)}
-                    </div>
-                    <table style={{ width: "100%", fontSize: 6, lineHeight: 1.05, borderCollapse: "collapse", tableLayout: "fixed" }}>
-                      <thead>
-                        <tr style={{ background: "#fdf6e7" }}>
-                          <th style={{ ...th, padding: "1px 2px", width: "30%", fontSize: 6 }}>அந்தரம்</th>
-                          <th style={{ ...th, padding: "1px 2px", width: "35%", fontSize: 6 }}>தொடக்கம்</th>
-                          <th style={{ ...th, padding: "1px 2px", width: "35%", fontSize: 6 }}>முடிவு</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {ants.length === 0 ? (
-                          <tr><td colSpan={3} style={{ ...td, padding: "1px 2px", fontSize: 6, textAlign: "center" }}>—</td></tr>
-                        ) : ants.map((a, ai) => (
-                          <tr key={`b-${bi}-${ai}`}>
-                            <td style={{ ...td, padding: "1px 2px", fontSize: 6 }}>{a.lord}</td>
-                            <td style={{ ...td, padding: "1px 2px", fontSize: 6 }}>{fmtDate(a.startDate)}</td>
-                            <td style={{ ...td, padding: "1px 2px", fontSize: 6 }}>{fmtDate(a.endDate)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+        return chunks.map((rows, ci) => (
+          <Page
+            key={`d-${mi}-${ci}`}
+            title={`${mi + 1}. ${maha.lord} மகா தசை`}
+            subtitle={chunks.length > 1 ? `பகுதி ${ci + 1} / ${chunks.length} • வயது ${startAge}-${endAge}` : `வயது ${startAge} - ${endAge}`}
+            page={next()}
+            total={totalPages}
+            name={i.name}
+          >
+            {ci === 0 && (
+              <>
+                <div style={{ padding: "2px 6px", fontSize: 9, fontWeight: 700, border: "1px solid #000", textAlign: "center" }}>
+                  {maha.lord} மகா தசை &nbsp;•&nbsp; {fmtDate(maha.startDate)} → {fmtDate(maha.endDate)} &nbsp;•&nbsp; வயது {startAge} - {endAge}
+                </div>
+                {lordKey && (
+                  <div style={{ border: "1px solid #000", borderTop: 0, padding: "3px 6px", fontSize: 7.5, lineHeight: 1.25 }}>
+                    <b>{maha.lord} தசை பலன் :</b> {DASHA_LORD_PALAN[lordKey]}
                   </div>
-                );
-              })}
-            </div>
+                )}
+              </>
+            )}
+            <table style={{ width: "100%", fontSize: 8, lineHeight: 1.15, borderCollapse: "collapse", border: "1px solid #000", marginTop: 3, tableLayout: "fixed" }}>
+              <thead>
+                <tr>
+                  <th style={{ ...th, padding: "1px 3px", width: "16%" }}>புத்தி</th>
+                  <th style={{ ...th, padding: "1px 3px", width: "14%" }}>அந்தரம்</th>
+                  <th style={{ ...th, padding: "1px 3px", width: "23%" }}>தொடக்கம்</th>
+                  <th style={{ ...th, padding: "1px 3px", width: "23%" }}>முடிவு</th>
+                  <th style={{ ...th, padding: "1px 3px", width: "8%" }}>வயது</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((r, ri) => (
+                  <tr key={ri}>
+                    <td style={{ ...td, padding: "1px 3px", fontWeight: r.bhukti ? 700 : 400 }}>{r.bhukti}</td>
+                    <td style={{ ...td, padding: "1px 3px" }}>{r.ant}</td>
+                    <td style={{ ...td, padding: "1px 3px" }}>{r.start}</td>
+                    <td style={{ ...td, padding: "1px 3px" }}>{r.end}</td>
+                    <td style={{ ...td, padding: "1px 3px" }}>{r.age}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </Page>
-        );
+        ));
       })}
     </div>
   );
