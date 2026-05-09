@@ -147,7 +147,7 @@ export const ProfessionalReport = ({ result }: Props) => {
   const vargasPages = Math.ceil(result.vargaCharts.length / 6);
   const lifeAreaPages = 11; // career, marriage, wealth, children, education, health, foreign, property, family, spiritual, personality
   const bhavaDeepPages = 6; // 12 houses, 2 per page
-  const extraPages = 1 /*yogas*/ + 1 /*aspects*/ + 1 /*friendship*/ + 1 /*year forecast*/ + 1 /*sade sati*/ + 1 /*gemstones*/ + 1 /*mantras*/ + 1 /*lucky*/ + 1 /*career fields*/ + 1 /*weekday remedies*/;
+  const extraPages = 1 /*yogas*/ + 1 /*aspects*/ + 1 /*friendship*/ + 1 /*year forecast*/ + 1 /*sade sati*/ + 1 /*gemstones*/ + 1 /*mantras*/ + 1 /*lucky*/ + 1 /*career fields*/ + 1 /*weekday remedies*/ + 1 /*karmic*/ + 1 /*planet strength*/ + 1 /*monthly transit*/ + 1 /*punya*/ + 1 /*compatibility*/;
   const totalPages = 1 /*cover*/ + 1 /*positions*/ + 1 /*charts+kp*/ + vargasPages + 1 /*ashtak+sani*/ + 1 /*lagna+nak+bhava*/ + 1 /*planet-in-house*/ + 1 /*planet-in-rasi*/ + 1 /*doshas+remedies*/ + lifeAreaPages + bhavaDeepPages + extraPages + dashaPages;
 
   let pn = 0;
