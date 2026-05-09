@@ -115,7 +115,7 @@ const Chart = ({ title, chart, ascRasi, size = "lg" }: {
 // ---------- Page wrapper (A5 landscape: 210 x 148 mm) — B/W ----------
 const Page = ({ children, title, subtitle, page, total, name }: any) => (
   <div className="a5-sheet print-area" style={{
-    width: "200mm", height: "139mm", maxHeight: "139mm",
+    width: "196mm", height: "137mm", maxHeight: "137mm",
     padding: "2mm", margin: "0 auto 2mm auto",
     background: "#ffffff", color: "#000",
     fontFamily: "'Latha','Tahoma',sans-serif", boxSizing: "border-box",
@@ -222,7 +222,7 @@ export const ProfessionalReport = ({ result }: Props) => {
   return (
     <div id="professional-report-root">
       <style>{`
-        @media print { @page { size: A4 portrait; margin: 5mm; } .print-area { margin: 0 auto 3mm auto !important; box-shadow: none !important; page-break-after: auto !important; break-after: auto !important; page-break-inside: avoid !important; break-inside: avoid !important; } body { margin: 0; } .no-print { display: none !important; } }
+        @media print { @page { size: A4 portrait; margin: 6mm; } .print-area { margin: 0 auto 2mm auto !important; box-shadow: none !important; page-break-after: auto !important; break-after: auto !important; page-break-inside: avoid !important; break-inside: avoid !important; } body { margin: 0; } .no-print { display: none !important; } }
         #professional-report-root, #professional-report-root * { color: #000 !important; background-color: transparent !important; border-color: #000 !important; box-shadow: none !important; outline-color: #000 !important; }
         #professional-report-root .print-area { background-color: #fff !important; }
         #professional-report-root table { font-size: 8px; }
