@@ -463,8 +463,8 @@ export const ProfessionalReport = ({ result }: Props) => {
         </div>
       </Page>
 
-      {/* === Lagna + Nakshatra + Bhava palans === */}
-      <Page title="லக்ன • நட்சத்திர • பாவாதிபதி பலன்" page={next()} total={totalPages} name={i.name}>
+      {/* === Lagna + Nakshatra === */}
+      <Page title="லக்ன • நட்சத்திர பலன்" page={next()} total={totalPages} name={i.name}>
         <div style={{ background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>
           லக்ன பலன் — {result.lagnaTamil} லக்னம்
         </div>
@@ -485,74 +485,74 @@ export const ProfessionalReport = ({ result }: Props) => {
         <div style={{ border: "1px solid #c9a050", padding: 8, fontSize: 10, lineHeight: 1.6 }}>
           {NAKSHATRA_PALAN[result.moon.nakshatraIndex]}
         </div>
-
-        <div style={{ marginTop: 8, background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>
-          பாவாதிபதி நின்ற பலன் (12 வீடுகள்)
-        </div>
-        <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
-          <thead><tr style={{ background: "#fff8ee" }}>
-            <th style={th}>பாவம்</th><th style={th}>ராசி</th><th style={th}>அதிபதி</th><th style={th}>நின்ற இடம்</th><th style={th}>பலன்</th>
-          </tr></thead>
-          <tbody>
-            {palans.map((b, idx) => (
-              <tr key={idx}>
-                <td style={td}>{b.bhavaIdx}. {b.bhavaName}</td>
-                <td style={td}>{b.rasi}</td>
-                <td style={td}>{b.lord}</td>
-                <td style={td}>{b.lordHouse}-ம் வீடு</td>
-                <td style={td}>{b.palan}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </Page>
 
+      {/* === Bhava lord palans === */}
+      {bhavaPalanPages.map((rows, pi) => (
+        <Page key={`bp-${pi}`} title={`பாவாதிபதி நின்ற பலன் (${pi + 1}/${bhavaPalanPages.length})`} page={next()} total={totalPages} name={i.name}>
+          <SectionBar>பாவாதிபதி நின்ற பலன்</SectionBar>
+          <table style={{ width: "100%", fontSize: 8.2, lineHeight: 1.25, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
+            <thead><tr style={{ background: "#fff8ee" }}>
+              <th style={{ ...th, width: "17%" }}>பாவம்</th><th style={{ ...th, width: "12%" }}>ராசி</th><th style={{ ...th, width: "12%" }}>அதிபதி</th><th style={{ ...th, width: "12%" }}>இடம்</th><th style={th}>பலன்</th>
+            </tr></thead>
+            <tbody>
+              {rows.map((b, idx) => (
+                <tr key={idx}>
+                  <td style={td}>{b.bhavaIdx}. {b.bhavaName}</td>
+                  <td style={td}>{b.rasi}</td>
+                  <td style={td}>{b.lord}</td>
+                  <td style={td}>{b.lordHouse}-ம் வீடு</td>
+                  <td style={td}>{b.palan}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Page>
+      ))}
+
       {/* === Planet in House palans === */}
-      <Page title="கிரகங்கள் பாவங்களில் நின்ற பலன்" page={next()} total={totalPages} name={i.name}>
-        <div style={{ background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>
-          பாவத்தில் கிரகம் நின்ற பலன் (Planet in House)
-        </div>
-        <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
-          <thead><tr style={{ background: "#fff8ee" }}>
-            <th style={th}>கிரகம்</th><th style={th}>ராசி</th><th style={th}>பாவம்</th><th style={th}>பலன்</th>
-          </tr></thead>
-          <tbody>
-            {result.planets.map(p => {
-              const house = ((p.rasiIndex - result.ascendant.rasiIndex + 12) % 12) + 1;
-              return (
+      {planetHousePages.map((rows, pi) => (
+        <Page key={`ph-${pi}`} title={`கிரகங்கள் பாவங்களில் நின்ற பலன் (${pi + 1}/${planetHousePages.length})`} page={next()} total={totalPages} name={i.name}>
+          <SectionBar>பாவத்தில் கிரகம் நின்ற பலன்</SectionBar>
+          <table style={{ width: "100%", fontSize: 8.5, lineHeight: 1.25, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
+            <thead><tr style={{ background: "#fff8ee" }}>
+              <th style={{ ...th, width: "14%" }}>கிரகம்</th><th style={{ ...th, width: "13%" }}>ராசி</th><th style={{ ...th, width: "12%" }}>பாவம்</th><th style={th}>பலன்</th>
+            </tr></thead>
+            <tbody>
+              {rows.map(({ planet: p, house }) => (
                 <tr key={p.key}>
                   <td style={{ ...td, fontWeight: 700 }}>{PLANET_TA[p.key]}</td>
                   <td style={td}>{p.rasiTamil}</td>
                   <td style={td}>{house}-ம் வீடு</td>
                   <td style={td}>{PLANET_IN_HOUSE[p.key]?.[house] || "—"}</td>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </Page>
+              ))}
+            </tbody>
+          </table>
+        </Page>
+      ))}
 
       {/* === Planet in Rasi palans === */}
-      <Page title="கிரகங்கள் ராசிகளில் நின்ற பலன்" page={next()} total={totalPages} name={i.name}>
-        <div style={{ background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>
-          ராசியில் கிரகம் நின்ற பலன் (Planet in Sign)
-        </div>
-        <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
-          <thead><tr style={{ background: "#fff8ee" }}>
-            <th style={th}>கிரகம்</th><th style={th}>ராசி</th><th style={th}>பாகை</th><th style={th}>பலன்</th>
-          </tr></thead>
-          <tbody>
-            {result.planets.map(p => (
-              <tr key={p.key}>
-                <td style={{ ...td, fontWeight: 700 }}>{PLANET_TA[p.key]}</td>
-                <td style={td}>{p.rasiTamil}</td>
-                <td style={td}>{dms(p.degreeInRasi)}</td>
-                <td style={td}>{PLANET_IN_RASI[p.key]?.[p.rasiIndex] || "—"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Page>
+      {planetRasiPages.map((rows, pi) => (
+        <Page key={`pr-${pi}`} title={`கிரகங்கள் ராசிகளில் நின்ற பலன் (${pi + 1}/${planetRasiPages.length})`} page={next()} total={totalPages} name={i.name}>
+          <SectionBar>ராசியில் கிரகம் நின்ற பலன்</SectionBar>
+          <table style={{ width: "100%", fontSize: 8.5, lineHeight: 1.25, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
+            <thead><tr style={{ background: "#fff8ee" }}>
+              <th style={{ ...th, width: "14%" }}>கிரகம்</th><th style={{ ...th, width: "13%" }}>ராசி</th><th style={{ ...th, width: "17%" }}>பாகை</th><th style={th}>பலன்</th>
+            </tr></thead>
+            <tbody>
+              {rows.map(p => (
+                <tr key={p.key}>
+                  <td style={{ ...td, fontWeight: 700 }}>{PLANET_TA[p.key]}</td>
+                  <td style={td}>{p.rasiTamil}</td>
+                  <td style={td}>{dms(p.degreeInRasi)}</td>
+                  <td style={td}>{PLANET_IN_RASI[p.key]?.[p.rasiIndex] || "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Page>
+      ))}
 
       {/* === Doshas + Remedies === */}
       <Page title="தோஷங்கள் & பரிகாரங்கள்" page={next()} total={totalPages} name={i.name}>
