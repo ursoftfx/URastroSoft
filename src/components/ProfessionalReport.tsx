@@ -615,27 +615,30 @@ export const ProfessionalReport = ({ result }: Props) => {
       <LifeAreaPage area={spiritualPrediction(result)} pageNum={next()} total={totalPages} name={i.name} />
 
       {/* === Yogas === */}
-      <Page title="யோகங்கள் (Detected Yogas)" page={next()} total={totalPages} name={i.name}>
-        <SectionBar>ஜாதகத்தில் காணப்படும் யோகங்கள்</SectionBar>
-        <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
-          <thead><tr style={{ background: "#fff8ee" }}>
-            <th style={th}>யோகம்</th><th style={th}>வகை</th><th style={th}>விளக்கம்</th>
-          </tr></thead>
-          <tbody>
-            {detectYogas(result).map((y, idx) => (
-              <tr key={idx}>
-                <td style={{...td, fontWeight: 700, color: "#7a1a2b"}}>{y.name}</td>
-                <td style={td}>{y.type}</td>
-                <td style={td}>{y.description}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <div style={{ marginTop: 8, fontSize: 9, color: "#555", lineHeight: 1.5 }}>
-          <b>குறிப்பு:</b> ராஜ யோகம் — அதிகாரம் / பெருமை. தன யோகம் — செல்வம். மஹாபுருஷ யோகம் — ஐந்து சிறப்பு கிரக நிலைகள்.
-          ஒரு ஜாதகத்தில் பல யோகங்கள் இருந்தாலும், தசை-புத்தி காலத்தில் அவை வெளிப்படும்.
-        </div>
-      </Page>
+      {yogasPages.map((rows, pi) => (
+        <Page key={`yg-${pi}`} title={`யோகங்கள் (Detected Yogas) (${pi + 1}/${yogasPages.length})`} page={next()} total={totalPages} name={i.name}>
+          <SectionBar>ஜாதகத்தில் காணப்படும் யோகங்கள்</SectionBar>
+          <table style={{ width: "100%", fontSize: 8.7, lineHeight: 1.25, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
+            <thead><tr style={{ background: "#fff8ee" }}>
+              <th style={{ ...th, width: "22%" }}>யோகம்</th><th style={{ ...th, width: "15%" }}>வகை</th><th style={th}>விளக்கம்</th>
+            </tr></thead>
+            <tbody>
+              {rows.map((y, idx) => (
+                <tr key={idx}>
+                  <td style={{...td, fontWeight: 700, color: "#7a1a2b"}}>{y.name}</td>
+                  <td style={td}>{y.type}</td>
+                  <td style={td}>{y.description}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {pi === yogasPages.length - 1 && (
+            <div style={{ marginTop: 6, fontSize: 8.2, color: "#555", lineHeight: 1.35 }}>
+              <b>குறிப்பு:</b> ராஜ யோகம் — அதிகாரம் / பெருமை. தன யோகம் — செல்வம். மஹாபுருஷ யோகம் — ஐந்து சிறப்பு கிரக நிலைகள்.
+            </div>
+          )}
+        </Page>
+      ))}
 
       {/* === Aspects === */}
       <Page title="கிரக பார்வைகள் (Drishti)" page={next()} total={totalPages} name={i.name}>
@@ -719,25 +722,27 @@ export const ProfessionalReport = ({ result }: Props) => {
       })}
 
       {/* === Year by year forecast === */}
-      <Page title="ஆண்டுக்கு ஆண்டு பலன் (12 ஆண்டுகள்)" page={next()} total={totalPages} name={i.name}>
-        <SectionBar>அடுத்த 12 ஆண்டுகள் — தசா-புத்தி பலன்</SectionBar>
-        <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
-          <thead><tr style={{ background: "#fff8ee" }}>
-            <th style={th}>ஆண்டு</th><th style={th}>வயது</th><th style={th}>மகா தசை</th><th style={th}>புத்தி</th><th style={th}>பலன்</th>
-          </tr></thead>
-          <tbody>
-            {yearForecast(result, 12).map((y, idx) => (
-              <tr key={idx}>
-                <td style={{...td, fontWeight:700}}>{y.year}</td>
-                <td style={td}>{y.age}</td>
-                <td style={td}>{y.mahaLord}</td>
-                <td style={td}>{y.bhuktiLord}</td>
-                <td style={td}>{y.outlook}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Page>
+      {yearForecastPages.map((rows, pi) => (
+        <Page key={`yf-${pi}`} title={`ஆண்டுக்கு ஆண்டு பலன் (${pi + 1}/${yearForecastPages.length})`} page={next()} total={totalPages} name={i.name}>
+          <SectionBar>அடுத்த 12 ஆண்டுகள் — தசா-புத்தி பலன்</SectionBar>
+          <table style={{ width: "100%", fontSize: 9, lineHeight: 1.25, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
+            <thead><tr style={{ background: "#fff8ee" }}>
+              <th style={{ ...th, width: "12%" }}>ஆண்டு</th><th style={{ ...th, width: "9%" }}>வயது</th><th style={{ ...th, width: "16%" }}>மகா தசை</th><th style={{ ...th, width: "14%" }}>புத்தி</th><th style={th}>பலன்</th>
+            </tr></thead>
+            <tbody>
+              {rows.map((y, idx) => (
+                <tr key={idx}>
+                  <td style={{...td, fontWeight:700}}>{y.year}</td>
+                  <td style={td}>{y.age}</td>
+                  <td style={td}>{y.mahaLord}</td>
+                  <td style={td}>{y.bhuktiLord}</td>
+                  <td style={td}>{y.outlook}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Page>
+      ))}
 
       {/* === Sade Sati === */}
       <Page title="ஏழரை சனி — காலக்கிரம பகுப்பாய்வு" page={next()} total={totalPages} name={i.name}>
