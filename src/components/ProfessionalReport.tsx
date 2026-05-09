@@ -106,33 +106,48 @@ const Chart = ({ title, chart, ascRasi, size = "lg" }: {
   );
 };
 
-// ---------- Page wrapper ----------
+// ---------- Page wrapper (A5 landscape: 210 x 148 mm) ----------
 const Page = ({ children, title, subtitle, page, total, name }: any) => (
-  <div className="a4-sheet print-area" style={{
-    width: "210mm", minHeight: "148mm", padding: "5mm",
-    margin: "5mm auto", background: "white", color: "#000",
+  <div className="a5-sheet print-area" style={{
+    width: "210mm", height: "148mm", maxHeight: "148mm",
+    padding: "4mm", margin: "5mm auto",
+    background: "#ffffff", color: "#000",
     fontFamily: "'Latha','Tahoma',sans-serif", boxSizing: "border-box",
-    pageBreakAfter: "always",
-    fontSize: 8.5, lineHeight: 1.25,
+    pageBreakAfter: "always", overflow: "hidden",
+    fontSize: 8.5, lineHeight: 1.2,
+    display: "flex", flexDirection: "column",
   }}>
+    {/* Top text strip */}
+    <div style={{ textAlign: "center", fontSize: 7, color: "#7a1a2b", letterSpacing: 2, marginBottom: 1 }}>
+      ✦ ॐ ஸ்ரீ கணேசாய நமஹ ✦ UR ASTRO SOFT — TAMIL VEDIC HOROSCOPE ✦
+    </div>
+    {/* Designed framed box */}
     <div style={{
+      flex: 1, minHeight: 0,
       border: "2px double #7a1a2b", outline: "1px solid #c9a050", outlineOffset: 2,
-      borderRadius: 4, padding: "4mm 5mm", minHeight: "138mm",
-      background: "linear-gradient(180deg,#fffdf7 0%,#fff8ec 100%)",
+      borderRadius: 4, padding: "3mm 4mm",
+      background: "#ffffff",
       boxShadow: "inset 0 0 0 1px #f1e0b5",
+      display: "flex", flexDirection: "column", overflow: "hidden",
     }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1.5px solid #c9a050", paddingBottom: 4, marginBottom: 8 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1.5px solid #c9a050", paddingBottom: 3, marginBottom: 4 }}>
         <div>
-          <div style={{ fontSize: 16, fontWeight: 800, color: "#7a1a2b", letterSpacing: 1 }}>UR ASTRO SOFT</div>
-          <div style={{ fontSize: 9, color: "#666" }}>தமிழ் வேத ஜோதிட விரிவான ஜாதகம்</div>
+          <div style={{ fontSize: 14, fontWeight: 800, color: "#7a1a2b", letterSpacing: 1 }}>UR ASTRO SOFT</div>
+          <div style={{ fontSize: 8, color: "#666" }}>தமிழ் வேத ஜோதிட விரிவான ஜாதகம்</div>
         </div>
         <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: "#7a1a2b" }}>{title}</div>
-          {subtitle && <div style={{ fontSize: 9, color: "#555" }}>{subtitle}</div>}
-          <div style={{ fontSize: 8, color: "#888" }}>{name} • பக்கம் {page} / {total}</div>
+          <div style={{ fontSize: 11, fontWeight: 700, color: "#7a1a2b" }}>{title}</div>
+          {subtitle && <div style={{ fontSize: 8, color: "#555" }}>{subtitle}</div>}
+          <div style={{ fontSize: 7, color: "#888" }}>{name} • பக்கம் {page} / {total}</div>
         </div>
       </div>
-      {children}
+      <div style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
+        {children}
+      </div>
+    </div>
+    {/* Bottom text strip */}
+    <div style={{ textAlign: "center", fontSize: 7, color: "#666", marginTop: 1 }}>
+      © UR ASTRO SOFT • urastrosoft.com • இந்த அறிக்கை ஆலோசனை நோக்கத்திற்காக மட்டுமே
     </div>
   </div>
 );
