@@ -6,9 +6,10 @@ import { toast } from "sonner";
 interface Props {
   targetId: string;
   fileName?: string;
+  paperSize?: "a4" | "a5";
 }
 
-export const DownloadReport = ({ targetId, fileName = "jathagam.pdf" }: Props) => {
+export const DownloadReport = ({ targetId, fileName = "jathagam.pdf", paperSize = "a4" }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const handleDownload = async () => {
@@ -32,7 +33,7 @@ export const DownloadReport = ({ targetId, fileName = "jathagam.pdf" }: Props) =
       });
 
       const imgData = canvas.toDataURL("image/jpeg", 0.92);
-      const pdf = new jsPDF({ orientation: "p", unit: "mm", format: "a4" });
+      const pdf = new jsPDF({ orientation: "p", unit: "mm", format: paperSize });
       const pageWidth = pdf.internal.pageSize.getWidth();
       const pageHeight = pdf.internal.pageSize.getHeight();
 

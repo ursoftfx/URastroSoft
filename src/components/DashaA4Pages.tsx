@@ -26,15 +26,16 @@ export const DashaA4Pages = ({ result }: Props) => {
           key={mi}
           className="a4-sheet print-area"
           style={{
-            width: "210mm",
-            minHeight: "297mm",
-            padding: "10mm 12mm",
-            margin: "8mm auto",
+            width: "148mm",
+            minHeight: "210mm",
+            padding: "7mm 8mm",
+            margin: "5mm auto",
             background: "white",
             color: "#000",
             fontFamily: "'Latha','Tahoma',sans-serif",
             boxSizing: "border-box",
             pageBreakBefore: "always",
+            fontSize: 8.5,
           }}
         >
           <div
