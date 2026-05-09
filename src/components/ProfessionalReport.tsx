@@ -1038,11 +1038,11 @@ export const ProfessionalReport = ({ result }: Props) => {
         const lordKey = DASHA_LORD_TO_KEY[maha.lord];
         return (
           <Page key={`d-${mi}`} title={`${mi + 1}. ${maha.lord} மகா தசை`} subtitle={`வயது ${startAge} - ${endAge}`} page={next()} total={totalPages} name={i.name}>
-            <div style={{ background: "#fbe9d0", padding: "4px 8px", fontSize: 12, fontWeight: 700, border: "1px solid #c9a050", textAlign: "center" }}>
+            <div style={{ background: "#fbe9d0", padding: "2px 6px", fontSize: 9, fontWeight: 700, border: "1px solid #c9a050", textAlign: "center" }}>
               {maha.lord} மகா தசை &nbsp;•&nbsp; {fmtDate(maha.startDate)} → {fmtDate(maha.endDate)} &nbsp;•&nbsp; வயது {startAge} - {endAge}
             </div>
             {lordKey && (
-              <div style={{ border: "1px solid #c9a050", borderTop: 0, padding: 6, fontSize: 10, background: "#fff8ee" }}>
+              <div style={{ border: "1px solid #c9a050", borderTop: 0, padding: "3px 6px", fontSize: 7.5, lineHeight: 1.25, background: "#fff8ee" }}>
                 <b>{maha.lord} தசை பலன் :</b> {DASHA_LORD_PALAN[lordKey]}
               </div>
             )}
