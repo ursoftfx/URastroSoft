@@ -47,10 +47,11 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
       })()
     : "—";
 
+  const sheetStyle: React.CSSProperties = { width: "148mm", minHeight: "210mm", margin: "0 auto 6mm", background: "#fff", padding: "7mm 8mm", boxSizing: "border-box", fontSize: 9, pageBreakAfter: "always", boxShadow: "0 4px 16px rgba(122,26,43,0.12)" };
   return (
     <>
-    <div className="space-y-4 animate-fade-up a4-sheet print-area" style={{ width: "148mm", minHeight: "210mm", margin: "0 auto", background: "#fff", padding: "7mm 8mm", boxSizing: "border-box", fontSize: 9 }}>
-      <style>{`@media print { @page { size: A5 portrait; margin: 0; } }`}</style>
+    <style>{`@media print { @page { size: A5 portrait; margin: 0; } .a5-sheet { box-shadow: none !important; margin: 0 !important; } }`}</style>
+    <div className="space-y-4 animate-fade-up a5-sheet print-area" style={sheetStyle}>
       {/* Header */}
       <div className="parchment rounded-2xl p-6 md:p-8 text-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 pointer-events-none">
@@ -145,6 +146,9 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
       </div>
 
       {/* Navamsa + Mandi/Gulika + Current Dasha */}
+    </div>
+    <div className="space-y-4 a5-sheet print-area" style={sheetStyle}>
+      {/* Navamsa + Mandi/Gulika + Current Dasha */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div>
           <SectionHeading>நவாம்ச சக்கரம் (D9)</SectionHeading>
@@ -204,6 +208,8 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
         </div>
       </div>
 
+    </div>
+    <div className="space-y-4 a5-sheet print-area" style={sheetStyle}>
       {/* Dasha */}
       <div>
         <SectionHeading>விம்சோத்தரி தசை</SectionHeading>
@@ -296,6 +302,8 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
         );
       })()}
 
+    </div>
+    <div className="space-y-4 a5-sheet print-area" style={sheetStyle}>
       {/* === Nakshatra Palan === */}
       <div>
         <SectionHeading>பிறந்த நட்சத்திர பலன்</SectionHeading>
@@ -365,6 +373,8 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
         );
       })()}
 
+    </div>
+    <div className="space-y-4 a5-sheet print-area" style={sheetStyle}>
       {/* === Guru Balam === */}
       {(() => {
         const j = result.planets.find(p => p.key === "jupiter")!;
@@ -447,6 +457,8 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
         );
       })()}
 
+    </div>
+    <div className="space-y-4 a5-sheet print-area" style={sheetStyle}>
       {/* === Upagrahas === */}
       <div>
         <SectionHeading>உப கிரகங்கள் (அபக்ரஷ் & உப கிரகங்கள்)</SectionHeading>
@@ -472,6 +484,8 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
         </div>
       </div>
 
+    </div>
+    <div className="space-y-4 a5-sheet print-area" style={sheetStyle}>
       {/* === 16 Varga Charts === */}
       <div>
         <SectionHeading>16 வகை வர்க்க குண்டலி</SectionHeading>
@@ -482,6 +496,8 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
         </div>
       </div>
 
+    </div>
+    <div className="space-y-4 a5-sheet print-area" style={sheetStyle}>
       {/* === 120-year Dasha-Bhukti Tree === */}
       <div>
         <SectionHeading>120 ஆண்டு தசா புத்தி</SectionHeading>
@@ -511,6 +527,8 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
         </div>
       </div>
 
+    </div>
+    <div className="space-y-4 a5-sheet print-area" style={sheetStyle}>
       <div>
         <SectionHeading>பலன் (AI பகுப்பாய்வு)</SectionHeading>
         <div className="parchment rounded-xl p-6 md:p-8">
