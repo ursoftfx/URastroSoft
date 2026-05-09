@@ -209,7 +209,7 @@ export const ProfessionalReport = ({ result }: Props) => {
   const lifeAreaPages = 11;
   const bhavaDeepPages = 12;
   const extraPages = 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 3;
-  const totalPages = 1 + 1 + 1 + vargasPages + 1 + 1 + bhavaPalanPages.length + planetHousePages.length + planetRasiPages.length + 1 + 1 + lifeAreaPages + yogasPages.length + 1 + 1 + bhavaDeepPages + yearForecastPages.length + 1 + 1 + mantraPages.length + 1 + 1 + weekdayRemedyPages.length + 1 + 1 + 1 + 1 + 1 + 3 + dashaPages;
+  const totalPages = 1 + 2 + 1 + vargasPages + 1 + 1 + bhavaPalanPages.length + planetHousePages.length + planetRasiPages.length + 1 + 1 + lifeAreaPages + yogasPages.length + 1 + 1 + bhavaDeepPages + yearForecastPages.length + 1 + 1 + mantraPages.length + 1 + 1 + weekdayRemedyPages.length + 1 + 1 + 1 + 1 + 1 + 3 + dashaPages;
 
   let pn = 0;
   const next = () => ++pn;
@@ -252,8 +252,8 @@ export const ProfessionalReport = ({ result }: Props) => {
         </div>
       </Page>
 
-      {/* === PAGE 2 : Planet Positions, KP-style === */}
-      <Page title="கிரக நிலைகள் & பஞ்சாங்கம்" page={next()} total={totalPages} name={i.name}>
+      {/* === PAGE 2 : Birth details + Panchangam === */}
+      <Page title="பிறப்பு விவரம் & பஞ்சாங்கம்" page={next()} total={totalPages} name={i.name}>
         <div style={{ background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>பிறப்பு விவரம்</div>
         <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
           <tbody>
@@ -274,9 +274,12 @@ export const ProfessionalReport = ({ result }: Props) => {
             <tr><td style={tdL}><b>ஜென்ம நட்சத்திரம்</b></td><td style={tdR}>{result.nakshatraTamil} - {result.pada}-ம் பாதம்</td><td style={tdL}><b>நட்சத்திர அதிபதி</b></td><td style={tdR}>{result.nakshatraLordTamil}</td></tr>
           </tbody>
         </table>
+      </Page>
 
+      {/* === PAGE 3 : Planet Positions, KP-style === */}
+      <Page title="கிரக நிலைகள்" page={next()} total={totalPages} name={i.name}>
         <div style={{ marginTop: 6, background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>கிரக நிலைகள் (Planetary Positions — KP Style)</div>
-        <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+        <table style={{ width: "100%", fontSize: 7.4, lineHeight: 1.12, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
           <thead>
             <tr style={{ background: "#fff8ee", fontWeight: 700 }}>
               <th style={th}>கிரகம்</th>
