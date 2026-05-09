@@ -209,7 +209,7 @@ export const ProfessionalReport = ({ result }: Props) => {
   const lifeAreaPages = 11;
   const bhavaDeepPages = 12;
   const extraPages = 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 3;
-  const totalPages = 1 + 2 + 1 + vargasPages + 1 + 1 + bhavaPalanPages.length + planetHousePages.length + planetRasiPages.length + 1 + 1 + lifeAreaPages + yogasPages.length + 1 + 1 + bhavaDeepPages + yearForecastPages.length + 1 + 1 + mantraPages.length + 1 + 1 + weekdayRemedyPages.length + 1 + 1 + 1 + 1 + 1 + 3 + dashaPages;
+  const totalPages = 1 + 2 + 2 + vargasPages + 1 + 1 + bhavaPalanPages.length + planetHousePages.length + planetRasiPages.length + 1 + 1 + lifeAreaPages + yogasPages.length + 1 + 1 + bhavaDeepPages + yearForecastPages.length + 1 + 1 + mantraPages.length + 1 + 1 + weekdayRemedyPages.length + 1 + 1 + 1 + 1 + 1 + 3 + dashaPages;
 
   let pn = 0;
   const next = () => ++pn;
