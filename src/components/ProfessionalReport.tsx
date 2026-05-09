@@ -514,6 +514,302 @@ export const ProfessionalReport = ({ result }: Props) => {
         </div>
       </Page>
 
+      {/* === Personality deep === */}
+      <Page title="ஆழ்ந்த குணாதிசயம் (Personality)" page={next()} total={totalPages} name={i.name}>
+        {(() => {
+          const lp = LAGNA_PALAN[result.ascendant.rasiIndex];
+          const moonLp = LAGNA_PALAN[result.moon.rasiIndex];
+          const sunLp = LAGNA_PALAN[result.planets.find(p=>p.key==="sun")!.rasiIndex];
+          return (
+            <div style={{ fontSize: 10, lineHeight: 1.6 }}>
+              <SectionBar>லக்ன ராசி தாக்கம் — {result.lagnaTamil}</SectionBar>
+              <Box><b>இயல்பு:</b> {lp.nature}<br/><b>குணாதிசயம்:</b> {lp.character}<br/><b>தோற்றம்:</b> {lp.appearance}</Box>
+              <SectionBar>சந்திர ராசி தாக்கம் — {result.rasiTamil}</SectionBar>
+              <Box><b>உள் மனநிலை:</b> {moonLp.nature}<br/><b>உணர்ச்சி குணம்:</b> {moonLp.character}</Box>
+              <SectionBar>சூரிய ராசி தாக்கம் — {RASIS_TAMIL[result.planets.find(p=>p.key==="sun")!.rasiIndex]}</SectionBar>
+              <Box><b>ஆத்ம இயல்பு:</b> {sunLp.nature}<br/><b>தலைமை குணம்:</b> {sunLp.character}</Box>
+              <SectionBar>பிறப்பு நட்சத்திர சாரம்</SectionBar>
+              <Box>{NAKSHATRA_PALAN[result.moon.nakshatraIndex]}</Box>
+            </div>
+          );
+        })()}
+      </Page>
+
+      {/* === Career === */}
+      <LifeAreaPage area={careerPrediction(result)} pageNum={next()} total={totalPages} name={i.name} />
+      <LifeAreaPage area={marriagePrediction(result)} pageNum={next()} total={totalPages} name={i.name} />
+      <LifeAreaPage area={wealthPrediction(result)} pageNum={next()} total={totalPages} name={i.name} />
+      <LifeAreaPage area={childrenPrediction(result)} pageNum={next()} total={totalPages} name={i.name} />
+      <LifeAreaPage area={educationPrediction(result)} pageNum={next()} total={totalPages} name={i.name} />
+      <LifeAreaPage area={healthPrediction(result)} pageNum={next()} total={totalPages} name={i.name} />
+      <LifeAreaPage area={foreignPrediction(result)} pageNum={next()} total={totalPages} name={i.name} />
+      <LifeAreaPage area={propertyPrediction(result)} pageNum={next()} total={totalPages} name={i.name} />
+      <LifeAreaPage area={familyPrediction(result)} pageNum={next()} total={totalPages} name={i.name} />
+      <LifeAreaPage area={spiritualPrediction(result)} pageNum={next()} total={totalPages} name={i.name} />
+
+      {/* === Yogas === */}
+      <Page title="யோகங்கள் (Detected Yogas)" page={next()} total={totalPages} name={i.name}>
+        <SectionBar>ஜாதகத்தில் காணப்படும் யோகங்கள்</SectionBar>
+        <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+          <thead><tr style={{ background: "#fff8ee" }}>
+            <th style={th}>யோகம்</th><th style={th}>வகை</th><th style={th}>விளக்கம்</th>
+          </tr></thead>
+          <tbody>
+            {detectYogas(result).map((y, idx) => (
+              <tr key={idx}>
+                <td style={{...td, fontWeight: 700, color: "#7a1a2b"}}>{y.name}</td>
+                <td style={td}>{y.type}</td>
+                <td style={td}>{y.description}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div style={{ marginTop: 8, fontSize: 9, color: "#555", lineHeight: 1.5 }}>
+          <b>குறிப்பு:</b> ராஜ யோகம் — அதிகாரம் / பெருமை. தன யோகம் — செல்வம். மஹாபுருஷ யோகம் — ஐந்து சிறப்பு கிரக நிலைகள்.
+          ஒரு ஜாதகத்தில் பல யோகங்கள் இருந்தாலும், தசை-புத்தி காலத்தில் அவை வெளிப்படும்.
+        </div>
+      </Page>
+
+      {/* === Aspects === */}
+      <Page title="கிரக பார்வைகள் (Drishti)" page={next()} total={totalPages} name={i.name}>
+        <SectionBar>கிரகங்களின் பரஸ்பர பார்வை</SectionBar>
+        <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+          <thead><tr style={{ background: "#fff8ee" }}>
+            <th style={th}>எந்த கிரகம்</th><th style={th}>எதை பார்க்கிறது</th><th style={th}>பார்வை விதம்</th>
+          </tr></thead>
+          <tbody>
+            {planetAspects(result).map((a, idx) => (
+              <tr key={idx}><td style={td}>{a.from}</td><td style={td}>{a.to}</td><td style={td}>{a.type}</td></tr>
+            ))}
+          </tbody>
+        </table>
+        <div style={{ marginTop: 8, fontSize: 9, color: "#555", lineHeight: 1.5 }}>
+          செவ்வாய் — 4, 7, 8 பார்வை. குரு — 5, 7, 9 பார்வை. சனி — 3, 7, 10 பார்வை. ராகு/கேது — 5, 7, 9.
+          பிற கிரகங்கள் — 7-ம் பார்வை மட்டும். சுப பார்வை = நன்மை, பாப பார்வை = தடை.
+        </div>
+      </Page>
+
+      {/* === Friendship table === */}
+      <Page title="கிரக நட்பு / பகை அட்டவணை" page={next()} total={totalPages} name={i.name}>
+        <SectionBar>பரம்பரை நட்பு</SectionBar>
+        <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+          <thead><tr style={{ background: "#fff8ee" }}>
+            <th style={th}>கிரகம்</th><th style={th}>நண்பர்</th><th style={th}>சம</th><th style={th}>பகைவர்</th>
+          </tr></thead>
+          <tbody>
+            {[
+              { p: "சூரியன்", f: "சந்திரன், செவ்வாய், குரு", n: "புதன்", e: "சுக்ரன், சனி, ராகு" },
+              { p: "சந்திரன்", f: "சூரியன், புதன்", n: "செவ்வாய், குரு, சுக்ரன், சனி", e: "—" },
+              { p: "செவ்வாய்", f: "சூரியன், சந்திரன், குரு", n: "சுக்ரன், சனி", e: "புதன்" },
+              { p: "புதன்", f: "சூரியன், சுக்ரன்", n: "செவ்வாய், குரு, சனி", e: "சந்திரன்" },
+              { p: "குரு", f: "சூரியன், சந்திரன், செவ்வாய்", n: "சனி", e: "புதன், சுக்ரன்" },
+              { p: "சுக்ரன்", f: "புதன், சனி", n: "செவ்வாய், குரு", e: "சூரியன், சந்திரன்" },
+              { p: "சனி", f: "புதன், சுக்ரன்", n: "குரு", e: "சூரியன், சந்திரன், செவ்வாய்" },
+              { p: "ராகு", f: "சுக்ரன், சனி", n: "குரு", e: "சூரியன், சந்திரன், செவ்வாய்" },
+              { p: "கேது", f: "செவ்வாய், சுக்ரன், சனி", n: "புதன், குரு", e: "சூரியன், சந்திரன்" },
+            ].map((r, idx) => (
+              <tr key={idx}>
+                <td style={{...td, fontWeight:700}}>{r.p}</td>
+                <td style={{...td, color:"#1a6b2e"}}>{r.f}</td>
+                <td style={td}>{r.n}</td>
+                <td style={{...td, color:"#9b1c1c"}}>{r.e}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Page>
+
+      {/* === 12 Bhava deep analysis (2 per page = 6 pages) === */}
+      {Array.from({ length: 6 }).map((_, bp) => {
+        const start = bp * 2 + 1;
+        const houses = [start, start + 1].filter(h => h <= 12);
+        return (
+          <Page key={`bh-${bp}`} title={`12 பாவ ஆழ்ந்த பகுப்பாய்வு (${bp + 1}/6)`} page={next()} total={totalPages} name={i.name}>
+            {houses.map(h => {
+              const rasiIdx = (result.ascendant.rasiIndex + h - 1) % 12;
+              const lord = ["mars","venus","mercury","moon","sun","mercury","venus","mars","jupiter","saturn","saturn","jupiter"][rasiIdx];
+              const lordHouse = (() => {
+                const lp = result.planets.find(p => p.key === lord);
+                if (!lp) return 0;
+                return ((lp.rasiIndex - result.ascendant.rasiIndex + 12) % 12) + 1;
+              })();
+              const occupants = result.planets.filter(p => ((p.rasiIndex - result.ascendant.rasiIndex + 12) % 12) + 1 === h);
+              return (
+                <div key={h} style={{ marginBottom: 6 }}>
+                  <SectionBar>{h}-ம் பாவம் — {BHAVA_NAMES[h-1]} ({RASIS_TAMIL[rasiIdx]})</SectionBar>
+                  <Box>
+                    <b>பாவ காரகம்:</b> {HOUSE_SIGNIFICATIONS[h]}<br/>
+                    <b>அதிபதி:</b> {PLANET_TA[lord]} — {lordHouse}-ம் வீட்டில் ({RASIS_TAMIL[result.planets.find(p=>p.key===lord)?.rasiIndex ?? 0]})<br/>
+                    <b>அமர்ந்துள்ள கிரகங்கள்:</b> {occupants.length ? occupants.map(o=>PLANET_TA[o.key]).join(", ") : "எதுவும் இல்லை"}<br/>
+                    {occupants.map(o => (
+                      <div key={o.key} style={{ marginTop: 2 }}><b>• {PLANET_TA[o.key]} {h}-ல்:</b> {PLANET_IN_HOUSE[o.key]?.[h] || "—"}</div>
+                    ))}
+                  </Box>
+                </div>
+              );
+            })}
+          </Page>
+        );
+      })}
+
+      {/* === Year by year forecast === */}
+      <Page title="ஆண்டுக்கு ஆண்டு பலன் (12 ஆண்டுகள்)" page={next()} total={totalPages} name={i.name}>
+        <SectionBar>அடுத்த 12 ஆண்டுகள் — தசா-புத்தி பலன்</SectionBar>
+        <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+          <thead><tr style={{ background: "#fff8ee" }}>
+            <th style={th}>ஆண்டு</th><th style={th}>வயது</th><th style={th}>மகா தசை</th><th style={th}>புத்தி</th><th style={th}>பலன்</th>
+          </tr></thead>
+          <tbody>
+            {yearForecast(result, 12).map((y, idx) => (
+              <tr key={idx}>
+                <td style={{...td, fontWeight:700}}>{y.year}</td>
+                <td style={td}>{y.age}</td>
+                <td style={td}>{y.mahaLord}</td>
+                <td style={td}>{y.bhuktiLord}</td>
+                <td style={td}>{y.outlook}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Page>
+
+      {/* === Sade Sati === */}
+      <Page title="ஏழரை சனி — காலக்கிரம பகுப்பாய்வு" page={next()} total={totalPages} name={i.name}>
+        <SectionBar>ஏழரை சனியின் மூன்று கட்டங்கள்</SectionBar>
+        <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+          <thead><tr style={{ background: "#fff8ee" }}>
+            <th style={th}>கட்டம்</th><th style={th}>தொடக்கம்</th><th style={th}>முடிவு</th><th style={th}>தாக்கம்</th>
+          </tr></thead>
+          <tbody>
+            {sadeSatiTimeline(result).map((s, idx) => (
+              <tr key={idx}><td style={{...td,fontWeight:700}}>{s.phase}</td><td style={td}>{s.from}</td><td style={td}>{s.to}</td><td style={td}>{s.effect}</td></tr>
+            ))}
+          </tbody>
+        </table>
+        <div style={{ marginTop: 8, fontSize: 9, lineHeight: 1.6 }}>
+          <b>பரிகாரங்கள்:</b><br/>
+          • சனிக்கிழமை — திருநள்ளாறு / சாஸ்தா வழிபாடு.<br/>
+          • எள் தீபம், கருப்பு துணி தானம்.<br/>
+          • ஹனுமான் சாலிசா 11 முறை.<br/>
+          • நீலம் — கல் (ஜோதிட ஆலோசனைக்கு பின்).<br/>
+        </div>
+      </Page>
+
+      {/* === Gemstones === */}
+      <Page title="ரத்தினம் (Gemstone) பரிந்துரை" page={next()} total={totalPages} name={i.name}>
+        <SectionBar>உங்கள் லக்ன / 5 / 9 அதிபதிகளுக்கான ரத்தினம்</SectionBar>
+        <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+          <thead><tr style={{ background: "#fff8ee" }}>
+            <th style={th}>கிரகம்</th><th style={th}>ரத்தினம்</th><th style={th}>எடை</th><th style={th}>உலோகம்</th><th style={th}>விரல்</th><th style={th}>நாள்</th>
+          </tr></thead>
+          <tbody>
+            {gemstoneRecommendation(result).map((g, idx) => (
+              <tr key={idx}>
+                <td style={{...td,fontWeight:700}}>{g.planet}</td><td style={td}>{g.gem}</td><td style={td}>{g.weight}</td>
+                <td style={td}>{g.metal}</td><td style={td}>{g.finger}</td><td style={td}>{g.day}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div style={{ marginTop: 8, fontSize: 9, lineHeight: 1.6 }}>
+          <b>எச்சரிக்கை:</b> ரத்தினம் அணியும் முன் ஜோதிடரின் ஆலோசனை அவசியம். தவறான கல் தீய பலன் தரக்கூடும்.
+          ரத்தினம் வாங்கிய பின் — பால், தேன், கங்கை நீர், மஞ்சள் கொண்டு சுத்தம் செய்து, மந்திரம் சொல்லி அணிய வேண்டும்.
+        </div>
+      </Page>
+
+      {/* === Mantras === */}
+      <Page title="நவ கிரக மந்திரங்கள்" page={next()} total={totalPages} name={i.name}>
+        <SectionBar>9 கிரகங்களுக்கான பீஜ மந்திரங்கள்</SectionBar>
+        <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+          <thead><tr style={{ background: "#fff8ee" }}>
+            <th style={th}>கிரகம்</th><th style={th}>மந்திரம்</th><th style={th}>ஜப எண்ணிக்கை</th>
+          </tr></thead>
+          <tbody>
+            {PLANET_MANTRAS.map((m, idx) => (
+              <tr key={idx}>
+                <td style={{...td,fontWeight:700}}>{m.planet}</td>
+                <td style={{...td, fontFamily: "serif"}}>{m.mantra}</td>
+                <td style={td}>{m.count}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div style={{ marginTop: 8, fontSize: 9, lineHeight: 1.6 }}>
+          <b>முக்கிய குறிப்பு:</b> மந்திரங்களை குரு உபதேசம் பெற்ற பின் ஜபிக்க வேண்டும். காலை 5-7 மணி உகந்த நேரம்.
+          ருத்ராக்ஷ மாலையுடன், கிழக்கு / வடக்கு பார்த்து உட்கார்ந்து ஜபிக்க.
+        </div>
+      </Page>
+
+      {/* === Lucky attributes === */}
+      <Page title="அதிர்ஷ்ட நாள் / நிறம் / எண் / திசை" page={next()} total={totalPages} name={i.name}>
+        <SectionBar>உங்கள் லக்ன அதிபதி அடிப்படையில்</SectionBar>
+        {(() => { const l = luckyAttributes(result); return (
+          <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+            <tbody>
+              <tr><td style={tdL}><b>அதிர்ஷ்ட நாட்கள்</b></td><td style={tdR}>{l.days}</td></tr>
+              <tr><td style={tdL}><b>அதிர்ஷ்ட நிறங்கள்</b></td><td style={tdR}>{l.colors}</td></tr>
+              <tr><td style={tdL}><b>அதிர்ஷ்ட எண்கள்</b></td><td style={tdR}>{l.numbers}</td></tr>
+              <tr><td style={tdL}><b>அதிர்ஷ்ட ரத்தினம்</b></td><td style={tdR}>{l.gem}</td></tr>
+              <tr><td style={tdL}><b>உகந்த உலோகம்</b></td><td style={tdR}>{l.metal}</td></tr>
+              <tr><td style={tdL}><b>உகந்த திசை</b></td><td style={tdR}>{l.direction}</td></tr>
+            </tbody>
+          </table>
+        ); })()}
+        <div style={{ marginTop: 8, fontSize: 9, lineHeight: 1.6 }}>
+          முக்கிய நிகழ்வுகள் — திருமணம், புது வீடு, தொழில் தொடக்கம், பயணம் — இந்த நாட்களில் மேற்கொள்ள உகந்தது.
+          வண்ண ஆடைகள், பணப்பை, கார் — இந்த நிறங்களில் நல்லது. நிலம், வீடு வாங்கும்போது இந்த திசை முக்கியம்.
+        </div>
+      </Page>
+
+      {/* === Career fields === */}
+      <Page title="பொருத்தமான தொழில் துறைகள்" page={next()} total={totalPages} name={i.name}>
+        <SectionBar>கர்மாதிபதி அடிப்படையில் தொழில் பரிந்துரை</SectionBar>
+        <Box>{careerFields(result).join(" ")}</Box>
+        <SectionBar>10-ம் வீட்டில் கிரக நிலை</SectionBar>
+        <Box>
+          {result.planets.filter(p => ((p.rasiIndex - result.ascendant.rasiIndex + 12) % 12) + 1 === 10).map(p => (
+            <div key={p.key}><b>{PLANET_TA[p.key]}:</b> {PLANET_IN_HOUSE[p.key]?.[10]}</div>
+          ))}
+          {result.planets.filter(p => ((p.rasiIndex - result.ascendant.rasiIndex + 12) % 12) + 1 === 10).length === 0 && (
+            <div>10-ம் வீட்டில் கிரகம் இல்லை — கர்மாதிபதி வழியாக மட்டும் தொழில் பகுப்பாய்வு.</div>
+          )}
+        </Box>
+        <SectionBar>தொழில் தொடக்க சுப நேரம்</SectionBar>
+        <Box>
+          • வியாழன் / வெள்ளி / புதன் காலை 6 - 9 மணி.<br/>
+          • வளர்பிறை, ஒற்றை திதி (3, 5, 7, 11, 13).<br/>
+          • நட்சத்திரம் — அஸ்வினி, ரோகிணி, புனர்பூசம், புஷ்யம், உத்திரம், ஹஸ்தம், சுவாதி, அனுராதா, உத்திராடம், ரேவதி.<br/>
+          • கணபதி வழிபாடு + நாரிகேளம் உடைத்து தொடங்க.
+        </Box>
+      </Page>
+
+      {/* === Weekday remedies === */}
+      <Page title="வாரம் முழுவதும் பரிகார வழிமுறை" page={next()} total={totalPages} name={i.name}>
+        <SectionBar>தினசரி பரிகார அட்டவணை</SectionBar>
+        <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+          <thead><tr style={{ background: "#fff8ee" }}>
+            <th style={th}>நாள்</th><th style={th}>கிரகம்</th><th style={th}>தெய்வம்</th><th style={th}>பரிகாரம்</th><th style={th}>தானம்</th>
+          </tr></thead>
+          <tbody>
+            {[
+              ["ஞாயிறு","சூரியன்","சிவன் / சூரியன்","சூரிய நமஸ்காரம், ஆதித்ய ஹ்ருதயம்","கோதுமை, வெல்லம், செம்மலர்"],
+              ["திங்கள்","சந்திரன்","சிவன் / பார்வதி","ருத்ர அபிஷேகம், சந்த்ர மந்திரம்","பால், அரிசி, வெள்ளை மலர்"],
+              ["செவ்வாய்","செவ்வாய்","முருகன் / ஹனுமான்","ஸ்கந்த சஷ்டி, அங்காரக ஸ்தோத்திரம்","துவரை, செம்பு, பவளம்"],
+              ["புதன்","புதன்","விஷ்ணு / கணபதி","விஷ்ணு சஹஸ்ரநாமம், கணேச அதர்வசீர்ஷம்","பச்சை பயறு, பச்சை வஸ்திரம்"],
+              ["வியாழன்","குரு","விஷ்ணு / தக்ஷிணாமூர்த்தி","குரு ஸ்தோத்திரம், விஷ்ணு பூஜை","மஞ்சள், கடலை பருப்பு, மஞ்சள் வஸ்திரம்"],
+              ["வெள்ளி","சுக்ரன்","லக்ஷ்மி / துர்கா","ஸ்ரீ சூக்தம், லக்ஷ்மி அஷ்டோத்தரம்","வெண்ணெய், தயிர், வெள்ளை மலர்"],
+              ["சனி","சனி","சாஸ்தா / ஹனுமான்","ஹனுமான் சாலிசா, சனி ஸ்தோத்திரம்","எள், கருப்பு துணி, இரும்பு"],
+            ].map((r, idx) => (
+              <tr key={idx}>{r.map((c, ci) => <td key={ci} style={ci===0?{...td,fontWeight:700,background:"#fff8ee"}:td}>{c}</td>)}</tr>
+            ))}
+          </tbody>
+        </table>
+        <div style={{ marginTop: 8, fontSize: 9, lineHeight: 1.6 }}>
+          <b>பொது விதிகள்:</b> காலை 4-6 மணி பிரம்ம முகூர்த்தம் — மிக சிறந்தது.
+          பிறந்த நட்சத்திர நாளில் சிறப்பு வழிபாடு. மாதம் ஒரு முறையாவது கோயில் தரிசனம், அன்னதானம் வாழ்வில் வளம் சேர்க்கும்.
+        </div>
+      </Page>
+
       {/* === Dasha pages — one per Mahadasha with age === */}
       {result.dashaTree.map((maha, mi) => {
         const startAge = ageAt(birthDate, maha.startDate);
