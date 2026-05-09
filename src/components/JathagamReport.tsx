@@ -47,10 +47,11 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
       })()
     : "—";
 
+  const sheetStyle: React.CSSProperties = { width: "148mm", minHeight: "210mm", margin: "0 auto 6mm", background: "#fff", padding: "7mm 8mm", boxSizing: "border-box", fontSize: 9, pageBreakAfter: "always", boxShadow: "0 4px 16px rgba(122,26,43,0.12)" };
   return (
     <>
-    <div className="space-y-4 animate-fade-up a4-sheet print-area" style={{ width: "148mm", minHeight: "210mm", margin: "0 auto", background: "#fff", padding: "7mm 8mm", boxSizing: "border-box", fontSize: 9 }}>
-      <style>{`@media print { @page { size: A5 portrait; margin: 0; } }`}</style>
+    <style>{`@media print { @page { size: A5 portrait; margin: 0; } .a5-sheet { box-shadow: none !important; margin: 0 !important; } }`}</style>
+    <div className="space-y-4 animate-fade-up a5-sheet print-area" style={sheetStyle}>
       {/* Header */}
       <div className="parchment rounded-2xl p-6 md:p-8 text-center relative overflow-hidden">
         <div className="absolute inset-0 opacity-10 pointer-events-none">
