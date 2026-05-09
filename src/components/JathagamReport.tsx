@@ -484,6 +484,8 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
         </div>
       </div>
 
+    </div>
+    <div className="space-y-4 a5-sheet print-area" style={sheetStyle}>
       {/* === 16 Varga Charts === */}
       <div>
         <SectionHeading>16 வகை வர்க்க குண்டலி</SectionHeading>
