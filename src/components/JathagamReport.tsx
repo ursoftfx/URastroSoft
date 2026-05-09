@@ -527,8 +527,9 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
         </div>
       </div>
 
+    </div>
+    <div className="space-y-4 a5-sheet print-area" style={sheetStyle}>
       <div>
-        <SectionHeading>பலன் (AI பகுப்பாய்வு)</SectionHeading>
         <div className="parchment rounded-xl p-6 md:p-8">
           {interpretationLoading && !interpretation && (
             <div className="text-center py-8 font-tamil text-muted-foreground">
