@@ -234,12 +234,15 @@
   body * { visibility: hidden; }
   .print-area, .print-area * { visibility: visible; }
   .print-area {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 210mm;
-    margin: 0;
+    position: relative;
+    margin: 0 auto;
     box-shadow: none;
+    page-break-after: always;
+    break-after: page;
+  }
+  .print-area:last-child {
+    page-break-after: auto;
+    break-after: auto;
   }
   .no-print { display: none !important; }
   .a4-sheet { box-shadow: none !important; padding: 8mm 10mm !important; }
