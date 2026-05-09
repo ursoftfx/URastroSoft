@@ -810,6 +810,135 @@ export const ProfessionalReport = ({ result }: Props) => {
         </div>
       </Page>
 
+      {/* === Karmic — Rahu/Ketu axis === */}
+      <Page title="கர்ம பகுப்பாய்வு — ராகு / கேது அச்சு" page={next()} total={totalPages} name={i.name}>
+        {(() => {
+          const rahu = result.planets.find(p => p.key==="rahu")!;
+          const ketu = result.planets.find(p => p.key==="ketu")!;
+          const rh = ((rahu.rasiIndex - result.ascendant.rasiIndex + 12) % 12) + 1;
+          const kh = ((ketu.rasiIndex - result.ascendant.rasiIndex + 12) % 12) + 1;
+          return (<>
+            <SectionBar>ராகு — {rahu.rasiTamil} ({rh}-ம் வீடு)</SectionBar>
+            <Box><b>இப்பிறவி கர்ம ஈர்ப்பு:</b> {PLANET_IN_HOUSE.rahu[rh]}<br/><b>ராசி தாக்கம்:</b> {PLANET_IN_RASI.rahu[rahu.rasiIndex]}</Box>
+            <SectionBar>கேது — {ketu.rasiTamil} ({kh}-ம் வீடு)</SectionBar>
+            <Box><b>முற்பிறவி கர்ம தடம்:</b> {PLANET_IN_HOUSE.ketu[kh]}<br/><b>ராசி தாக்கம்:</b> {PLANET_IN_RASI.ketu[ketu.rasiIndex]}</Box>
+            <SectionBar>கால சர்ப்ப / சர்ப்ப தோஷ விளக்கம்</SectionBar>
+            <Box>
+              ராகு-கேது அச்சில் அனைத்து கிரகங்களும் ஒரு பக்கம் இருந்தால் கால சர்ப்ப தோஷம். பரிகாரம் — காளஹஸ்தீஸ்வரர், திருநாகேஸ்வரம், ராகு-கேது தர்ப்பணம்.
+              ஆழ்ந்த ஆன்மிக நாட்டம், அடிக்கடி எதிர்பாரா மாற்றங்கள், மறை ஆராய்ச்சி இவர்களுக்கு இயல்பு.
+            </Box>
+          </>);
+        })()}
+      </Page>
+
+      {/* === Planet strength summary === */}
+      <Page title="கிரக பலம் — விரிவான சுருக்கம்" page={next()} total={totalPages} name={i.name}>
+        <SectionBar>ஒவ்வொரு கிரகத்தின் நிலை</SectionBar>
+        <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+          <thead><tr style={{ background: "#fff8ee" }}>
+            <th style={th}>கிரகம்</th><th style={th}>ராசி</th><th style={th}>வீடு</th><th style={th}>நிலை</th><th style={th}>பலம்</th><th style={th}>முடிவு</th>
+          </tr></thead>
+          <tbody>
+            {result.planets.map(p => {
+              const h = ((p.rasiIndex - result.ascendant.rasiIndex + 12) % 12) + 1;
+              const own: Record<string, number[]> = { sun:[4], moon:[3], mars:[0,7], mercury:[2,5], jupiter:[8,11], venus:[1,6], saturn:[9,10], rahu:[10], ketu:[7] };
+              const ex: Record<string, number> = { sun:0, moon:1, mars:9, mercury:5, jupiter:3, venus:11, saturn:6 };
+              const de: Record<string, number> = { sun:6, moon:7, mars:3, mercury:11, jupiter:9, venus:5, saturn:0 };
+              const dignity = ex[p.key] === p.rasiIndex ? "உச்சம்" : de[p.key] === p.rasiIndex ? "நீசம்" : own[p.key]?.includes(p.rasiIndex) ? "சுய" : "சம";
+              const score = dignity === "உச்சம்" ? 90 : dignity === "சுய" ? 75 : dignity === "சம" ? 50 : 25;
+              const verdict = score >= 75 ? "மிக சிறந்த — முழு பலன் தரும்" : score >= 50 ? "நல்லது — சாதாரண பலன்" : "பலவீனம் — பரிகாரம் தேவை";
+              return (
+                <tr key={p.key}>
+                  <td style={{...td, fontWeight: 700}}>{PLANET_TA[p.key]}</td>
+                  <td style={td}>{p.rasiTamil}</td>
+                  <td style={td}>{h}</td>
+                  <td style={td}>{dignity}</td>
+                  <td style={td}>{score}/100</td>
+                  <td style={td}>{verdict}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        <div style={{ marginTop: 8, fontSize: 9, lineHeight: 1.5 }}>
+          <b>குறிப்பு:</b> உச்சம் = கிரகம் மிக பலமாக நற்பலன் தரும். நீசம் = கிரகம் பலன் தர முடியாது, பரிகாரம் தேவை.
+          சுய ராசி = முழு பலம். சம ராசி = சாதாரணம். கேந்த்ர (1,4,7,10) / திரிகோண (1,5,9) வீடுகளில் இருந்தால் கூடுதல் பலம்.
+        </div>
+      </Page>
+
+      {/* === Monthly transit (next 12 months) === */}
+      <Page title="மாதம் வாரியான பலன் (அடுத்த 12 மாதம்)" page={next()} total={totalPages} name={i.name}>
+        <SectionBar>தற்போதைய கோச்சார பலன்</SectionBar>
+        <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+          <thead><tr style={{ background: "#fff8ee" }}>
+            <th style={th}>மாதம்</th><th style={th}>முக்கிய நிகழ்வு</th><th style={th}>பலன்</th>
+          </tr></thead>
+          <tbody>
+            {Array.from({length:12}).map((_, mi) => {
+              const d = new Date(); d.setMonth(d.getMonth() + mi);
+              const month = d.toLocaleDateString("ta-IN", { month: "long", year: "numeric" });
+              const themes = ["தொழில் முன்னேற்றம்","குடும்ப விழா","பயணம்","செலவு கவனம்","புது தொடக்கம்","கல்வி வெற்றி","ஆரோக்கியம் கவனம்","பணம் வரத்து","உறவு வளர்ச்சி","ஆன்மிக நாட்டம்","சொத்து தொடர்பு","குழந்தை சம்பந்தம்"];
+              const palan = ["நல்ல மாதம்","சாதாரணம்","கடின உழைப்பு தேவை","மிக சிறந்தது","ஜாக்கிரதை","ஆதாயம்","பொறுமை","பெரும் ஆதாயம்","மகிழ்ச்சி","அமைதி","ஆர்வம்","மாற்றம்"][mi];
+              return (<tr key={mi}><td style={{...td,fontWeight:700}}>{month}</td><td style={td}>{themes[mi]}</td><td style={td}>{palan}</td></tr>);
+            })}
+          </tbody>
+        </table>
+        <div style={{ marginTop: 8, fontSize: 9, lineHeight: 1.5 }}>
+          <b>குறிப்பு:</b> முழு துல்லியமான மாத பலனுக்கு கோச்சார (transit) கணிப்பு + தசா-புத்தி இணைந்த பகுப்பாய்வு தேவை. மேலே உள்ளது பொதுவான திசை மட்டும்.
+        </div>
+      </Page>
+
+      {/* === Brihaspati / Punya — Spiritual significance === */}
+      <Page title="புண்ய காலம் & ஆன்மிக நாட்காட்டி" page={next()} total={totalPages} name={i.name}>
+        <SectionBar>உங்களுக்கு உகந்த விரத / பூஜை நாட்கள்</SectionBar>
+        <Box>
+          • <b>பிறந்த நட்சத்திரம் ({result.nakshatraTamil}):</b> மாதம் ஒரு முறை வரும் — அன்று உப்பு உணவு, கூந்தல் வெட்டுதல் தவிர்க்க. வழிபாடு + தர்மம்.<br/>
+          • <b>ஜென்ம திதி:</b> மாதம் ஒரு முறை — விஷ்ணு / சிவ வழிபாடு.<br/>
+          • <b>பௌர்ணமி:</b> சத்யநாராயண பூஜை, சந்திரனுக்கு பால் நிவேதனம்.<br/>
+          • <b>அமாவாசை:</b> பித்ரு தர்ப்பணம், கங்கை நீர் சமர்ப்பணம்.<br/>
+          • <b>ஏகாதசி:</b> விரதம், விஷ்ணு வழிபாடு.<br/>
+          • <b>பிரதோஷம்:</b> சிவ வழிபாடு, ருத்ர அபிஷேகம்.<br/>
+          • <b>சங்கடஹர சதுர்த்தி:</b> கணபதி வழிபாடு, தடைகள் நீங்கும்.
+        </Box>
+        <SectionBar>பெரிய புண்ய காலங்கள்</SectionBar>
+        <Box>
+          • தைப் பூசம் — முருகன் வழிபாடு<br/>
+          • மகா சிவராத்திரி — ருத்ர ஜபம், விழித்திருந்து வழிபாடு<br/>
+          • நவராத்திரி — துர்கா / லக்ஷ்மி / ஸரஸ்வதி<br/>
+          • தீபாவளி — லக்ஷ்மி பூஜை<br/>
+          • வைகுண்ட ஏகாதசி — விஷ்ணு தரிசனம்<br/>
+          • ஆடி அமாவாசை — பித்ரு தர்ப்பணம்<br/>
+          • தீர்த்த யாத்திரை — காசி, ராமேஸ்வரம், திருப்பதி, பழனி.
+        </Box>
+      </Page>
+
+      {/* === Compatibility / partner ideal === */}
+      <Page title="உகந்த துணை — பொருத்த விவரம்" page={next()} total={totalPages} name={i.name}>
+        <SectionBar>உங்கள் ராசி-நட்சத்திரத்திற்கு உகந்த துணை</SectionBar>
+        <Box>
+          <b>உங்கள் ராசி:</b> {result.rasiTamil} | <b>நட்சத்திரம்:</b> {result.nakshatraTamil}<br/>
+          <b>உகந்த துணை ராசிகள்:</b> {(() => {
+            const compat: Record<number, string[]> = {
+              0:["சிம்மம்","தனுசு","மிதுனம்"],1:["கன்னி","மகரம்","கடகம்"],2:["துலாம்","கும்பம்","மேஷம்"],
+              3:["விருச்சிகம்","மீனம்","ரிஷபம்"],4:["தனுசு","மேஷம்","துலாம்"],5:["மகரம்","ரிஷபம்","விருச்சிகம்"],
+              6:["கும்பம்","மிதுனம்","தனுசு"],7:["மீனம்","கடகம்","மகரம்"],8:["மேஷம்","சிம்மம்","கும்பம்"],
+              9:["ரிஷபம்","கன்னி","மீனம்"],10:["மிதுனம்","துலாம்","மேஷம்"],11:["கடகம்","விருச்சிகம்","ரிஷபம்"],
+            };
+            return compat[result.moon.rasiIndex].join(", ");
+          })()}<br/>
+          <b>10 பொருத்த விவரம்:</b><br/>
+          1. தினம் (வாரம்) 2. கணம் 3. மகேந்திரம் 4. ஸ்திரீ தீர்க்கம் 5. யோனி<br/>
+          6. ராசி அதிபதி 7. வசியம் 8. ராசி 9. நாடி 10. வேதை.
+        </Box>
+        <SectionBar>உகந்த துணையின் குணாதிசயம்</SectionBar>
+        <Box>
+          • கல்வி, குடும்ப பின்னணி நெருக்கமாக இருக்க வேண்டும்.<br/>
+          • வயது வித்தியாசம் 3-7 ஆண்டு உகந்தது.<br/>
+          • பல திசை கொண்ட (காதல், மரியாதை, உளத் தொடர்பு) உறவே நீடிக்கும்.<br/>
+          • திருமணத்திற்கு முன் ஜாதக பொருத்தம் (10 / 36) கட்டாயம்.
+        </Box>
+      </Page>
+
       {/* === Dasha pages — one per Mahadasha with age === */}
       {result.dashaTree.map((maha, mi) => {
         const startAge = ageAt(birthDate, maha.startDate);
