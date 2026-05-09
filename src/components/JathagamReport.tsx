@@ -302,6 +302,8 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
         );
       })()}
 
+    </div>
+    <div className="space-y-4 a5-sheet print-area" style={sheetStyle}>
       {/* === Nakshatra Palan === */}
       <div>
         <SectionHeading>பிறந்த நட்சத்திர பலன்</SectionHeading>
