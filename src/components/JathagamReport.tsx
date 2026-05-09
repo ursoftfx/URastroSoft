@@ -496,6 +496,8 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
         </div>
       </div>
 
+    </div>
+    <div className="space-y-4 a5-sheet print-area" style={sheetStyle}>
       {/* === 120-year Dasha-Bhukti Tree === */}
       <div>
         <SectionHeading>120 ஆண்டு தசா புத்தி</SectionHeading>
