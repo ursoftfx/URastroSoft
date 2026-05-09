@@ -166,7 +166,7 @@ export const ProfessionalReport = ({ result }: Props) => {
 
   return (
     <div id="professional-report-root">
-      <style>{`@media print { @page { size: A5 portrait; margin: 0; } .print-area { margin: 0 !important; box-shadow: none !important; page-break-after: always; } body { margin: 0; } .no-print { display: none !important; } } #professional-report-root table { font-size: 8px; } #professional-report-root th, #professional-report-root td { padding: 1px 2px !important; }`}</style>
+      <style>{`@media print { @page { size: A5 landscape; margin: 0; } .print-area { margin: 0 !important; box-shadow: none !important; page-break-after: always; } body { margin: 0; } .no-print { display: none !important; } } #professional-report-root table { font-size: 8px; } #professional-report-root th, #professional-report-root td { padding: 1px 2px !important; }`}</style>
 
       {/* === COVER === */}
       <Page title="அட்டை" page={next()} total={totalPages} name={i.name}>
