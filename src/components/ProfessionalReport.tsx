@@ -876,3 +876,28 @@ const tdR: React.CSSProperties = { border: "1px solid #c9a050", padding: "3px 6p
 const td: React.CSSProperties = { border: "1px solid #c9a050", padding: "2px 4px", verticalAlign: "top" };
 const th: React.CSSProperties = { border: "1px solid #c9a050", padding: "3px 4px", textAlign: "left", fontWeight: 700 };
 const chartTitle: React.CSSProperties = { fontSize: 11, fontWeight: 700, color: "#7a1a2b", textAlign: "center", marginBottom: 3 };
+
+const SectionBar = ({ children }: { children: React.ReactNode }) => (
+  <div style={{ background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050", marginTop: 4 }}>{children}</div>
+);
+const Box = ({ children }: { children: React.ReactNode }) => (
+  <div style={{ border: "1px solid #c9a050", borderTop: 0, padding: 6, fontSize: 9.5, lineHeight: 1.55 }}>{children}</div>
+);
+const LifeAreaPage = ({ area, pageNum, total, name }: { area: ReturnType<typeof careerPrediction>; pageNum: number; total: number; name: string }) => (
+  <Page title={area.title} page={pageNum} total={total} name={name}>
+    <SectionBar>முன்னுரை</SectionBar>
+    <Box>{area.intro}</Box>
+    {area.positives.length > 0 && (<>
+      <SectionBar>நற்பலன்கள்</SectionBar>
+      <Box>{area.positives.map((p, i) => <div key={i}>• {p}</div>)}</Box>
+    </>)}
+    {area.negatives.length > 0 && (<>
+      <SectionBar>சவால்கள்</SectionBar>
+      <Box>{area.negatives.map((p, i) => <div key={i}>• {p}</div>)}</Box>
+    </>)}
+    <SectionBar>பரிகாரங்கள்</SectionBar>
+    <Box>{area.remedies.map((p, i) => <div key={i}>• {p}</div>)}</Box>
+    <SectionBar>உகந்த காலம்</SectionBar>
+    <Box>{area.timing}</Box>
+  </Page>
+);
