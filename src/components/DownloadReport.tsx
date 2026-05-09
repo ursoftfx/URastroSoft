@@ -7,9 +7,10 @@ interface Props {
   targetId: string;
   fileName?: string;
   paperSize?: "a4" | "a5";
+  orientation?: "p" | "l";
 }
 
-export const DownloadReport = ({ targetId, fileName = "jathagam.pdf", paperSize = "a4" }: Props) => {
+export const DownloadReport = ({ targetId, fileName = "jathagam.pdf", paperSize = "a4", orientation = "p" }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const handleDownload = async () => {
