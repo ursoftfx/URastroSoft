@@ -59,6 +59,12 @@ const ageAt = (birth: Date, target: Date) => {
   return y;
 };
 
+const chunkArray = <T,>(items: T[], size: number): T[][] => {
+  const pages: T[][] = [];
+  for (let i = 0; i < items.length; i += size) pages.push(items.slice(i, i + size));
+  return pages.length ? pages : [[]];
+};
+
 // ---------- South Indian chart ----------
 const SI_LAYOUT: (number | null)[][] = [
   [11, 0, 1, 2], [10, null, null, 3], [9, null, null, 4], [8, 7, 6, 5],
@@ -67,7 +73,7 @@ const SI_LAYOUT: (number | null)[][] = [
 const Chart = ({ title, chart, ascRasi, size = "lg" }: {
   title: string; chart: string[][]; ascRasi: number; size?: "lg" | "sm";
 }) => {
-  const cellH = size === "lg" ? 70 : 42;
+  const cellH = size === "lg" ? 54 : 36;
   const fs = size === "lg" ? 10 : 7;
   return (
     <table style={{ width: "100%", borderCollapse: "collapse", border: "1.5px solid #000", tableLayout: "fixed" }}>
@@ -109,23 +115,23 @@ const Chart = ({ title, chart, ascRasi, size = "lg" }: {
 // ---------- Page wrapper (A5 landscape: 210 x 148 mm) — B/W ----------
 const Page = ({ children, title, subtitle, page, total, name }: any) => (
   <div className="a5-sheet print-area" style={{
-    width: "200mm", height: "143mm", maxHeight: "143mm",
-    padding: "3mm", margin: "5mm auto",
+    width: "200mm", height: "139mm", maxHeight: "139mm",
+    padding: "2mm", margin: "0 auto 2mm auto",
     background: "#ffffff", color: "#000",
     fontFamily: "'Latha','Tahoma',sans-serif", boxSizing: "border-box",
     pageBreakInside: "avoid", breakInside: "avoid",
     overflow: "hidden",
-    fontSize: 8.5, lineHeight: 1.2,
+    fontSize: 8.1, lineHeight: 1.15,
     display: "flex", flexDirection: "column",
   }}>
     <div style={{
       flex: 1, minHeight: 0,
       border: "2px double #000", outline: "1px solid #000", outlineOffset: 2,
-      borderRadius: 0, padding: "2.5mm 3.5mm",
+      borderRadius: 0, padding: "2mm 3mm",
       background: "#ffffff",
       display: "flex", flexDirection: "column", overflow: "hidden",
     }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1px solid #000", paddingBottom: 3, marginBottom: 4 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1px solid #000", paddingBottom: 2, marginBottom: 3 }}>
         <div>
           <div style={{ fontSize: 14, fontWeight: 800, color: "#000", letterSpacing: 1 }}>UR ASTRO SOFT</div>
           <div style={{ fontSize: 8, color: "#000" }}>தமிழ் வேத ஜோதிட விரிவான ஜாதகம்</div>
