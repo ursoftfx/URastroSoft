@@ -5,6 +5,13 @@ import {
   HOUSE_SIGNIFICATIONS, PLANET_IN_HOUSE, PLANET_IN_RASI,
   computeSaniYogas, DASHA_LORD_TO_KEY, DASHA_LORD_PALAN,
 } from "@/lib/professional-palans";
+import {
+  careerPrediction, marriagePrediction, wealthPrediction, childrenPrediction,
+  educationPrediction, healthPrediction, foreignPrediction, propertyPrediction,
+  familyPrediction, spiritualPrediction, detectYogas, planetAspects,
+  yearForecast, sadeSatiTimeline, gemstoneRecommendation, PLANET_MANTRAS,
+  careerFields, luckyAttributes,
+} from "@/lib/life-predictions";
 
 interface Props { result: JathagamResult }
 
