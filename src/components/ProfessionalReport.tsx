@@ -162,7 +162,7 @@ export const ProfessionalReport = ({ result }: Props) => {
 
   // Total page count
   // Build flat dasha rows per maha and chunk into pages
-  const DASHA_ROWS_PER_PAGE = 28;
+  const DASHA_ROWS_PER_PAGE = 22;
   const dashaPagesData = result.dashaTree.map((maha) => {
     const rows: { bhukti: string; ant: string; start: string; end: string; age: number | string }[] = [];
     (maha.children || []).forEach((bh) => {
@@ -182,17 +182,34 @@ export const ProfessionalReport = ({ result }: Props) => {
         });
       }
     });
-    const chunks: typeof rows[] = [];
-    for (let s = 0; s < rows.length; s += DASHA_ROWS_PER_PAGE) chunks.push(rows.slice(s, s + DASHA_ROWS_PER_PAGE));
-    if (chunks.length === 0) chunks.push([]);
+    const chunks = chunkArray(rows, DASHA_ROWS_PER_PAGE);
     return { maha, chunks };
   });
+  const planetHouseRows = result.planets.map(p => {
+    const house = ((p.rasiIndex - result.ascendant.rasiIndex + 12) % 12) + 1;
+    return { planet: p, house };
+  });
+  const planetHousePages = chunkArray(planetHouseRows, 5);
+  const planetRasiPages = chunkArray(result.planets, 5);
+  const bhavaPalanPages = chunkArray(palans, 6);
+  const yogasPages = chunkArray(detectYogas(result), 5);
+  const yearForecastPages = chunkArray(yearForecast(result, 12), 6);
+  const mantraPages = chunkArray(PLANET_MANTRAS, 6);
+  const weekdayRemedyPages = chunkArray([
+    ["ஞாயிறு","சூரியன்","சிவன் / சூரியன்","சூரிய நமஸ்காரம், ஆதித்ய ஹ்ருதயம்","கோதுமை, வெல்லம், செம்மலர்"],
+    ["திங்கள்","சந்திரன்","சிவன் / பார்வதி","ருத்ர அபிஷேகம், சந்த்ர மந்திரம்","பால், அரிசி, வெள்ளை மலர்"],
+    ["செவ்வாய்","செவ்வாய்","முருகன் / ஹனுமான்","ஸ்கந்த சஷ்டி, அங்காரக ஸ்தோத்திரம்","துவரை, செம்பு, பவளம்"],
+    ["புதன்","புதன்","விஷ்ணு / கணபதி","விஷ்ணு சஹஸ்ரநாமம், கணேச அதர்வசீர்ஷம்","பச்சை பயறு, பச்சை வஸ்திரம்"],
+    ["வியாழன்","குரு","விஷ்ணு / தக்ஷிணாமூர்த்தி","குரு ஸ்தோத்திரம், விஷ்ணு பூஜை","மஞ்சள், கடலை பருப்பு, மஞ்சள் வஸ்திரம்"],
+    ["வெள்ளி","சுக்ரன்","லக்ஷ்மி / துர்கா","ஸ்ரீ சூக்தம், லக்ஷ்மி அஷ்டோத்தரம்","வெண்ணெய், தயிர், வெள்ளை மலர்"],
+    ["சனி","சனி","சாஸ்தா / ஹனுமான்","ஹனுமான் சாலிசா, சனி ஸ்தோத்திரம்","எள், கருப்பு துணி, இரும்பு"],
+  ], 4);
   const dashaPages = dashaPagesData.reduce((s, m) => s + m.chunks.length, 0);
   const vargasPages = Math.ceil(result.vargaCharts.length / 6);
   const lifeAreaPages = 11;
-  const bhavaDeepPages = 6;
+  const bhavaDeepPages = 12;
   const extraPages = 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 3;
-  const totalPages = 1 + 1 + 1 + vargasPages + 1 + 1 + 1 + 1 + 1 + lifeAreaPages + bhavaDeepPages + extraPages + dashaPages;
+  const totalPages = 1 + 1 + 1 + vargasPages + 1 + 1 + bhavaPalanPages.length + planetHousePages.length + planetRasiPages.length + 1 + 1 + lifeAreaPages + yogasPages.length + 1 + 1 + bhavaDeepPages + yearForecastPages.length + 1 + 1 + mantraPages.length + 1 + 1 + weekdayRemedyPages.length + 1 + 1 + 1 + 1 + 1 + 3 + dashaPages;
 
   let pn = 0;
   const next = () => ++pn;
