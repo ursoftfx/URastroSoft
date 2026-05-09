@@ -789,27 +789,30 @@ export const ProfessionalReport = ({ result }: Props) => {
       </Page>
 
       {/* === Mantras === */}
-      <Page title="நவ கிரக மந்திரங்கள்" page={next()} total={totalPages} name={i.name}>
-        <SectionBar>9 கிரகங்களுக்கான பீஜ மந்திரங்கள்</SectionBar>
-        <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
-          <thead><tr style={{ background: "#fff8ee" }}>
-            <th style={th}>கிரகம்</th><th style={th}>மந்திரம்</th><th style={th}>ஜப எண்ணிக்கை</th>
-          </tr></thead>
-          <tbody>
-            {PLANET_MANTRAS.map((m, idx) => (
-              <tr key={idx}>
-                <td style={{...td,fontWeight:700}}>{m.planet}</td>
-                <td style={{...td, fontFamily: "serif"}}>{m.mantra}</td>
-                <td style={td}>{m.count}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <div style={{ marginTop: 8, fontSize: 9, lineHeight: 1.6 }}>
-          <b>முக்கிய குறிப்பு:</b> மந்திரங்களை குரு உபதேசம் பெற்ற பின் ஜபிக்க வேண்டும். காலை 5-7 மணி உகந்த நேரம்.
-          ருத்ராக்ஷ மாலையுடன், கிழக்கு / வடக்கு பார்த்து உட்கார்ந்து ஜபிக்க.
-        </div>
-      </Page>
+      {mantraPages.map((rows, pi) => (
+        <Page key={`mn-${pi}`} title={`நவ கிரக மந்திரங்கள் (${pi + 1}/${mantraPages.length})`} page={next()} total={totalPages} name={i.name}>
+          <SectionBar>9 கிரகங்களுக்கான பீஜ மந்திரங்கள்</SectionBar>
+          <table style={{ width: "100%", fontSize: 9, lineHeight: 1.25, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
+            <thead><tr style={{ background: "#fff8ee" }}>
+              <th style={{ ...th, width: "18%" }}>கிரகம்</th><th style={th}>மந்திரம்</th><th style={{ ...th, width: "20%" }}>ஜப எண்ணிக்கை</th>
+            </tr></thead>
+            <tbody>
+              {rows.map((m, idx) => (
+                <tr key={idx}>
+                  <td style={{...td,fontWeight:700}}>{m.planet}</td>
+                  <td style={{...td, fontFamily: "serif"}}>{m.mantra}</td>
+                  <td style={td}>{m.count}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {pi === mantraPages.length - 1 && (
+            <div style={{ marginTop: 6, fontSize: 8.5, lineHeight: 1.4 }}>
+              <b>முக்கிய குறிப்பு:</b> மந்திரங்களை குரு உபதேசம் பெற்ற பின் ஜபிக்க வேண்டும். காலை 5-7 மணி உகந்த நேரம்.
+            </div>
+          )}
+        </Page>
+      ))}
 
       {/* === Lucky attributes === */}
       <Page title="அதிர்ஷ்ட நாள் / நிறம் / எண் / திசை" page={next()} total={totalPages} name={i.name}>
@@ -855,31 +858,26 @@ export const ProfessionalReport = ({ result }: Props) => {
       </Page>
 
       {/* === Weekday remedies === */}
-      <Page title="வாரம் முழுவதும் பரிகார வழிமுறை" page={next()} total={totalPages} name={i.name}>
-        <SectionBar>தினசரி பரிகார அட்டவணை</SectionBar>
-        <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
-          <thead><tr style={{ background: "#fff8ee" }}>
-            <th style={th}>நாள்</th><th style={th}>கிரகம்</th><th style={th}>தெய்வம்</th><th style={th}>பரிகாரம்</th><th style={th}>தானம்</th>
-          </tr></thead>
-          <tbody>
-            {[
-              ["ஞாயிறு","சூரியன்","சிவன் / சூரியன்","சூரிய நமஸ்காரம், ஆதித்ய ஹ்ருதயம்","கோதுமை, வெல்லம், செம்மலர்"],
-              ["திங்கள்","சந்திரன்","சிவன் / பார்வதி","ருத்ர அபிஷேகம், சந்த்ர மந்திரம்","பால், அரிசி, வெள்ளை மலர்"],
-              ["செவ்வாய்","செவ்வாய்","முருகன் / ஹனுமான்","ஸ்கந்த சஷ்டி, அங்காரக ஸ்தோத்திரம்","துவரை, செம்பு, பவளம்"],
-              ["புதன்","புதன்","விஷ்ணு / கணபதி","விஷ்ணு சஹஸ்ரநாமம், கணேச அதர்வசீர்ஷம்","பச்சை பயறு, பச்சை வஸ்திரம்"],
-              ["வியாழன்","குரு","விஷ்ணு / தக்ஷிணாமூர்த்தி","குரு ஸ்தோத்திரம், விஷ்ணு பூஜை","மஞ்சள், கடலை பருப்பு, மஞ்சள் வஸ்திரம்"],
-              ["வெள்ளி","சுக்ரன்","லக்ஷ்மி / துர்கா","ஸ்ரீ சூக்தம், லக்ஷ்மி அஷ்டோத்தரம்","வெண்ணெய், தயிர், வெள்ளை மலர்"],
-              ["சனி","சனி","சாஸ்தா / ஹனுமான்","ஹனுமான் சாலிசா, சனி ஸ்தோத்திரம்","எள், கருப்பு துணி, இரும்பு"],
-            ].map((r, idx) => (
-              <tr key={idx}>{r.map((c, ci) => <td key={ci} style={ci===0?{...td,fontWeight:700,background:"#fff8ee"}:td}>{c}</td>)}</tr>
-            ))}
-          </tbody>
-        </table>
-        <div style={{ marginTop: 8, fontSize: 9, lineHeight: 1.6 }}>
-          <b>பொது விதிகள்:</b> காலை 4-6 மணி பிரம்ம முகூர்த்தம் — மிக சிறந்தது.
-          பிறந்த நட்சத்திர நாளில் சிறப்பு வழிபாடு. மாதம் ஒரு முறையாவது கோயில் தரிசனம், அன்னதானம் வாழ்வில் வளம் சேர்க்கும்.
-        </div>
-      </Page>
+      {weekdayRemedyPages.map((rows, pi) => (
+        <Page key={`wr-${pi}`} title={`வாரம் முழுவதும் பரிகார வழிமுறை (${pi + 1}/${weekdayRemedyPages.length})`} page={next()} total={totalPages} name={i.name}>
+          <SectionBar>தினசரி பரிகார அட்டவணை</SectionBar>
+          <table style={{ width: "100%", fontSize: 8.5, lineHeight: 1.25, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
+            <thead><tr style={{ background: "#fff8ee" }}>
+              <th style={{ ...th, width: "13%" }}>நாள்</th><th style={{ ...th, width: "12%" }}>கிரகம்</th><th style={{ ...th, width: "18%" }}>தெய்வம்</th><th style={th}>பரிகாரம்</th><th style={th}>தானம்</th>
+            </tr></thead>
+            <tbody>
+              {rows.map((r, idx) => (
+                <tr key={idx}>{r.map((c, ci) => <td key={ci} style={ci===0?{...td,fontWeight:700,background:"#fff8ee"}:td}>{c}</td>)}</tr>
+              ))}
+            </tbody>
+          </table>
+          {pi === weekdayRemedyPages.length - 1 && (
+            <div style={{ marginTop: 6, fontSize: 8.5, lineHeight: 1.4 }}>
+              <b>பொது விதிகள்:</b> காலை 4-6 மணி பிரம்ம முகூர்த்தம். பிறந்த நட்சத்திர நாளில் சிறப்பு வழிபாடு.
+            </div>
+          )}
+        </Page>
+      ))}
 
       {/* === Karmic — Rahu/Ketu axis === */}
       <Page title="கர்ம பகுப்பாய்வு — ராகு / கேது அச்சு" page={next()} total={totalPages} name={i.name}>
