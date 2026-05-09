@@ -199,7 +199,7 @@ export const ProfessionalReport = ({ result }: Props) => {
   return (
     <div id="professional-report-root">
       <style>{`
-        @media print { @page { size: A4 portrait; margin: 0; } .print-area { margin: 0 !important; box-shadow: none !important; page-break-after: auto !important; page-break-inside: avoid; break-inside: avoid; } body { margin: 0; } .no-print { display: none !important; } }
+        @media print { @page { size: A4 portrait; margin: 5mm; } .print-area { margin: 0 auto 3mm auto !important; box-shadow: none !important; page-break-after: auto !important; break-after: auto !important; page-break-inside: avoid !important; break-inside: avoid !important; } body { margin: 0; } .no-print { display: none !important; } }
         #professional-report-root, #professional-report-root * { color: #000 !important; background-color: transparent !important; border-color: #000 !important; box-shadow: none !important; outline-color: #000 !important; }
         #professional-report-root .print-area { background-color: #fff !important; }
         #professional-report-root table { font-size: 8px; }
