@@ -139,9 +139,6 @@ const Page = ({ children, title, subtitle, page, total, name }: any) => (
         {children}
       </div>
     </div>
-    <div style={{ textAlign: "center", fontSize: 7, color: "#000", marginTop: 1 }}>
-      © UR ASTRO SOFT • urastrosoft.com • இந்த அறிக்கை ஆலோசனை நோக்கத்திற்காக மட்டுமே
-    </div>
   </div>
 );
 
