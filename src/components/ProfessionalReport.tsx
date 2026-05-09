@@ -686,13 +686,12 @@ export const ProfessionalReport = ({ result }: Props) => {
         </table>
       </Page>
 
-      {/* === 12 Bhava deep analysis (2 per page = 6 pages) === */}
-      {Array.from({ length: 6 }).map((_, bp) => {
-        const start = bp * 2 + 1;
-        const houses = [start, start + 1].filter(h => h <= 12);
+      {/* === 12 Bhava deep analysis (1 per page to avoid overlap) === */}
+      {Array.from({ length: 12 }).map((_, bp) => {
+        const h = bp + 1;
         return (
-          <Page key={`bh-${bp}`} title={`12 பாவ ஆழ்ந்த பகுப்பாய்வு (${bp + 1}/6)`} page={next()} total={totalPages} name={i.name}>
-            {houses.map(h => {
+          <Page key={`bh-${bp}`} title={`12 பாவ ஆழ்ந்த பகுப்பாய்வு (${bp + 1}/12)`} page={next()} total={totalPages} name={i.name}>
+            {(() => {
               const rasiIdx = (result.ascendant.rasiIndex + h - 1) % 12;
               const lord = ["mars","venus","mercury","moon","sun","mercury","venus","mars","jupiter","saturn","saturn","jupiter"][rasiIdx];
               const lordHouse = (() => {
@@ -714,7 +713,7 @@ export const ProfessionalReport = ({ result }: Props) => {
                   </Box>
                 </div>
               );
-            })}
+            })()}
           </Page>
         );
       })}
