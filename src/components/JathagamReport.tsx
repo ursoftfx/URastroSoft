@@ -373,6 +373,8 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
         );
       })()}
 
+    </div>
+    <div className="space-y-4 a5-sheet print-area" style={sheetStyle}>
       {/* === Guru Balam === */}
       {(() => {
         const j = result.planets.find(p => p.key === "jupiter")!;
