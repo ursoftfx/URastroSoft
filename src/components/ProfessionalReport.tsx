@@ -135,7 +135,7 @@ const Page = ({ children, title, subtitle, page, total, name }: any) => (
           <div style={{ fontSize: 7, color: "#000" }}>{name} • பக்கம் {page} / {total}</div>
         </div>
       </div>
-      <div style={{ flex: 1, minHeight: 0, overflow: "hidden" }}>
+      <div style={{ flex: 1 }}>
         {children}
       </div>
     </div>
