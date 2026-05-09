@@ -1059,56 +1059,56 @@ export const ProfessionalReport = ({ result }: Props) => {
         </Box>
       </Page>
 
-      {/* === Dasha pages — one per Mahadasha with age === */}
-      {result.dashaTree.map((maha, mi) => {
+      {/* === Dasha pages — continuous flat table chunked across A5 pages === */}
+      {dashaPagesData.map(({ maha, chunks }, mi) => {
         const startAge = ageAt(birthDate, maha.startDate);
         const endAge = ageAt(birthDate, maha.endDate);
         const lordKey = DASHA_LORD_TO_KEY[maha.lord];
-        return (
-          <Page key={`d-${mi}`} title={`${mi + 1}. ${maha.lord} மகா தசை`} subtitle={`வயது ${startAge} - ${endAge}`} page={next()} total={totalPages} name={i.name}>
-            <div style={{ background: "#fbe9d0", padding: "2px 6px", fontSize: 9, fontWeight: 700, border: "1px solid #c9a050", textAlign: "center" }}>
-              {maha.lord} மகா தசை &nbsp;•&nbsp; {fmtDate(maha.startDate)} → {fmtDate(maha.endDate)} &nbsp;•&nbsp; வயது {startAge} - {endAge}
-            </div>
-            {lordKey && (
-              <div style={{ border: "1px solid #c9a050", borderTop: 0, padding: "3px 6px", fontSize: 7.5, lineHeight: 1.25, background: "#fff8ee" }}>
-                <b>{maha.lord} தசை பலன் :</b> {DASHA_LORD_PALAN[lordKey]}
-              </div>
-            )}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 3, marginTop: 3 }}>
-              {(maha.children || []).map((bh, bi) => {
-                const ants = bh.children || [];
-                const bhAge = ageAt(birthDate, bh.startDate);
-                return (
-                  <div key={`b-${bi}`} style={{ border: "1px solid #c9a050", borderRadius: 2, overflow: "hidden" }}>
-                    <div style={{ background: "#fff8ee", padding: "2px 4px", fontSize: 7, fontWeight: 700, color: "#7a1a2b", borderBottom: "1px solid #c9a050" }}>
-                      {bi + 1}. {maha.lord}/{bh.lord} • வயது {bhAge} • {fmtDate(bh.startDate)} → {fmtDate(bh.endDate)}
-                    </div>
-                    <table style={{ width: "100%", fontSize: 6, lineHeight: 1.05, borderCollapse: "collapse", tableLayout: "fixed" }}>
-                      <thead>
-                        <tr style={{ background: "#fdf6e7" }}>
-                          <th style={{ ...th, padding: "1px 2px", width: "30%", fontSize: 6 }}>அந்தரம்</th>
-                          <th style={{ ...th, padding: "1px 2px", width: "35%", fontSize: 6 }}>தொடக்கம்</th>
-                          <th style={{ ...th, padding: "1px 2px", width: "35%", fontSize: 6 }}>முடிவு</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {ants.length === 0 ? (
-                          <tr><td colSpan={3} style={{ ...td, padding: "1px 2px", fontSize: 6, textAlign: "center" }}>—</td></tr>
-                        ) : ants.map((a, ai) => (
-                          <tr key={`b-${bi}-${ai}`}>
-                            <td style={{ ...td, padding: "1px 2px", fontSize: 6 }}>{a.lord}</td>
-                            <td style={{ ...td, padding: "1px 2px", fontSize: 6 }}>{fmtDate(a.startDate)}</td>
-                            <td style={{ ...td, padding: "1px 2px", fontSize: 6 }}>{fmtDate(a.endDate)}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+        return chunks.map((rows, ci) => (
+          <Page
+            key={`d-${mi}-${ci}`}
+            title={`${mi + 1}. ${maha.lord} மகா தசை`}
+            subtitle={chunks.length > 1 ? `பகுதி ${ci + 1} / ${chunks.length} • வயது ${startAge}-${endAge}` : `வயது ${startAge} - ${endAge}`}
+            page={next()}
+            total={totalPages}
+            name={i.name}
+          >
+            {ci === 0 && (
+              <>
+                <div style={{ padding: "2px 6px", fontSize: 9, fontWeight: 700, border: "1px solid #000", textAlign: "center" }}>
+                  {maha.lord} மகா தசை &nbsp;•&nbsp; {fmtDate(maha.startDate)} → {fmtDate(maha.endDate)} &nbsp;•&nbsp; வயது {startAge} - {endAge}
+                </div>
+                {lordKey && (
+                  <div style={{ border: "1px solid #000", borderTop: 0, padding: "3px 6px", fontSize: 7.5, lineHeight: 1.25 }}>
+                    <b>{maha.lord} தசை பலன் :</b> {DASHA_LORD_PALAN[lordKey]}
                   </div>
-                );
-              })}
-            </div>
+                )}
+              </>
+            )}
+            <table style={{ width: "100%", fontSize: 8, lineHeight: 1.15, borderCollapse: "collapse", border: "1px solid #000", marginTop: 3, tableLayout: "fixed" }}>
+              <thead>
+                <tr>
+                  <th style={{ ...th, padding: "1px 3px", width: "16%" }}>புத்தி</th>
+                  <th style={{ ...th, padding: "1px 3px", width: "14%" }}>அந்தரம்</th>
+                  <th style={{ ...th, padding: "1px 3px", width: "23%" }}>தொடக்கம்</th>
+                  <th style={{ ...th, padding: "1px 3px", width: "23%" }}>முடிவு</th>
+                  <th style={{ ...th, padding: "1px 3px", width: "8%" }}>வயது</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((r, ri) => (
+                  <tr key={ri}>
+                    <td style={{ ...td, padding: "1px 3px", fontWeight: r.bhukti ? 700 : 400 }}>{r.bhukti}</td>
+                    <td style={{ ...td, padding: "1px 3px" }}>{r.ant}</td>
+                    <td style={{ ...td, padding: "1px 3px" }}>{r.start}</td>
+                    <td style={{ ...td, padding: "1px 3px" }}>{r.end}</td>
+                    <td style={{ ...td, padding: "1px 3px" }}>{r.age}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </Page>
-        );
+        ));
       })}
     </div>
   );
