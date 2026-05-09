@@ -59,6 +59,12 @@ const ageAt = (birth: Date, target: Date) => {
   return y;
 };
 
+const chunkArray = <T,>(items: T[], size: number): T[][] => {
+  const pages: T[][] = [];
+  for (let i = 0; i < items.length; i += size) pages.push(items.slice(i, i + size));
+  return pages.length ? pages : [[]];
+};
+
 // ---------- South Indian chart ----------
 const SI_LAYOUT: (number | null)[][] = [
   [11, 0, 1, 2], [10, null, null, 3], [9, null, null, 4], [8, 7, 6, 5],
@@ -67,7 +73,7 @@ const SI_LAYOUT: (number | null)[][] = [
 const Chart = ({ title, chart, ascRasi, size = "lg" }: {
   title: string; chart: string[][]; ascRasi: number; size?: "lg" | "sm";
 }) => {
-  const cellH = size === "lg" ? 70 : 42;
+  const cellH = size === "lg" ? 54 : 36;
   const fs = size === "lg" ? 10 : 7;
   return (
     <table style={{ width: "100%", borderCollapse: "collapse", border: "1.5px solid #000", tableLayout: "fixed" }}>
@@ -109,23 +115,23 @@ const Chart = ({ title, chart, ascRasi, size = "lg" }: {
 // ---------- Page wrapper (A5 landscape: 210 x 148 mm) — B/W ----------
 const Page = ({ children, title, subtitle, page, total, name }: any) => (
   <div className="a5-sheet print-area" style={{
-    width: "200mm", height: "143mm", maxHeight: "143mm",
-    padding: "3mm", margin: "5mm auto",
+    width: "196mm", height: "137mm", maxHeight: "137mm",
+    padding: "2mm", margin: "0 auto 2mm auto",
     background: "#ffffff", color: "#000",
     fontFamily: "'Latha','Tahoma',sans-serif", boxSizing: "border-box",
     pageBreakInside: "avoid", breakInside: "avoid",
     overflow: "hidden",
-    fontSize: 8.5, lineHeight: 1.2,
+    fontSize: 8.1, lineHeight: 1.15,
     display: "flex", flexDirection: "column",
   }}>
     <div style={{
       flex: 1, minHeight: 0,
       border: "2px double #000", outline: "1px solid #000", outlineOffset: 2,
-      borderRadius: 0, padding: "2.5mm 3.5mm",
+      borderRadius: 0, padding: "2mm 3mm",
       background: "#ffffff",
       display: "flex", flexDirection: "column", overflow: "hidden",
     }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1px solid #000", paddingBottom: 3, marginBottom: 4 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1px solid #000", paddingBottom: 2, marginBottom: 3 }}>
         <div>
           <div style={{ fontSize: 14, fontWeight: 800, color: "#000", letterSpacing: 1 }}>UR ASTRO SOFT</div>
           <div style={{ fontSize: 8, color: "#000" }}>தமிழ் வேத ஜோதிட விரிவான ஜாதகம்</div>
@@ -156,7 +162,7 @@ export const ProfessionalReport = ({ result }: Props) => {
 
   // Total page count
   // Build flat dasha rows per maha and chunk into pages
-  const DASHA_ROWS_PER_PAGE = 28;
+  const DASHA_ROWS_PER_PAGE = 22;
   const dashaPagesData = result.dashaTree.map((maha) => {
     const rows: { bhukti: string; ant: string; start: string; end: string; age: number | string }[] = [];
     (maha.children || []).forEach((bh) => {
@@ -176,17 +182,34 @@ export const ProfessionalReport = ({ result }: Props) => {
         });
       }
     });
-    const chunks: typeof rows[] = [];
-    for (let s = 0; s < rows.length; s += DASHA_ROWS_PER_PAGE) chunks.push(rows.slice(s, s + DASHA_ROWS_PER_PAGE));
-    if (chunks.length === 0) chunks.push([]);
+    const chunks = chunkArray(rows, DASHA_ROWS_PER_PAGE);
     return { maha, chunks };
   });
+  const planetHouseRows = result.planets.map(p => {
+    const house = ((p.rasiIndex - result.ascendant.rasiIndex + 12) % 12) + 1;
+    return { planet: p, house };
+  });
+  const planetHousePages = chunkArray(planetHouseRows, 5);
+  const planetRasiPages = chunkArray(result.planets, 5);
+  const bhavaPalanPages = chunkArray(palans, 6);
+  const yogasPages = chunkArray(detectYogas(result), 5);
+  const yearForecastPages = chunkArray(yearForecast(result, 12), 6);
+  const mantraPages = chunkArray(PLANET_MANTRAS, 6);
+  const weekdayRemedyPages = chunkArray([
+    ["ஞாயிறு","சூரியன்","சிவன் / சூரியன்","சூரிய நமஸ்காரம், ஆதித்ய ஹ்ருதயம்","கோதுமை, வெல்லம், செம்மலர்"],
+    ["திங்கள்","சந்திரன்","சிவன் / பார்வதி","ருத்ர அபிஷேகம், சந்த்ர மந்திரம்","பால், அரிசி, வெள்ளை மலர்"],
+    ["செவ்வாய்","செவ்வாய்","முருகன் / ஹனுமான்","ஸ்கந்த சஷ்டி, அங்காரக ஸ்தோத்திரம்","துவரை, செம்பு, பவளம்"],
+    ["புதன்","புதன்","விஷ்ணு / கணபதி","விஷ்ணு சஹஸ்ரநாமம், கணேச அதர்வசீர்ஷம்","பச்சை பயறு, பச்சை வஸ்திரம்"],
+    ["வியாழன்","குரு","விஷ்ணு / தக்ஷிணாமூர்த்தி","குரு ஸ்தோத்திரம், விஷ்ணு பூஜை","மஞ்சள், கடலை பருப்பு, மஞ்சள் வஸ்திரம்"],
+    ["வெள்ளி","சுக்ரன்","லக்ஷ்மி / துர்கா","ஸ்ரீ சூக்தம், லக்ஷ்மி அஷ்டோத்தரம்","வெண்ணெய், தயிர், வெள்ளை மலர்"],
+    ["சனி","சனி","சாஸ்தா / ஹனுமான்","ஹனுமான் சாலிசா, சனி ஸ்தோத்திரம்","எள், கருப்பு துணி, இரும்பு"],
+  ], 4);
   const dashaPages = dashaPagesData.reduce((s, m) => s + m.chunks.length, 0);
   const vargasPages = Math.ceil(result.vargaCharts.length / 6);
   const lifeAreaPages = 11;
-  const bhavaDeepPages = 6;
+  const bhavaDeepPages = 12;
   const extraPages = 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 3;
-  const totalPages = 1 + 1 + 1 + vargasPages + 1 + 1 + 1 + 1 + 1 + lifeAreaPages + bhavaDeepPages + extraPages + dashaPages;
+  const totalPages = 1 + 2 + 2 + vargasPages + 1 + 1 + bhavaPalanPages.length + planetHousePages.length + planetRasiPages.length + 1 + 1 + lifeAreaPages + yogasPages.length + 1 + 1 + bhavaDeepPages + yearForecastPages.length + 1 + 1 + mantraPages.length + 1 + 1 + weekdayRemedyPages.length + 1 + 1 + 1 + 1 + 1 + 3 + dashaPages;
 
   let pn = 0;
   const next = () => ++pn;
@@ -199,7 +222,7 @@ export const ProfessionalReport = ({ result }: Props) => {
   return (
     <div id="professional-report-root">
       <style>{`
-        @media print { @page { size: A4 portrait; margin: 5mm; } .print-area { margin: 0 auto 3mm auto !important; box-shadow: none !important; page-break-after: auto !important; break-after: auto !important; page-break-inside: avoid !important; break-inside: avoid !important; } body { margin: 0; } .no-print { display: none !important; } }
+        @media print { @page { size: A4 portrait; margin: 6mm; } .print-area { margin: 0 auto 2mm auto !important; box-shadow: none !important; page-break-after: auto !important; break-after: auto !important; page-break-inside: avoid !important; break-inside: avoid !important; } body { margin: 0; } .no-print { display: none !important; } }
         #professional-report-root, #professional-report-root * { color: #000 !important; background-color: transparent !important; border-color: #000 !important; box-shadow: none !important; outline-color: #000 !important; }
         #professional-report-root .print-area { background-color: #fff !important; }
         #professional-report-root table { font-size: 8px; }
@@ -229,8 +252,8 @@ export const ProfessionalReport = ({ result }: Props) => {
         </div>
       </Page>
 
-      {/* === PAGE 2 : Planet Positions, KP-style === */}
-      <Page title="கிரக நிலைகள் & பஞ்சாங்கம்" page={next()} total={totalPages} name={i.name}>
+      {/* === PAGE 2 : Birth details + Panchangam === */}
+      <Page title="பிறப்பு விவரம் & பஞ்சாங்கம்" page={next()} total={totalPages} name={i.name}>
         <div style={{ background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>பிறப்பு விவரம்</div>
         <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
           <tbody>
@@ -251,9 +274,12 @@ export const ProfessionalReport = ({ result }: Props) => {
             <tr><td style={tdL}><b>ஜென்ம நட்சத்திரம்</b></td><td style={tdR}>{result.nakshatraTamil} - {result.pada}-ம் பாதம்</td><td style={tdL}><b>நட்சத்திர அதிபதி</b></td><td style={tdR}>{result.nakshatraLordTamil}</td></tr>
           </tbody>
         </table>
+      </Page>
 
+      {/* === PAGE 3 : Planet Positions, KP-style === */}
+      <Page title="கிரக நிலைகள்" page={next()} total={totalPages} name={i.name}>
         <div style={{ marginTop: 6, background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>கிரக நிலைகள் (Planetary Positions — KP Style)</div>
-        <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+        <table style={{ width: "100%", fontSize: 7.4, lineHeight: 1.12, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
           <thead>
             <tr style={{ background: "#fff8ee", fontWeight: 700 }}>
               <th style={th}>கிரகம்</th>
@@ -336,8 +362,8 @@ export const ProfessionalReport = ({ result }: Props) => {
         </table>
       </Page>
 
-      {/* === PAGE 3 : Rasi + Navamsa + Bhava chart === */}
-      <Page title="ராசி • நவாம்சம் • பாவ சக்கரம்" page={next()} total={totalPages} name={i.name}>
+      {/* === Rasi + Navamsa chart === */}
+      <Page title="ராசி • நவாம்ச கட்டம்" page={next()} total={totalPages} name={i.name}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
           <div>
             <div style={chartTitle}>ராசி கட்டம் (D-1)</div>
@@ -348,11 +374,14 @@ export const ProfessionalReport = ({ result }: Props) => {
             <Chart title="நவாம்சம்" chart={result.navamsaChart} ascRasi={navAsc} />
           </div>
         </div>
+      </Page>
 
-        <div style={{ marginTop: 8, display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+      {/* === Bhava chart === */}
+      <Page title="பாவ சக்கரம்" page={next()} total={totalPages} name={i.name}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
           <div>
             <div style={chartTitle}>பாவ சக்கரம் (Bhava)</div>
-            <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+            <table style={{ width: "100%", fontSize: 8, lineHeight: 1.15, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
               <thead><tr style={{ background: "#fff8ee" }}>
                 <th style={th}>பாவம்</th><th style={th}>ராசி</th><th style={th}>அதிபதி</th><th style={th}>இடம்</th>
               </tr></thead>
@@ -368,7 +397,7 @@ export const ProfessionalReport = ({ result }: Props) => {
           </div>
           <div>
             <div style={chartTitle}>12 பாவ விளக்கம்</div>
-            <table style={{ width: "100%", fontSize: 8, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+            <table style={{ width: "100%", fontSize: 7.4, lineHeight: 1.12, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
               <tbody>
                 {Object.entries(HOUSE_SIGNIFICATIONS).map(([k, v]) => (
                   <tr key={k}><td style={{ ...td, width: 22, fontWeight: 700, background: "#fff8ee" }}>{k}</td><td style={td}>{v}</td></tr>
@@ -440,8 +469,8 @@ export const ProfessionalReport = ({ result }: Props) => {
         </div>
       </Page>
 
-      {/* === Lagna + Nakshatra + Bhava palans === */}
-      <Page title="லக்ன • நட்சத்திர • பாவாதிபதி பலன்" page={next()} total={totalPages} name={i.name}>
+      {/* === Lagna + Nakshatra === */}
+      <Page title="லக்ன • நட்சத்திர பலன்" page={next()} total={totalPages} name={i.name}>
         <div style={{ background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>
           லக்ன பலன் — {result.lagnaTamil} லக்னம்
         </div>
@@ -462,74 +491,74 @@ export const ProfessionalReport = ({ result }: Props) => {
         <div style={{ border: "1px solid #c9a050", padding: 8, fontSize: 10, lineHeight: 1.6 }}>
           {NAKSHATRA_PALAN[result.moon.nakshatraIndex]}
         </div>
-
-        <div style={{ marginTop: 8, background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>
-          பாவாதிபதி நின்ற பலன் (12 வீடுகள்)
-        </div>
-        <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
-          <thead><tr style={{ background: "#fff8ee" }}>
-            <th style={th}>பாவம்</th><th style={th}>ராசி</th><th style={th}>அதிபதி</th><th style={th}>நின்ற இடம்</th><th style={th}>பலன்</th>
-          </tr></thead>
-          <tbody>
-            {palans.map((b, idx) => (
-              <tr key={idx}>
-                <td style={td}>{b.bhavaIdx}. {b.bhavaName}</td>
-                <td style={td}>{b.rasi}</td>
-                <td style={td}>{b.lord}</td>
-                <td style={td}>{b.lordHouse}-ம் வீடு</td>
-                <td style={td}>{b.palan}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </Page>
 
+      {/* === Bhava lord palans === */}
+      {bhavaPalanPages.map((rows, pi) => (
+        <Page key={`bp-${pi}`} title={`பாவாதிபதி நின்ற பலன் (${pi + 1}/${bhavaPalanPages.length})`} page={next()} total={totalPages} name={i.name}>
+          <SectionBar>பாவாதிபதி நின்ற பலன்</SectionBar>
+          <table style={{ width: "100%", fontSize: 8.2, lineHeight: 1.25, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
+            <thead><tr style={{ background: "#fff8ee" }}>
+              <th style={{ ...th, width: "17%" }}>பாவம்</th><th style={{ ...th, width: "12%" }}>ராசி</th><th style={{ ...th, width: "12%" }}>அதிபதி</th><th style={{ ...th, width: "12%" }}>இடம்</th><th style={th}>பலன்</th>
+            </tr></thead>
+            <tbody>
+              {rows.map((b, idx) => (
+                <tr key={idx}>
+                  <td style={td}>{b.bhavaIdx}. {b.bhavaName}</td>
+                  <td style={td}>{b.rasi}</td>
+                  <td style={td}>{b.lord}</td>
+                  <td style={td}>{b.lordHouse}-ம் வீடு</td>
+                  <td style={td}>{b.palan}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Page>
+      ))}
+
       {/* === Planet in House palans === */}
-      <Page title="கிரகங்கள் பாவங்களில் நின்ற பலன்" page={next()} total={totalPages} name={i.name}>
-        <div style={{ background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>
-          பாவத்தில் கிரகம் நின்ற பலன் (Planet in House)
-        </div>
-        <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
-          <thead><tr style={{ background: "#fff8ee" }}>
-            <th style={th}>கிரகம்</th><th style={th}>ராசி</th><th style={th}>பாவம்</th><th style={th}>பலன்</th>
-          </tr></thead>
-          <tbody>
-            {result.planets.map(p => {
-              const house = ((p.rasiIndex - result.ascendant.rasiIndex + 12) % 12) + 1;
-              return (
+      {planetHousePages.map((rows, pi) => (
+        <Page key={`ph-${pi}`} title={`கிரகங்கள் பாவங்களில் நின்ற பலன் (${pi + 1}/${planetHousePages.length})`} page={next()} total={totalPages} name={i.name}>
+          <SectionBar>பாவத்தில் கிரகம் நின்ற பலன்</SectionBar>
+          <table style={{ width: "100%", fontSize: 8.5, lineHeight: 1.25, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
+            <thead><tr style={{ background: "#fff8ee" }}>
+              <th style={{ ...th, width: "14%" }}>கிரகம்</th><th style={{ ...th, width: "13%" }}>ராசி</th><th style={{ ...th, width: "12%" }}>பாவம்</th><th style={th}>பலன்</th>
+            </tr></thead>
+            <tbody>
+              {rows.map(({ planet: p, house }) => (
                 <tr key={p.key}>
                   <td style={{ ...td, fontWeight: 700 }}>{PLANET_TA[p.key]}</td>
                   <td style={td}>{p.rasiTamil}</td>
                   <td style={td}>{house}-ம் வீடு</td>
                   <td style={td}>{PLANET_IN_HOUSE[p.key]?.[house] || "—"}</td>
                 </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </Page>
+              ))}
+            </tbody>
+          </table>
+        </Page>
+      ))}
 
       {/* === Planet in Rasi palans === */}
-      <Page title="கிரகங்கள் ராசிகளில் நின்ற பலன்" page={next()} total={totalPages} name={i.name}>
-        <div style={{ background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>
-          ராசியில் கிரகம் நின்ற பலன் (Planet in Sign)
-        </div>
-        <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
-          <thead><tr style={{ background: "#fff8ee" }}>
-            <th style={th}>கிரகம்</th><th style={th}>ராசி</th><th style={th}>பாகை</th><th style={th}>பலன்</th>
-          </tr></thead>
-          <tbody>
-            {result.planets.map(p => (
-              <tr key={p.key}>
-                <td style={{ ...td, fontWeight: 700 }}>{PLANET_TA[p.key]}</td>
-                <td style={td}>{p.rasiTamil}</td>
-                <td style={td}>{dms(p.degreeInRasi)}</td>
-                <td style={td}>{PLANET_IN_RASI[p.key]?.[p.rasiIndex] || "—"}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Page>
+      {planetRasiPages.map((rows, pi) => (
+        <Page key={`pr-${pi}`} title={`கிரகங்கள் ராசிகளில் நின்ற பலன் (${pi + 1}/${planetRasiPages.length})`} page={next()} total={totalPages} name={i.name}>
+          <SectionBar>ராசியில் கிரகம் நின்ற பலன்</SectionBar>
+          <table style={{ width: "100%", fontSize: 8.5, lineHeight: 1.25, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
+            <thead><tr style={{ background: "#fff8ee" }}>
+              <th style={{ ...th, width: "14%" }}>கிரகம்</th><th style={{ ...th, width: "13%" }}>ராசி</th><th style={{ ...th, width: "17%" }}>பாகை</th><th style={th}>பலன்</th>
+            </tr></thead>
+            <tbody>
+              {rows.map(p => (
+                <tr key={p.key}>
+                  <td style={{ ...td, fontWeight: 700 }}>{PLANET_TA[p.key]}</td>
+                  <td style={td}>{p.rasiTamil}</td>
+                  <td style={td}>{dms(p.degreeInRasi)}</td>
+                  <td style={td}>{PLANET_IN_RASI[p.key]?.[p.rasiIndex] || "—"}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Page>
+      ))}
 
       {/* === Doshas + Remedies === */}
       <Page title="தோஷங்கள் & பரிகாரங்கள்" page={next()} total={totalPages} name={i.name}>
@@ -592,27 +621,30 @@ export const ProfessionalReport = ({ result }: Props) => {
       <LifeAreaPage area={spiritualPrediction(result)} pageNum={next()} total={totalPages} name={i.name} />
 
       {/* === Yogas === */}
-      <Page title="யோகங்கள் (Detected Yogas)" page={next()} total={totalPages} name={i.name}>
-        <SectionBar>ஜாதகத்தில் காணப்படும் யோகங்கள்</SectionBar>
-        <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
-          <thead><tr style={{ background: "#fff8ee" }}>
-            <th style={th}>யோகம்</th><th style={th}>வகை</th><th style={th}>விளக்கம்</th>
-          </tr></thead>
-          <tbody>
-            {detectYogas(result).map((y, idx) => (
-              <tr key={idx}>
-                <td style={{...td, fontWeight: 700, color: "#7a1a2b"}}>{y.name}</td>
-                <td style={td}>{y.type}</td>
-                <td style={td}>{y.description}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <div style={{ marginTop: 8, fontSize: 9, color: "#555", lineHeight: 1.5 }}>
-          <b>குறிப்பு:</b> ராஜ யோகம் — அதிகாரம் / பெருமை. தன யோகம் — செல்வம். மஹாபுருஷ யோகம் — ஐந்து சிறப்பு கிரக நிலைகள்.
-          ஒரு ஜாதகத்தில் பல யோகங்கள் இருந்தாலும், தசை-புத்தி காலத்தில் அவை வெளிப்படும்.
-        </div>
-      </Page>
+      {yogasPages.map((rows, pi) => (
+        <Page key={`yg-${pi}`} title={`யோகங்கள் (Detected Yogas) (${pi + 1}/${yogasPages.length})`} page={next()} total={totalPages} name={i.name}>
+          <SectionBar>ஜாதகத்தில் காணப்படும் யோகங்கள்</SectionBar>
+          <table style={{ width: "100%", fontSize: 8.7, lineHeight: 1.25, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
+            <thead><tr style={{ background: "#fff8ee" }}>
+              <th style={{ ...th, width: "22%" }}>யோகம்</th><th style={{ ...th, width: "15%" }}>வகை</th><th style={th}>விளக்கம்</th>
+            </tr></thead>
+            <tbody>
+              {rows.map((y, idx) => (
+                <tr key={idx}>
+                  <td style={{...td, fontWeight: 700, color: "#7a1a2b"}}>{y.name}</td>
+                  <td style={td}>{y.type}</td>
+                  <td style={td}>{y.description}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {pi === yogasPages.length - 1 && (
+            <div style={{ marginTop: 6, fontSize: 8.2, color: "#555", lineHeight: 1.35 }}>
+              <b>குறிப்பு:</b> ராஜ யோகம் — அதிகாரம் / பெருமை. தன யோகம் — செல்வம். மஹாபுருஷ யோகம் — ஐந்து சிறப்பு கிரக நிலைகள்.
+            </div>
+          )}
+        </Page>
+      ))}
 
       {/* === Aspects === */}
       <Page title="கிரக பார்வைகள் (Drishti)" page={next()} total={totalPages} name={i.name}>
@@ -663,13 +695,12 @@ export const ProfessionalReport = ({ result }: Props) => {
         </table>
       </Page>
 
-      {/* === 12 Bhava deep analysis (2 per page = 6 pages) === */}
-      {Array.from({ length: 6 }).map((_, bp) => {
-        const start = bp * 2 + 1;
-        const houses = [start, start + 1].filter(h => h <= 12);
+      {/* === 12 Bhava deep analysis (1 per page to avoid overlap) === */}
+      {Array.from({ length: 12 }).map((_, bp) => {
+        const h = bp + 1;
         return (
-          <Page key={`bh-${bp}`} title={`12 பாவ ஆழ்ந்த பகுப்பாய்வு (${bp + 1}/6)`} page={next()} total={totalPages} name={i.name}>
-            {houses.map(h => {
+          <Page key={`bh-${bp}`} title={`12 பாவ ஆழ்ந்த பகுப்பாய்வு (${bp + 1}/12)`} page={next()} total={totalPages} name={i.name}>
+            {(() => {
               const rasiIdx = (result.ascendant.rasiIndex + h - 1) % 12;
               const lord = ["mars","venus","mercury","moon","sun","mercury","venus","mars","jupiter","saturn","saturn","jupiter"][rasiIdx];
               const lordHouse = (() => {
@@ -691,31 +722,33 @@ export const ProfessionalReport = ({ result }: Props) => {
                   </Box>
                 </div>
               );
-            })}
+            })()}
           </Page>
         );
       })}
 
       {/* === Year by year forecast === */}
-      <Page title="ஆண்டுக்கு ஆண்டு பலன் (12 ஆண்டுகள்)" page={next()} total={totalPages} name={i.name}>
-        <SectionBar>அடுத்த 12 ஆண்டுகள் — தசா-புத்தி பலன்</SectionBar>
-        <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
-          <thead><tr style={{ background: "#fff8ee" }}>
-            <th style={th}>ஆண்டு</th><th style={th}>வயது</th><th style={th}>மகா தசை</th><th style={th}>புத்தி</th><th style={th}>பலன்</th>
-          </tr></thead>
-          <tbody>
-            {yearForecast(result, 12).map((y, idx) => (
-              <tr key={idx}>
-                <td style={{...td, fontWeight:700}}>{y.year}</td>
-                <td style={td}>{y.age}</td>
-                <td style={td}>{y.mahaLord}</td>
-                <td style={td}>{y.bhuktiLord}</td>
-                <td style={td}>{y.outlook}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Page>
+      {yearForecastPages.map((rows, pi) => (
+        <Page key={`yf-${pi}`} title={`ஆண்டுக்கு ஆண்டு பலன் (${pi + 1}/${yearForecastPages.length})`} page={next()} total={totalPages} name={i.name}>
+          <SectionBar>அடுத்த 12 ஆண்டுகள் — தசா-புத்தி பலன்</SectionBar>
+          <table style={{ width: "100%", fontSize: 9, lineHeight: 1.25, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
+            <thead><tr style={{ background: "#fff8ee" }}>
+              <th style={{ ...th, width: "12%" }}>ஆண்டு</th><th style={{ ...th, width: "9%" }}>வயது</th><th style={{ ...th, width: "16%" }}>மகா தசை</th><th style={{ ...th, width: "14%" }}>புத்தி</th><th style={th}>பலன்</th>
+            </tr></thead>
+            <tbody>
+              {rows.map((y, idx) => (
+                <tr key={idx}>
+                  <td style={{...td, fontWeight:700}}>{y.year}</td>
+                  <td style={td}>{y.age}</td>
+                  <td style={td}>{y.mahaLord}</td>
+                  <td style={td}>{y.bhuktiLord}</td>
+                  <td style={td}>{y.outlook}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Page>
+      ))}
 
       {/* === Sade Sati === */}
       <Page title="ஏழரை சனி — காலக்கிரம பகுப்பாய்வு" page={next()} total={totalPages} name={i.name}>
@@ -762,27 +795,30 @@ export const ProfessionalReport = ({ result }: Props) => {
       </Page>
 
       {/* === Mantras === */}
-      <Page title="நவ கிரக மந்திரங்கள்" page={next()} total={totalPages} name={i.name}>
-        <SectionBar>9 கிரகங்களுக்கான பீஜ மந்திரங்கள்</SectionBar>
-        <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
-          <thead><tr style={{ background: "#fff8ee" }}>
-            <th style={th}>கிரகம்</th><th style={th}>மந்திரம்</th><th style={th}>ஜப எண்ணிக்கை</th>
-          </tr></thead>
-          <tbody>
-            {PLANET_MANTRAS.map((m, idx) => (
-              <tr key={idx}>
-                <td style={{...td,fontWeight:700}}>{m.planet}</td>
-                <td style={{...td, fontFamily: "serif"}}>{m.mantra}</td>
-                <td style={td}>{m.count}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <div style={{ marginTop: 8, fontSize: 9, lineHeight: 1.6 }}>
-          <b>முக்கிய குறிப்பு:</b> மந்திரங்களை குரு உபதேசம் பெற்ற பின் ஜபிக்க வேண்டும். காலை 5-7 மணி உகந்த நேரம்.
-          ருத்ராக்ஷ மாலையுடன், கிழக்கு / வடக்கு பார்த்து உட்கார்ந்து ஜபிக்க.
-        </div>
-      </Page>
+      {mantraPages.map((rows, pi) => (
+        <Page key={`mn-${pi}`} title={`நவ கிரக மந்திரங்கள் (${pi + 1}/${mantraPages.length})`} page={next()} total={totalPages} name={i.name}>
+          <SectionBar>9 கிரகங்களுக்கான பீஜ மந்திரங்கள்</SectionBar>
+          <table style={{ width: "100%", fontSize: 9, lineHeight: 1.25, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
+            <thead><tr style={{ background: "#fff8ee" }}>
+              <th style={{ ...th, width: "18%" }}>கிரகம்</th><th style={th}>மந்திரம்</th><th style={{ ...th, width: "20%" }}>ஜப எண்ணிக்கை</th>
+            </tr></thead>
+            <tbody>
+              {rows.map((m, idx) => (
+                <tr key={idx}>
+                  <td style={{...td,fontWeight:700}}>{m.planet}</td>
+                  <td style={{...td, fontFamily: "serif"}}>{m.mantra}</td>
+                  <td style={td}>{m.count}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {pi === mantraPages.length - 1 && (
+            <div style={{ marginTop: 6, fontSize: 8.5, lineHeight: 1.4 }}>
+              <b>முக்கிய குறிப்பு:</b> மந்திரங்களை குரு உபதேசம் பெற்ற பின் ஜபிக்க வேண்டும். காலை 5-7 மணி உகந்த நேரம்.
+            </div>
+          )}
+        </Page>
+      ))}
 
       {/* === Lucky attributes === */}
       <Page title="அதிர்ஷ்ட நாள் / நிறம் / எண் / திசை" page={next()} total={totalPages} name={i.name}>
@@ -828,31 +864,26 @@ export const ProfessionalReport = ({ result }: Props) => {
       </Page>
 
       {/* === Weekday remedies === */}
-      <Page title="வாரம் முழுவதும் பரிகார வழிமுறை" page={next()} total={totalPages} name={i.name}>
-        <SectionBar>தினசரி பரிகார அட்டவணை</SectionBar>
-        <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
-          <thead><tr style={{ background: "#fff8ee" }}>
-            <th style={th}>நாள்</th><th style={th}>கிரகம்</th><th style={th}>தெய்வம்</th><th style={th}>பரிகாரம்</th><th style={th}>தானம்</th>
-          </tr></thead>
-          <tbody>
-            {[
-              ["ஞாயிறு","சூரியன்","சிவன் / சூரியன்","சூரிய நமஸ்காரம், ஆதித்ய ஹ்ருதயம்","கோதுமை, வெல்லம், செம்மலர்"],
-              ["திங்கள்","சந்திரன்","சிவன் / பார்வதி","ருத்ர அபிஷேகம், சந்த்ர மந்திரம்","பால், அரிசி, வெள்ளை மலர்"],
-              ["செவ்வாய்","செவ்வாய்","முருகன் / ஹனுமான்","ஸ்கந்த சஷ்டி, அங்காரக ஸ்தோத்திரம்","துவரை, செம்பு, பவளம்"],
-              ["புதன்","புதன்","விஷ்ணு / கணபதி","விஷ்ணு சஹஸ்ரநாமம், கணேச அதர்வசீர்ஷம்","பச்சை பயறு, பச்சை வஸ்திரம்"],
-              ["வியாழன்","குரு","விஷ்ணு / தக்ஷிணாமூர்த்தி","குரு ஸ்தோத்திரம், விஷ்ணு பூஜை","மஞ்சள், கடலை பருப்பு, மஞ்சள் வஸ்திரம்"],
-              ["வெள்ளி","சுக்ரன்","லக்ஷ்மி / துர்கா","ஸ்ரீ சூக்தம், லக்ஷ்மி அஷ்டோத்தரம்","வெண்ணெய், தயிர், வெள்ளை மலர்"],
-              ["சனி","சனி","சாஸ்தா / ஹனுமான்","ஹனுமான் சாலிசா, சனி ஸ்தோத்திரம்","எள், கருப்பு துணி, இரும்பு"],
-            ].map((r, idx) => (
-              <tr key={idx}>{r.map((c, ci) => <td key={ci} style={ci===0?{...td,fontWeight:700,background:"#fff8ee"}:td}>{c}</td>)}</tr>
-            ))}
-          </tbody>
-        </table>
-        <div style={{ marginTop: 8, fontSize: 9, lineHeight: 1.6 }}>
-          <b>பொது விதிகள்:</b> காலை 4-6 மணி பிரம்ம முகூர்த்தம் — மிக சிறந்தது.
-          பிறந்த நட்சத்திர நாளில் சிறப்பு வழிபாடு. மாதம் ஒரு முறையாவது கோயில் தரிசனம், அன்னதானம் வாழ்வில் வளம் சேர்க்கும்.
-        </div>
-      </Page>
+      {weekdayRemedyPages.map((rows, pi) => (
+        <Page key={`wr-${pi}`} title={`வாரம் முழுவதும் பரிகார வழிமுறை (${pi + 1}/${weekdayRemedyPages.length})`} page={next()} total={totalPages} name={i.name}>
+          <SectionBar>தினசரி பரிகார அட்டவணை</SectionBar>
+          <table style={{ width: "100%", fontSize: 8.5, lineHeight: 1.25, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
+            <thead><tr style={{ background: "#fff8ee" }}>
+              <th style={{ ...th, width: "13%" }}>நாள்</th><th style={{ ...th, width: "12%" }}>கிரகம்</th><th style={{ ...th, width: "18%" }}>தெய்வம்</th><th style={th}>பரிகாரம்</th><th style={th}>தானம்</th>
+            </tr></thead>
+            <tbody>
+              {rows.map((r, idx) => (
+                <tr key={idx}>{r.map((c, ci) => <td key={ci} style={ci===0?{...td,fontWeight:700,background:"#fff8ee"}:td}>{c}</td>)}</tr>
+              ))}
+            </tbody>
+          </table>
+          {pi === weekdayRemedyPages.length - 1 && (
+            <div style={{ marginTop: 6, fontSize: 8.5, lineHeight: 1.4 }}>
+              <b>பொது விதிகள்:</b> காலை 4-6 மணி பிரம்ம முகூர்த்தம். பிறந்த நட்சத்திர நாளில் சிறப்பு வழிபாடு.
+            </div>
+          )}
+        </Page>
+      ))}
 
       {/* === Karmic — Rahu/Ketu axis === */}
       <Page title="கர்ம பகுப்பாய்வு — ராகு / கேது அச்சு" page={next()} total={totalPages} name={i.name}>

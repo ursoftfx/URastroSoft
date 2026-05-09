@@ -225,7 +225,7 @@
 }
 
 @media print {
-  @page { size: A4 portrait; margin: 5mm; }
+  @page { size: A4 portrait; margin: 6mm; }
   html, body {
     background: #fff !important;
     margin: 0 !important;
@@ -235,7 +235,7 @@
   .print-area, .print-area * { visibility: visible; }
   .print-area {
     position: relative;
-    margin: 0 auto 3mm auto !important;
+    margin: 0 auto 2mm auto !important;
     box-shadow: none;
     page-break-after: auto;
     break-after: auto;
