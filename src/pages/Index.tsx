@@ -268,6 +268,7 @@ const ResultView = ({
             targetId={view === "pro" ? "professional-report-root" : view === "onepage" ? "onepage-report-root" : "jathagam-report-root"}
             fileName={`jathagam-${result.input.name.replace(/\s+/g, "-")}.pdf`}
             paperSize={view === "onepage" ? "a4" : "a5"}
+            orientation={view === "pro" ? "l" : "p"}
           />
         </div>
       </div>
