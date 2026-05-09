@@ -113,7 +113,7 @@ const Page = ({ children, title, subtitle, page, total, name }: any) => (
     padding: "4mm", margin: "5mm auto",
     background: "#ffffff", color: "#000",
     fontFamily: "'Latha','Tahoma',sans-serif", boxSizing: "border-box",
-    pageBreakAfter: "always", overflow: "hidden",
+    pageBreakInside: "avoid", breakInside: "avoid", overflow: "hidden",
     fontSize: 8.5, lineHeight: 1.2,
     display: "flex", flexDirection: "column",
   }}>
