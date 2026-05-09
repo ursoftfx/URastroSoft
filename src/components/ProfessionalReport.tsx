@@ -160,12 +160,38 @@ export const ProfessionalReport = ({ result }: Props) => {
   const palans = bhavaPalans(result.ascendant.rasiIndex, planetRasis, RASIS_TAMIL);
 
   // Total page count
-  const dashaPages = result.dashaTree.length;
+  // Build flat dasha rows per maha and chunk into pages
+  const DASHA_ROWS_PER_PAGE = 28;
+  const dashaPagesData = result.dashaTree.map((maha) => {
+    const rows: { bhukti: string; ant: string; start: string; end: string; age: number | string }[] = [];
+    (maha.children || []).forEach((bh) => {
+      const ants = bh.children || [];
+      const bhAge = ageAt(birthDate, bh.startDate);
+      if (ants.length === 0) {
+        rows.push({ bhukti: `${maha.lord}/${bh.lord}`, ant: "—", start: fmtDate(bh.startDate), end: fmtDate(bh.endDate), age: bhAge });
+      } else {
+        ants.forEach((a, ai) => {
+          rows.push({
+            bhukti: ai === 0 ? `${maha.lord}/${bh.lord}` : "",
+            ant: a.lord,
+            start: fmtDate(a.startDate),
+            end: fmtDate(a.endDate),
+            age: ai === 0 ? bhAge : "",
+          });
+        });
+      }
+    });
+    const chunks: typeof rows[] = [];
+    for (let s = 0; s < rows.length; s += DASHA_ROWS_PER_PAGE) chunks.push(rows.slice(s, s + DASHA_ROWS_PER_PAGE));
+    if (chunks.length === 0) chunks.push([]);
+    return { maha, chunks };
+  });
+  const dashaPages = dashaPagesData.reduce((s, m) => s + m.chunks.length, 0);
   const vargasPages = Math.ceil(result.vargaCharts.length / 6);
-  const lifeAreaPages = 11; // career, marriage, wealth, children, education, health, foreign, property, family, spiritual, personality
-  const bhavaDeepPages = 6; // 12 houses, 2 per page
-  const extraPages = 1 /*yogas*/ + 1 /*aspects*/ + 1 /*friendship*/ + 1 /*year forecast*/ + 1 /*sade sati*/ + 1 /*gemstones*/ + 1 /*mantras*/ + 1 /*lucky*/ + 1 /*career fields*/ + 1 /*weekday remedies*/ + 1 /*karmic*/ + 1 /*planet strength*/ + 1 /*monthly transit*/ + 1 /*punya*/ + 1 /*compatibility*/ + 3 /*additional predictions I/II/III*/;
-  const totalPages = 1 /*cover*/ + 1 /*positions*/ + 1 /*charts+kp*/ + vargasPages + 1 /*ashtak+sani*/ + 1 /*lagna+nak+bhava*/ + 1 /*planet-in-house*/ + 1 /*planet-in-rasi*/ + 1 /*doshas+remedies*/ + lifeAreaPages + bhavaDeepPages + extraPages + dashaPages;
+  const lifeAreaPages = 11;
+  const bhavaDeepPages = 6;
+  const extraPages = 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 3;
+  const totalPages = 1 + 1 + 1 + vargasPages + 1 + 1 + 1 + 1 + 1 + lifeAreaPages + bhavaDeepPages + extraPages + dashaPages;
 
   let pn = 0;
   const next = () => ++pn;
