@@ -208,6 +208,8 @@ export const JathagamReport = ({ result, interpretation, interpretationLoading }
         </div>
       </div>
 
+    </div>
+    <div className="space-y-4 a5-sheet print-area" style={sheetStyle}>
       {/* Dasha */}
       <div>
         <SectionHeading>விம்சோத்தரி தசை</SectionHeading>
