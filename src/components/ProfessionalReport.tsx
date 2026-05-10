@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { JathagamResult, RASIS_TAMIL, formatDegree } from "@/lib/jathagam";
 import { detectDoshams } from "@/lib/dosham";
 import { bhavaPalans, LAGNA_PALAN, NAKSHATRA_PALAN, BHAVA_NAMES } from "@/lib/predictions";
