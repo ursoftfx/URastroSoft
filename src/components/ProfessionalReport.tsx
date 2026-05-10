@@ -372,6 +372,13 @@ export const ProfessionalReport = ({ result }: Props) => {
             <tr><td style={tdL}><b>யோகம்</b></td><td style={tdR}>{result.panchangam.yogaTamil}</td><td style={tdL}><b>கரணம்</b></td><td style={tdR}>{result.panchangam.karanaTamil}</td></tr>
             <tr><td style={tdL}><b>ஜென்ம ராசி</b></td><td style={tdR}>{result.rasiTamil}</td><td style={tdL}><b>ஜென்ம லக்னம்</b></td><td style={tdR}>{result.lagnaTamil}</td></tr>
             <tr><td style={tdL}><b>ஜென்ம நட்சத்திரம்</b></td><td style={tdR}>{result.nakshatraTamil} - {result.pada}-ம் பாதம்</td><td style={tdL}><b>நட்சத்திர அதிபதி</b></td><td style={tdR}>{result.nakshatraLordTamil}</td></tr>
+            <tr><td style={tdL}><b>தமிழ் வருடம்</b></td><td style={tdR}>{tamilCal.yearName}</td><td style={tdL}><b>தமிழ் மாதம்</b></td><td style={tdR}>{tamilCal.monthName}</td></tr>
+            <tr><td style={tdL}><b>தமிழ் நாள்</b></td><td style={tdR}>{tamilCal.day}-ம் நாள்</td><td style={tdL}><b>ஜனன நாழிகை</b></td><td style={tdR}>{naazhi.naazhi} நாழிகை {naazhi.vinaazhi} வினாழிகை</td></tr>
+            <tr><td style={tdL}><b>சூரிய உதயம்</b></td><td style={tdR}>{fmtTime12(result.panchangam.sunriseLocal.getHours(), result.panchangam.sunriseLocal.getMinutes())}</td><td style={tdL}><b>சூரிய அஸ்தமனம்</b></td><td style={tdR}>{fmtTime12(result.panchangam.sunsetLocal.getHours(), result.panchangam.sunsetLocal.getMinutes())}</td></tr>
+            <tr><td style={tdL}><b>நட்சத்திர எழுத்துக்கள்</b></td><td style={tdR} colSpan={3}>
+              பாதம் 1: <b>{nakLetters[0]}</b> &nbsp;|&nbsp; பாதம் 2: <b>{nakLetters[1]}</b> &nbsp;|&nbsp; பாதம் 3: <b>{nakLetters[2]}</b> &nbsp;|&nbsp; பாதம் 4: <b>{nakLetters[3]}</b>
+              &nbsp; <span style={{color:"#7a1a2b"}}>(உங்கள் எழுத்து: <b>{nakLetters[result.pada-1]}</b>)</span>
+            </td></tr>
           </tbody>
         </table>
       </Page>
