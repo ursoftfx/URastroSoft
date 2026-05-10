@@ -268,8 +268,8 @@ export const ProfessionalReport = ({ result }: Props) => {
     (maha.children || []).forEach((bh) => {
       const ants = bh.children || [];
       const bhAge = ageAt(birthDate, bh.startDate);
-      if (ants.length === 0) {
-        rows.push({ bhukti: `${maha.lord}/${bh.lord}`, ant: "—", start: fmtDate(bh.startDate), end: fmtDate(bh.endDate), age: bhAge });
+      if (hideAntharam || ants.length === 0) {
+        rows.push({ bhukti: `${maha.lord}/${bh.lord}`, ant: hideAntharam ? "" : "—", start: fmtDate(bh.startDate), end: fmtDate(bh.endDate), age: bhAge });
       } else {
         ants.forEach((a, ai) => {
           rows.push({
