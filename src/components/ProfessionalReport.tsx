@@ -252,6 +252,7 @@ export const ProfessionalReport = ({ result }: Props) => {
   const tamilCal = tamilDate(birthDateTime);
   const naazhi = jananaNaazhigai(birthDateTime, result.panchangam.sunriseLocal);
   const nakLetters = NAKSHATRA_LETTERS[result.moon.nakshatraIndex] || ["—","—","—","—"];
+  const [hideAntharam, setHideAntharam] = useState(false);
   const navAsc = result.navamsaPositions.find(n => n.key === "ascendant")?.rasiIndex ?? 0;
   const sani = computeSaniYogas(result.planets.find(p => p.key === "saturn")!.rasiIndex, result.moon.rasiIndex);
   const doshas = detectDoshams(result);
