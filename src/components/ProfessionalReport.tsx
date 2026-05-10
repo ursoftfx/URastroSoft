@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { JathagamResult, RASIS_TAMIL, formatDegree } from "@/lib/jathagam";
 import { detectDoshams } from "@/lib/dosham";
 import { bhavaPalans, LAGNA_PALAN, NAKSHATRA_PALAN, BHAVA_NAMES } from "@/lib/predictions";
@@ -34,6 +35,100 @@ const NAKSHATRA_LORDS_TA = [
   "கேது","சுக்கிரன்","சூரியன்","சந்திரன்","செவ்வாய்","ராகு","குரு","சனி","புதன்",
   "கேது","சுக்கிரன்","சூரியன்","சந்திரன்","செவ்வாய்","ராகு","குரு","சனி","புதன்",
 ];
+
+// Tamil 60-year cycle (Prabhava → Akshaya)
+const TAMIL_YEARS = [
+  "பிரபவ","விபவ","சுக்ல","பிரமோதூத","பிரஜோத்பத்தி","ஆங்கீரஸ","ஸ்ரீமுக","பவ","யுவ","தாது",
+  "ஈஸ்வர","வெகுதான்ய","பிரமாதி","விக்ரம","விஷு","சித்திரபானு","ஸ்வபானு","தாரண","பார்த்திப","விய",
+  "ஸர்வஜித்","ஸர்வதாரி","விரோதி","விக்ருதி","கர","நந்தன","விஜய","ஜய","மன்மத","துர்முகி",
+  "ஹேவிளம்பி","விளம்பி","விகாரி","ஸார்வரி","பிலவ","சுபக்ருது","சோபக்ருது","குரோதி","விசுவாவசு","பராபவ",
+  "பிலவங்க","கீலக","ஸௌமிய","ஸாதாரண","விரோதிக்ருது","பரிதாபி","பிரமாதீச","ஆனந்த","ராக்ஷஸ","நள",
+  "பிங்கள","காளயுக்தி","ஸித்தார்த்தி","ரௌத்திரி","துன்மதி","துந்துபி","ருத்ரோத்காரி","ரக்தாக்ஷி","குரோதன","அக்ஷய",
+];
+const TAMIL_MONTHS = ["சித்திரை","வைகாசி","ஆனி","ஆடி","ஆவணி","புரட்டாசி","ஐப்பசி","கார்த்திகை","மார்கழி","தை","மாசி","பங்குனி"];
+// Tamil month boundaries — Sun enters sidereal Aries on/around Apr 14 = Chithirai 1.
+// Approximate Gregorian start dates (day-of-year)
+const TAMIL_MONTH_STARTS = [
+  { m: 4, d: 14 }, { m: 5, d: 15 }, { m: 6, d: 15 }, { m: 7, d: 17 },
+  { m: 8, d: 17 }, { m: 9, d: 17 }, { m: 10, d: 18 }, { m: 11, d: 16 },
+  { m: 12, d: 16 }, { m: 1, d: 14 }, { m: 2, d: 13 }, { m: 3, d: 15 },
+];
+const tamilDate = (d: Date) => {
+  const y = d.getFullYear(), mo = d.getMonth() + 1, da = d.getDate();
+  let monthIdx = 11, dayInMonth = 1, varushaYear = y;
+  // Find month
+  for (let i = 11; i >= 0; i--) {
+    const s = TAMIL_MONTH_STARTS[i];
+    const sameYearStart = (mo > s.m) || (mo === s.m && da >= s.d);
+    if (sameYearStart) {
+      monthIdx = i;
+      const start = new Date(y, s.m - 1, s.d);
+      dayInMonth = Math.floor((d.getTime() - start.getTime()) / 86400000) + 1;
+      // Tamil year starts at Chithirai (i=0); before Chithirai → previous Tamil year
+      if (i < 0) varushaYear = y - 1;
+      break;
+    }
+  }
+  // If birth is before April 14 of that year, use previous Tamil year + Panguni
+  if (mo < 4 || (mo === 4 && da < 14)) {
+    varushaYear = y - 1;
+    const s = TAMIL_MONTH_STARTS[monthIdx];
+    const start = new Date(varushaYear, s.m - 1, s.d);
+    dayInMonth = Math.floor((d.getTime() - start.getTime()) / 86400000) + 1;
+  }
+  // Cycle: Prabhava year = 1987 (index 0). Offset accordingly.
+  const cycleIdx = ((varushaYear - 1987) % 60 + 60) % 60;
+  return { yearName: TAMIL_YEARS[cycleIdx], monthName: TAMIL_MONTHS[monthIdx], day: Math.max(1, dayInMonth) };
+};
+
+// Janana naazhigai — time elapsed from sunrise in nazhigai (24-min units) and vinazhigai (24-sec)
+const jananaNaazhigai = (birth: Date, sunrise: Date) => {
+  let diffMs = birth.getTime() - sunrise.getTime();
+  if (diffMs < 0) diffMs += 24 * 3600 * 1000;
+  const totalSec = diffMs / 1000;
+  const naazhi = Math.floor(totalSec / 1440); // 1 naazhigai = 24 min = 1440s
+  const vinaazhi = Math.floor((totalSec - naazhi * 1440) / 24); // 1 vi = 24s
+  return { naazhi, vinaazhi };
+};
+
+// Nakshatra letters (Tamil) — 4 padas each, 27 nakshatras
+const NAKSHATRA_LETTERS: string[][] = [
+  ["சு","சே","சோ","லா"],["லீ","லூ","லே","லோ"],["அ","ஈ","உ","ஏ"],["ஓ","வா","வீ","வூ"],
+  ["வே","வோ","கா","கீ"],["கூ","க","ஞ","ச"],["கே","கோ","ஹா","ஹீ"],["ஹூ","ஹே","ஹோ","ட"],
+  ["டீ","டூ","டே","டோ"],["மா","மீ","மூ","மே"],["மோ","டா","டீ","டூ"],["டே","டோ","பா","பீ"],
+  ["பூ","ஷ","ண","ட"],["பே","போ","ரா","ரீ"],["ரூ","ரே","ரோ","தா"],["தீ","தூ","தே","தோ"],
+  ["ந","நீ","நூ","நே"],["நோ","யா","யீ","யூ"],["யே","யோ","பா","பீ"],["பூ","த","ப","ட"],
+  ["பே","போ","ஜா","ஜீ"],["ஜூ","ஜே","ஜோ","க"],["கா","கீ","கூ","கே"],["கோ","ஸா","ஸீ","ஸூ"],
+  ["ஸே","ஸோ","தா","தீ"],["தூ","ஞ","ஜ","த"],["தே","தோ","ச","சீ"],
+];
+
+// Trikona shodhana on a single planet's bhinnashtaka (12 values)
+const trikonaShodhana = (b: number[]): number[] => {
+  const r = [...b];
+  const trines = [[0,4,8],[1,5,9],[2,6,10],[3,7,11]];
+  for (const t of trines) {
+    const vals = t.map(i => r[i]);
+    const min = Math.min(...vals);
+    if (min > 0) t.forEach(i => { r[i] -= min; });
+  }
+  return r;
+};
+// Ekadhipatya shodhana — sign-pairs ruled by same planet
+const EKADHIP_PAIRS: [number, number][] = [[2,5],[1,6],[0,7],[8,11],[9,10]]; // mercury, venus, mars, jupiter, saturn
+const ekadhipShodhana = (b: number[], occupied: boolean[]): number[] => {
+  const r = [...b];
+  for (const [a, c] of EKADHIP_PAIRS) {
+    const oa = occupied[a], oc = occupied[c];
+    if (oa && oc) continue;
+    if (!oa && !oc) {
+      if (r[a] === r[c]) { r[a] = 0; r[c] = 0; }
+      else if (r[a] < r[c]) r[a] = 0;
+      else r[c] = 0;
+    } else if (oa && !oc) r[c] = 0;
+    else r[a] = 0;
+  }
+  return r;
+};
 
 const fmtDate = (d: Date) => {
   const p = (n: number) => String(n).padStart(2, "0");
@@ -153,6 +248,11 @@ const Page = ({ children, title, subtitle, page, total, name }: any) => (
 export const ProfessionalReport = ({ result }: Props) => {
   const i = result.input;
   const birthDate = new Date(i.year, i.month - 1, i.day);
+  const birthDateTime = new Date(i.year, i.month - 1, i.day, i.hour, i.minute);
+  const tamilCal = tamilDate(birthDateTime);
+  const naazhi = jananaNaazhigai(birthDateTime, result.panchangam.sunriseLocal);
+  const nakLetters = NAKSHATRA_LETTERS[result.moon.nakshatraIndex] || ["—","—","—","—"];
+  const [hideAntharam, setHideAntharam] = useState(false);
   const navAsc = result.navamsaPositions.find(n => n.key === "ascendant")?.rasiIndex ?? 0;
   const sani = computeSaniYogas(result.planets.find(p => p.key === "saturn")!.rasiIndex, result.moon.rasiIndex);
   const doshas = detectDoshams(result);
@@ -168,8 +268,8 @@ export const ProfessionalReport = ({ result }: Props) => {
     (maha.children || []).forEach((bh) => {
       const ants = bh.children || [];
       const bhAge = ageAt(birthDate, bh.startDate);
-      if (ants.length === 0) {
-        rows.push({ bhukti: `${maha.lord}/${bh.lord}`, ant: "—", start: fmtDate(bh.startDate), end: fmtDate(bh.endDate), age: bhAge });
+      if (hideAntharam || ants.length === 0) {
+        rows.push({ bhukti: `${maha.lord}/${bh.lord}`, ant: hideAntharam ? "" : "—", start: fmtDate(bh.startDate), end: fmtDate(bh.endDate), age: bhAge });
       } else {
         ants.forEach((a, ai) => {
           rows.push({
@@ -209,7 +309,7 @@ export const ProfessionalReport = ({ result }: Props) => {
   const lifeAreaPages = 11;
   const bhavaDeepPages = 12;
   const extraPages = 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 3;
-  const totalPages = 1 + 2 + 2 + vargasPages + 1 + 1 + bhavaPalanPages.length + planetHousePages.length + planetRasiPages.length + 1 + 1 + lifeAreaPages + yogasPages.length + 1 + 1 + bhavaDeepPages + yearForecastPages.length + 1 + 1 + mantraPages.length + 1 + 1 + weekdayRemedyPages.length + 1 + 1 + 1 + 1 + 1 + 3 + dashaPages;
+  const totalPages = 1 + 2 + 2 + vargasPages + 2 + 1 + bhavaPalanPages.length + planetHousePages.length + planetRasiPages.length + 1 + 1 + lifeAreaPages + yogasPages.length + 1 + 1 + bhavaDeepPages + yearForecastPages.length + 1 + 1 + mantraPages.length + 1 + 1 + weekdayRemedyPages.length + 1 + 1 + 1 + 1 + 1 + 3 + dashaPages;
 
   let pn = 0;
   const next = () => ++pn;
@@ -228,6 +328,13 @@ export const ProfessionalReport = ({ result }: Props) => {
         #professional-report-root table { font-size: 8px; }
         #professional-report-root th, #professional-report-root td { padding: 1px 2px !important; }
       `}</style>
+
+      <div className="no-print" style={{ display: "flex", justifyContent: "center", gap: 8, padding: "8px", marginBottom: 4 }}>
+        <label style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontFamily: "sans-serif", cursor: "pointer", padding: "6px 12px", border: "1px solid #c9a050", borderRadius: 4, background: "#fff8ee" }}>
+          <input type="checkbox" checked={hideAntharam} onChange={(e) => setHideAntharam(e.target.checked)} />
+          மகா தசையில் அந்தரம் மறை (Hide Antharam)
+        </label>
+      </div>
 
       {/* === COVER === */}
       <Page title="அட்டை" page={next()} total={totalPages} name={i.name}>
@@ -272,6 +379,13 @@ export const ProfessionalReport = ({ result }: Props) => {
             <tr><td style={tdL}><b>யோகம்</b></td><td style={tdR}>{result.panchangam.yogaTamil}</td><td style={tdL}><b>கரணம்</b></td><td style={tdR}>{result.panchangam.karanaTamil}</td></tr>
             <tr><td style={tdL}><b>ஜென்ம ராசி</b></td><td style={tdR}>{result.rasiTamil}</td><td style={tdL}><b>ஜென்ம லக்னம்</b></td><td style={tdR}>{result.lagnaTamil}</td></tr>
             <tr><td style={tdL}><b>ஜென்ம நட்சத்திரம்</b></td><td style={tdR}>{result.nakshatraTamil} - {result.pada}-ம் பாதம்</td><td style={tdL}><b>நட்சத்திர அதிபதி</b></td><td style={tdR}>{result.nakshatraLordTamil}</td></tr>
+            <tr><td style={tdL}><b>தமிழ் வருடம்</b></td><td style={tdR}>{tamilCal.yearName}</td><td style={tdL}><b>தமிழ் மாதம்</b></td><td style={tdR}>{tamilCal.monthName}</td></tr>
+            <tr><td style={tdL}><b>தமிழ் நாள்</b></td><td style={tdR}>{tamilCal.day}-ம் நாள்</td><td style={tdL}><b>ஜனன நாழிகை</b></td><td style={tdR}>{naazhi.naazhi} நாழிகை {naazhi.vinaazhi} வினாழிகை</td></tr>
+            <tr><td style={tdL}><b>சூரிய உதயம்</b></td><td style={tdR}>{fmtTime12(result.panchangam.sunriseLocal.getHours(), result.panchangam.sunriseLocal.getMinutes())}</td><td style={tdL}><b>சூரிய அஸ்தமனம்</b></td><td style={tdR}>{fmtTime12(result.panchangam.sunsetLocal.getHours(), result.panchangam.sunsetLocal.getMinutes())}</td></tr>
+            <tr><td style={tdL}><b>நட்சத்திர எழுத்துக்கள்</b></td><td style={tdR} colSpan={3}>
+              பாதம் 1: <b>{nakLetters[0]}</b> &nbsp;|&nbsp; பாதம் 2: <b>{nakLetters[1]}</b> &nbsp;|&nbsp; பாதம் 3: <b>{nakLetters[2]}</b> &nbsp;|&nbsp; பாதம் 4: <b>{nakLetters[3]}</b>
+              &nbsp; <span style={{color:"#7a1a2b"}}>(உங்கள் எழுத்து: <b>{nakLetters[result.pada-1]}</b>)</span>
+            </td></tr>
           </tbody>
         </table>
       </Page>
@@ -465,8 +579,80 @@ export const ProfessionalReport = ({ result }: Props) => {
 
         <div style={{ marginTop: 8, fontSize: 9, color: "#555", lineHeight: 1.5 }}>
           <b>குறிப்பு :</b> அஷ்டகவர்க்க பிந்துக்கள் ஒரு ராசியில் அதிகமாக இருந்தால், அந்த இடம் வலுவான இடமாக கருதப்படுகிறது.
-          25-க்கு மேல் = வலுவான; 30-க்கு மேல் = மிக சிறந்தது. சர்வாஷ்டக மொத்தம் 337 (ஸ்டாண்டர்ட்).
+          25-க்கு மேல் = வலுவான; 30-க்கு மேல் = மிக சிறந்தது. சர்வாஷ்டக மொத்தம் 337 (சாஸ்திர மொத்தம்).
         </div>
+      </Page>
+
+      {/* === Trikona + Ekadhipatya Shodhana === */}
+      <Page title="திரிகோண • ஏகாதிபத்திய சோதனை" page={next()} total={totalPages} name={i.name}>
+        {(() => {
+          const occupied = new Array(12).fill(false);
+          result.planets.forEach(p => { if (["sun","moon","mars","mercury","jupiter","venus","saturn"].includes(p.key)) occupied[p.rasiIndex] = true; });
+          const planetKeys = ["sun","moon","mars","mercury","jupiter","venus","saturn"];
+          const trikonaResult: Record<string, number[]> = {};
+          const ekadhipResult: Record<string, number[]> = {};
+          planetKeys.forEach(k => {
+            const b = result.ashtakavarga.bhinna[k] || new Array(12).fill(0);
+            const t = trikonaShodhana(b);
+            trikonaResult[k] = t;
+            ekadhipResult[k] = ekadhipShodhana(t, occupied);
+          });
+          const sodhitaSarva = new Array(12).fill(0);
+          planetKeys.forEach(k => ekadhipResult[k].forEach((v, i) => sodhitaSarva[i] += v));
+          return (
+            <>
+              <div style={{ background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>
+                திரிகோண சோதனை (Trikona Shodhana)
+              </div>
+              <table style={{ width: "100%", fontSize: 8.5, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+                <thead><tr style={{ background: "#fff8ee" }}>
+                  <th style={th}>கிரகம்</th>
+                  {RASIS_TAMIL.map(r => <th key={r} style={th}>{r}</th>)}
+                  <th style={th}>மொத்தம்</th>
+                </tr></thead>
+                <tbody>
+                  {planetKeys.map(k => (
+                    <tr key={k}>
+                      <td style={{ ...td, fontWeight: 700 }}>{PLANET_TA[k]}</td>
+                      {trikonaResult[k].map((b, j) => <td key={j} style={{ ...td, textAlign: "center" }}>{b}</td>)}
+                      <td style={{ ...td, textAlign: "center", fontWeight: 700 }}>{trikonaResult[k].reduce((a, b) => a + b, 0)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+
+              <div style={{ marginTop: 6, background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>
+                ஏகாதிபத்திய சோதனை (Ekadhipatya Shodhana — சோதித பிந்துக்கள்)
+              </div>
+              <table style={{ width: "100%", fontSize: 8.5, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+                <thead><tr style={{ background: "#fff8ee" }}>
+                  <th style={th}>கிரகம்</th>
+                  {RASIS_TAMIL.map(r => <th key={r} style={th}>{r}</th>)}
+                  <th style={th}>மொத்தம்</th>
+                </tr></thead>
+                <tbody>
+                  {planetKeys.map(k => (
+                    <tr key={k}>
+                      <td style={{ ...td, fontWeight: 700 }}>{PLANET_TA[k]}</td>
+                      {ekadhipResult[k].map((b, j) => <td key={j} style={{ ...td, textAlign: "center" }}>{b}</td>)}
+                      <td style={{ ...td, textAlign: "center", fontWeight: 700 }}>{ekadhipResult[k].reduce((a, b) => a + b, 0)}</td>
+                    </tr>
+                  ))}
+                  <tr style={{ background: "#fff8ee" }}>
+                    <td style={{ ...td, fontWeight: 800 }}>சோதித சர்வாஷ்டகம்</td>
+                    {sodhitaSarva.map((b, j) => <td key={j} style={{ ...td, textAlign: "center", fontWeight: 700 }}>{b}</td>)}
+                    <td style={{ ...td, textAlign: "center", fontWeight: 800 }}>{sodhitaSarva.reduce((a, b) => a + b, 0)}</td>
+                  </tr>
+                </tbody>
+              </table>
+              <div style={{ marginTop: 6, fontSize: 8.5, color: "#444", lineHeight: 1.45 }}>
+                <b>திரிகோண சோதனை:</b> 1-5-9, 2-6-10, 3-7-11, 4-8-12 ஆகிய திரிகோண வீடுகளில் உள்ள மிகக் குறைந்த பிந்துவை மூன்றிலிருந்தும் கழிக்கப்படும்.<br/>
+                <b>ஏகாதிபத்திய சோதனை:</b> ஒரே கிரகம் ஆளும் இரண்டு ராசிகளில் — இரண்டிலும் கிரகம் இல்லையெனில் குறைந்த பிந்துவை 0 ஆக்கும்; ஒன்றில் மட்டும் கிரகம் இருந்தால் காலியான ராசியின் பிந்துவை 0 ஆக்கும்.<br/>
+                சோதித பிந்துக்கள் தான் கோசார பலன், ஆயுள் கணிப்பு, மற்றும் வீட்டு பலன்களுக்கு உண்மையான அளவு.
+              </div>
+            </>
+          );
+        })()}
       </Page>
 
       {/* === Lagna + Nakshatra === */}
@@ -1105,8 +1291,31 @@ export const ProfessionalReport = ({ result }: Props) => {
                   {maha.lord} மகா தசை &nbsp;•&nbsp; {fmtDate(maha.startDate)} → {fmtDate(maha.endDate)} &nbsp;•&nbsp; வயது {startAge} - {endAge}
                 </div>
                 {lordKey && (
-                  <div style={{ border: "1px solid #000", borderTop: 0, padding: "3px 6px", fontSize: 7.5, lineHeight: 1.25 }}>
-                    <b>{maha.lord} தசை பலன் :</b> {DASHA_LORD_PALAN[lordKey]}
+                  <div style={{ border: "1px solid #000", borderTop: 0, padding: "3px 6px", fontSize: 7.5, lineHeight: 1.3 }}>
+                    <b>{maha.lord} தசை பொது பலன் :</b> {DASHA_LORD_PALAN[lordKey]}
+                    {(() => {
+                      const det: Record<string, { pos: string; neg: string; focus: string; remedy: string }> = {
+                        sun: { pos: "அரசு அங்கீகாரம், தலைமை, தந்தை வழி நன்மை, புகழ் வளர்ச்சி, சுயமரியாதை உயரும்.", neg: "கண் / இதய பாதிப்பு, அதிக பித்தம், தந்தைக்கு கவலை, அரசு வழக்கு வரக்கூடும்.", focus: "தொழில் முன்னேற்றம், அரசு வேலை, அதிகார பதவி, பொது வாழ்வில் முன்னிலை.", remedy: "ஆதித்ய ஹ்ருதயம், சூரிய நமஸ்காரம், ஞாயிறு கோதுமை தானம், மாணிக்கம் (ஆலோசனைக்கு பின்)." },
+                        moon: { pos: "மன அமைதி, தாய் வழி நன்மை, பெண் தொடர்பு, நீர் சார்ந்த வெற்றி, பயணம் நல்லது.", neg: "மன கலக்கம், தாய்க்கு உடல்நலக்குறைவு, சளி/குளிர், நினைவாற்றல் குறைவு.", focus: "குடும்ப விரிவாக்கம், புது வீடு, பால்-பால்பொருள் வியாபாரம், கலை.", remedy: "சந்திர நமஸ்காரம், திங்கள் சிவ அபிஷேகம், பால் தானம், முத்து." },
+                        mars: { pos: "தைரியம், சகோதர நன்மை, நிலம் / சொத்து லாபம், தொழில் ஆற்றல், வீரம்.", neg: "ரத்த அழுத்தம், விபத்து, தீ-விபத்து, கோபம், போட்டி, அறுவை சிகிச்சை.", focus: "சொந்த தொழில், எஞ்ஜினியரிங், ராணுவம், ரியல் எஸ்டேட், விளையாட்டு.", remedy: "செவ்வாய் சுப்பிரமணியர் வழிபாடு, ஸ்கந்த சஷ்டி கவசம், செம்பவளம், நிலம் தானம்." },
+                        mercury: { pos: "கல்வி, தொடர்பு, வர்த்தகம், பேச்சு, எழுத்து, சிறு பயணம், நண்பர் ஆதரவு.", neg: "நரம்பு பாதிப்பு, தோல் பிரச்சினை, அதிக சிந்தனை, பேச்சில் தவறு, கணக்கு குழப்பம்.", focus: "தொடர்பு, ஐடி, கணக்கியல், எழுத்து, ஊடகம், கல்வி, மொழியாக்கம்.", remedy: "புதன்கிழமை விஷ்ணு வழிபாடு, கணபதி அதர்வசீர்ஷம், மரகதம், பச்சை தானம்." },
+                        jupiter: { pos: "ஞானம், குழந்தை பாக்கியம், செல்வம், ஆசிரியர் / குரு ஆதரவு, மத-ஆன்மிக வளர்ச்சி.", neg: "உடல் பருமன், கல்லீரல், தாமதங்கள், அதிக நம்பிக்கை, தவறான ஆலோசனை.", focus: "உயர் கல்வி, ஆசிரியர் பணி, சட்டம், நிதி, சமூக சேவை, வழிபாடு.", remedy: "வியாழக்கிழமை விஷ்ணு சஹஸ்ரநாமம், மஞ்சள் தானம், புஷ்பராகம், குரு பீடம்." },
+                        venus: { pos: "திருமணம், காதல், கலை, ஆடம்பரம், வாகனம், சுக போகம், பெண் ஆதரவு.", neg: "காமம், கல்லீரல், சர்க்கரை, பார்வை, தாம்பத்திய சிக்கல், ஆடம்பர செலவு.", focus: "திருமணம், கலை, அழகு துறை, சினிமா, ஃபேஷன், ஆடம்பர பொருள் வியாபாரம்.", remedy: "வெள்ளிக்கிழமை லக்ஷ்மி பூஜை, ஸ்ரீ சூக்தம், வஜ்ரம், வெள்ளை தானம்." },
+                        saturn: { pos: "தீவிர உழைப்பு பலன், சேமிப்பு, ஆன்மிக ஆழம், நீண்டகால சொத்து, தொழிலாளர் ஆதரவு.", neg: "தாமதம், தனிமை, மனஅழுத்தம், மூட்டு வலி, வழக்கு, சொத்து தகராறு.", focus: "சேவை, அரசு பணி, நீண்டகால தொழில், எண்ணெய், இரும்பு, கட்டுமானம்.", remedy: "சனிக்கிழமை திருநள்ளாறு / ஆஞ்சநேயர் வழிபாடு, ஹனுமான் சாலிசா 11 முறை, எள் தீபம், நீலம்." },
+                        rahu: { pos: "எதிர்பாரா திடீர் ஆதாயம், வெளிநாடு வாய்ப்பு, தொழில்நுட்ப வளர்ச்சி, பெரும் மாற்றம்.", neg: "மாயை, ஏமாற்றம், திடீர் இழப்பு, தோல் வியாதி, சர்ப்ப தோஷ பாதிப்பு.", focus: "ஐடி, வெளிநாட்டு வேலை, மருந்து, மர்ம ஆராய்ச்சி, மார்க்கெட்டிங்.", remedy: "ராகு காலத்தில் துர்கா வழிபாடு, காளஹஸ்தி தர்ப்பணம், கோமேதகம், எள் தானம்." },
+                        ketu: { pos: "ஆன்மிக விழிப்பு, மோக்ஷ பாதை, மறை அறிவு, மருத்துவம், ஆராய்ச்சி வெற்றி.", neg: "திடீர் பிரிவு, விபத்து, மறதி, தொற்று, ஆன்மிக குழப்பம், வெளியேற்றம்.", focus: "ஆன்மிகம், ஆராய்ச்சி, மருத்துவம், தந்திரம், ஞான மார்க்கம்.", remedy: "சாஸ்தா / விநாயக வழிபாடு, கணேச அதர்வசீர்ஷம், வைடூரியம், எள் தர்ப்பணம்." },
+                      };
+                      const d = det[lordKey];
+                      if (!d) return null;
+                      return (
+                        <div style={{ marginTop: 3 }}>
+                          <div><b>நற்பலன்:</b> {d.pos}</div>
+                          <div><b>தீய பலன்:</b> {d.neg}</div>
+                          <div><b>முக்கிய துறை:</b> {d.focus}</div>
+                          <div><b>பரிகாரம்:</b> {d.remedy}</div>
+                        </div>
+                      );
+                    })()}
                   </div>
                 )}
               </>
@@ -1114,18 +1323,18 @@ export const ProfessionalReport = ({ result }: Props) => {
             <table style={{ width: "100%", fontSize: 8, lineHeight: 1.15, borderCollapse: "collapse", border: "1px solid #000", marginTop: 3, tableLayout: "fixed" }}>
               <thead>
                 <tr>
-                  <th style={{ ...th, padding: "1px 3px", width: "16%" }}>புத்தி</th>
-                  <th style={{ ...th, padding: "1px 3px", width: "14%" }}>அந்தரம்</th>
-                  <th style={{ ...th, padding: "1px 3px", width: "23%" }}>தொடக்கம்</th>
-                  <th style={{ ...th, padding: "1px 3px", width: "23%" }}>முடிவு</th>
-                  <th style={{ ...th, padding: "1px 3px", width: "8%" }}>வயது</th>
+                  <th style={{ ...th, padding: "1px 3px", width: hideAntharam ? "30%" : "16%" }}>புத்தி</th>
+                  {!hideAntharam && <th style={{ ...th, padding: "1px 3px", width: "14%" }}>அந்தரம்</th>}
+                  <th style={{ ...th, padding: "1px 3px", width: hideAntharam ? "26%" : "23%" }}>தொடக்கம்</th>
+                  <th style={{ ...th, padding: "1px 3px", width: hideAntharam ? "26%" : "23%" }}>முடிவு</th>
+                  <th style={{ ...th, padding: "1px 3px", width: hideAntharam ? "18%" : "8%" }}>வயது</th>
                 </tr>
               </thead>
               <tbody>
                 {rows.map((r, ri) => (
                   <tr key={ri}>
                     <td style={{ ...td, padding: "1px 3px", fontWeight: r.bhukti ? 700 : 400 }}>{r.bhukti}</td>
-                    <td style={{ ...td, padding: "1px 3px" }}>{r.ant}</td>
+                    {!hideAntharam && <td style={{ ...td, padding: "1px 3px" }}>{r.ant}</td>}
                     <td style={{ ...td, padding: "1px 3px" }}>{r.start}</td>
                     <td style={{ ...td, padding: "1px 3px" }}>{r.end}</td>
                     <td style={{ ...td, padding: "1px 3px" }}>{r.age}</td>
