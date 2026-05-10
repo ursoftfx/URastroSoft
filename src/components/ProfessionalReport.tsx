@@ -1323,18 +1323,18 @@ export const ProfessionalReport = ({ result }: Props) => {
             <table style={{ width: "100%", fontSize: 8, lineHeight: 1.15, borderCollapse: "collapse", border: "1px solid #000", marginTop: 3, tableLayout: "fixed" }}>
               <thead>
                 <tr>
-                  <th style={{ ...th, padding: "1px 3px", width: "16%" }}>புத்தி</th>
-                  <th style={{ ...th, padding: "1px 3px", width: "14%" }}>அந்தரம்</th>
-                  <th style={{ ...th, padding: "1px 3px", width: "23%" }}>தொடக்கம்</th>
-                  <th style={{ ...th, padding: "1px 3px", width: "23%" }}>முடிவு</th>
-                  <th style={{ ...th, padding: "1px 3px", width: "8%" }}>வயது</th>
+                  <th style={{ ...th, padding: "1px 3px", width: hideAntharam ? "30%" : "16%" }}>புத்தி</th>
+                  {!hideAntharam && <th style={{ ...th, padding: "1px 3px", width: "14%" }}>அந்தரம்</th>}
+                  <th style={{ ...th, padding: "1px 3px", width: hideAntharam ? "26%" : "23%" }}>தொடக்கம்</th>
+                  <th style={{ ...th, padding: "1px 3px", width: hideAntharam ? "26%" : "23%" }}>முடிவு</th>
+                  <th style={{ ...th, padding: "1px 3px", width: hideAntharam ? "18%" : "8%" }}>வயது</th>
                 </tr>
               </thead>
               <tbody>
                 {rows.map((r, ri) => (
                   <tr key={ri}>
                     <td style={{ ...td, padding: "1px 3px", fontWeight: r.bhukti ? 700 : 400 }}>{r.bhukti}</td>
-                    <td style={{ ...td, padding: "1px 3px" }}>{r.ant}</td>
+                    {!hideAntharam && <td style={{ ...td, padding: "1px 3px" }}>{r.ant}</td>}
                     <td style={{ ...td, padding: "1px 3px" }}>{r.start}</td>
                     <td style={{ ...td, padding: "1px 3px" }}>{r.end}</td>
                     <td style={{ ...td, padding: "1px 3px" }}>{r.age}</td>
