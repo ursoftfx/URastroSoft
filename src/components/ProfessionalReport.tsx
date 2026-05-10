@@ -128,6 +128,8 @@ const ekadhipShodhana = (b: number[], occupied: boolean[]): number[] => {
   }
   return r;
 };
+
+const fmtDate = (d: Date) => {
   const p = (n: number) => String(n).padStart(2, "0");
   return `${p(d.getDate())}-${p(d.getMonth() + 1)}-${d.getFullYear()}`;
 };
