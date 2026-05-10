@@ -329,6 +329,13 @@ export const ProfessionalReport = ({ result }: Props) => {
         #professional-report-root th, #professional-report-root td { padding: 1px 2px !important; }
       `}</style>
 
+      <div className="no-print" style={{ display: "flex", justifyContent: "center", gap: 8, padding: "8px", marginBottom: 4 }}>
+        <label style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontFamily: "sans-serif", cursor: "pointer", padding: "6px 12px", border: "1px solid #c9a050", borderRadius: 4, background: "#fff8ee" }}>
+          <input type="checkbox" checked={hideAntharam} onChange={(e) => setHideAntharam(e.target.checked)} />
+          மகா தசையில் அந்தரம் மறை (Hide Antharam)
+        </label>
+      </div>
+
       {/* === COVER === */}
       <Page title="அட்டை" page={next()} total={totalPages} name={i.name}>
         <div style={{ textAlign: "center", padding: "4mm 0 2mm" }}>
