@@ -247,6 +247,10 @@ const Page = ({ children, title, subtitle, page, total, name }: any) => (
 export const ProfessionalReport = ({ result }: Props) => {
   const i = result.input;
   const birthDate = new Date(i.year, i.month - 1, i.day);
+  const birthDateTime = new Date(i.year, i.month - 1, i.day, i.hour, i.minute);
+  const tamilCal = tamilDate(birthDateTime);
+  const naazhi = jananaNaazhigai(birthDateTime, result.panchangam.sunriseLocal);
+  const nakLetters = NAKSHATRA_LETTERS[result.moon.nakshatraIndex] || ["—","—","—","—"];
   const navAsc = result.navamsaPositions.find(n => n.key === "ascendant")?.rasiIndex ?? 0;
   const sani = computeSaniYogas(result.planets.find(p => p.key === "saturn")!.rasiIndex, result.moon.rasiIndex);
   const doshas = detectDoshams(result);
