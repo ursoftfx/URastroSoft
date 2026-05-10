@@ -35,7 +35,99 @@ const NAKSHATRA_LORDS_TA = [
   "கேது","சுக்கிரன்","சூரியன்","சந்திரன்","செவ்வாய்","ராகு","குரு","சனி","புதன்",
 ];
 
-const fmtDate = (d: Date) => {
+// Tamil 60-year cycle (Prabhava → Akshaya)
+const TAMIL_YEARS = [
+  "பிரபவ","விபவ","சுக்ல","பிரமோதூத","பிரஜோத்பத்தி","ஆங்கீரஸ","ஸ்ரீமுக","பவ","யுவ","தாது",
+  "ஈஸ்வர","வெகுதான்ய","பிரமாதி","விக்ரம","விஷு","சித்திரபானு","ஸ்வபானு","தாரண","பார்த்திப","விய",
+  "ஸர்வஜித்","ஸர்வதாரி","விரோதி","விக்ருதி","கர","நந்தன","விஜய","ஜய","மன்மத","துர்முகி",
+  "ஹேவிளம்பி","விளம்பி","விகாரி","ஸார்வரி","பிலவ","சுபக்ருது","சோபக்ருது","குரோதி","விசுவாவசு","பராபவ",
+  "பிலவங்க","கீலக","ஸௌமிய","ஸாதாரண","விரோதிக்ருது","பரிதாபி","பிரமாதீச","ஆனந்த","ராக்ஷஸ","நள",
+  "பிங்கள","காளயுக்தி","ஸித்தார்த்தி","ரௌத்திரி","துன்மதி","துந்துபி","ருத்ரோத்காரி","ரக்தாக்ஷி","குரோதன","அக்ஷய",
+];
+const TAMIL_MONTHS = ["சித்திரை","வைகாசி","ஆனி","ஆடி","ஆவணி","புரட்டாசி","ஐப்பசி","கார்த்திகை","மார்கழி","தை","மாசி","பங்குனி"];
+// Tamil month boundaries — Sun enters sidereal Aries on/around Apr 14 = Chithirai 1.
+// Approximate Gregorian start dates (day-of-year)
+const TAMIL_MONTH_STARTS = [
+  { m: 4, d: 14 }, { m: 5, d: 15 }, { m: 6, d: 15 }, { m: 7, d: 17 },
+  { m: 8, d: 17 }, { m: 9, d: 17 }, { m: 10, d: 18 }, { m: 11, d: 16 },
+  { m: 12, d: 16 }, { m: 1, d: 14 }, { m: 2, d: 13 }, { m: 3, d: 15 },
+];
+const tamilDate = (d: Date) => {
+  const y = d.getFullYear(), mo = d.getMonth() + 1, da = d.getDate();
+  let monthIdx = 11, dayInMonth = 1, varushaYear = y;
+  // Find month
+  for (let i = 11; i >= 0; i--) {
+    const s = TAMIL_MONTH_STARTS[i];
+    const sameYearStart = (mo > s.m) || (mo === s.m && da >= s.d);
+    if (sameYearStart) {
+      monthIdx = i;
+      const start = new Date(y, s.m - 1, s.d);
+      dayInMonth = Math.floor((d.getTime() - start.getTime()) / 86400000) + 1;
+      // Tamil year starts at Chithirai (i=0); before Chithirai → previous Tamil year
+      if (i < 0) varushaYear = y - 1;
+      break;
+    }
+  }
+  // If birth is before April 14 of that year, use previous Tamil year + Panguni
+  if (mo < 4 || (mo === 4 && da < 14)) {
+    varushaYear = y - 1;
+    const s = TAMIL_MONTH_STARTS[monthIdx];
+    const start = new Date(varushaYear, s.m - 1, s.d);
+    dayInMonth = Math.floor((d.getTime() - start.getTime()) / 86400000) + 1;
+  }
+  // Cycle: Prabhava year = 1987 (index 0). Offset accordingly.
+  const cycleIdx = ((varushaYear - 1987) % 60 + 60) % 60;
+  return { yearName: TAMIL_YEARS[cycleIdx], monthName: TAMIL_MONTHS[monthIdx], day: Math.max(1, dayInMonth) };
+};
+
+// Janana naazhigai — time elapsed from sunrise in nazhigai (24-min units) and vinazhigai (24-sec)
+const jananaNaazhigai = (birth: Date, sunrise: Date) => {
+  let diffMs = birth.getTime() - sunrise.getTime();
+  if (diffMs < 0) diffMs += 24 * 3600 * 1000;
+  const totalSec = diffMs / 1000;
+  const naazhi = Math.floor(totalSec / 1440); // 1 naazhigai = 24 min = 1440s
+  const vinaazhi = Math.floor((totalSec - naazhi * 1440) / 24); // 1 vi = 24s
+  return { naazhi, vinaazhi };
+};
+
+// Nakshatra letters (Tamil) — 4 padas each, 27 nakshatras
+const NAKSHATRA_LETTERS: string[][] = [
+  ["சு","சே","சோ","லா"],["லீ","லூ","லே","லோ"],["அ","ஈ","உ","ஏ"],["ஓ","வா","வீ","வூ"],
+  ["வே","வோ","கா","கீ"],["கூ","க","ஞ","ச"],["கே","கோ","ஹா","ஹீ"],["ஹூ","ஹே","ஹோ","ட"],
+  ["டீ","டூ","டே","டோ"],["மா","மீ","மூ","மே"],["மோ","டா","டீ","டூ"],["டே","டோ","பா","பீ"],
+  ["பூ","ஷ","ண","ட"],["பே","போ","ரா","ரீ"],["ரூ","ரே","ரோ","தா"],["தீ","தூ","தே","தோ"],
+  ["ந","நீ","நூ","நே"],["நோ","யா","யீ","யூ"],["யே","யோ","பா","பீ"],["பூ","த","ப","ட"],
+  ["பே","போ","ஜா","ஜீ"],["ஜூ","ஜே","ஜோ","க"],["கா","கீ","கூ","கே"],["கோ","ஸா","ஸீ","ஸூ"],
+  ["ஸே","ஸோ","தா","தீ"],["தூ","ஞ","ஜ","த"],["தே","தோ","ச","சீ"],
+];
+
+// Trikona shodhana on a single planet's bhinnashtaka (12 values)
+const trikonaShodhana = (b: number[]): number[] => {
+  const r = [...b];
+  const trines = [[0,4,8],[1,5,9],[2,6,10],[3,7,11]];
+  for (const t of trines) {
+    const vals = t.map(i => r[i]);
+    const min = Math.min(...vals);
+    if (min > 0) t.forEach(i => { r[i] -= min; });
+  }
+  return r;
+};
+// Ekadhipatya shodhana — sign-pairs ruled by same planet
+const EKADHIP_PAIRS: [number, number][] = [[2,5],[1,6],[0,7],[8,11],[9,10]]; // mercury, venus, mars, jupiter, saturn
+const ekadhipShodhana = (b: number[], occupied: boolean[]): number[] => {
+  const r = [...b];
+  for (const [a, c] of EKADHIP_PAIRS) {
+    const oa = occupied[a], oc = occupied[c];
+    if (oa && oc) continue;
+    if (!oa && !oc) {
+      if (r[a] === r[c]) { r[a] = 0; r[c] = 0; }
+      else if (r[a] < r[c]) r[a] = 0;
+      else r[c] = 0;
+    } else if (oa && !oc) r[c] = 0;
+    else r[a] = 0;
+  }
+  return r;
+};
   const p = (n: number) => String(n).padStart(2, "0");
   return `${p(d.getDate())}-${p(d.getMonth() + 1)}-${d.getFullYear()}`;
 };
