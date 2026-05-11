@@ -541,6 +541,7 @@ export const ProfessionalReport = ({ result }: Props) => {
       })}
 
       {/* === Ashtakavarga + Sani === */}
+      <Page title="அஷ்டகவர்க்கம் & சனி பகுப்பாய்வு" page={next()} total={totalPages} name={i.name}>
         {(() => {
           const EXPECTED: Record<string, number> = { sun: 48, moon: 49, mars: 39, mercury: 54, jupiter: 56, venus: 52, saturn: 39 };
           const sarvaTotal = result.ashtakavarga.sarva.reduce((a, b) => a + b, 0);
