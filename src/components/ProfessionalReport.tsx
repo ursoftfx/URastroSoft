@@ -1369,6 +1369,38 @@ export const ProfessionalReport = ({ result }: Props) => {
                     })()}
                   </div>
                 )}
+                {ci === 0 && (() => {
+                  const PK: Record<string, string> = { Sun: "sun", Moon: "moon", Mars: "mars", Mercury: "mercury", Jupiter: "jupiter", Venus: "venus", Saturn: "saturn", Rahu: "rahu", Ketu: "ketu" };
+                  const TA: Record<string, string> = { sun: "சூரியன்", moon: "சந்திரன்", mars: "செவ்வாய்", mercury: "புதன்", jupiter: "குரு", venus: "சுக்கிரன்", saturn: "சனி", rahu: "ராகு", ketu: "கேது" };
+                  const FRIENDS: Record<string, string[]> = { sun: ["moon","mars","jupiter"], moon: ["sun","mercury"], mars: ["sun","moon","jupiter"], mercury: ["sun","venus"], jupiter: ["sun","moon","mars"], venus: ["mercury","saturn"], saturn: ["mercury","venus"], rahu: ["venus","saturn","mercury"], ketu: ["mars","venus","saturn"] };
+                  const ENEMIES: Record<string, string[]> = { sun: ["venus","saturn","rahu"], moon: ["rahu","ketu"], mars: ["mercury"], mercury: ["moon"], jupiter: ["mercury","venus"], venus: ["sun","moon"], saturn: ["sun","moon","mars"], rahu: ["sun","moon","mars"], ketu: ["sun","moon"] };
+                  const TRAIT: Record<string, string> = {
+                    sun: "தலைமை, அரசு பலன், ஆரோக்கியம்", moon: "மன அமைதி, தாய்/பெண் ஆதரவு",
+                    mars: "தைரியம், சொத்து, சகோதர விஷயம்", mercury: "கல்வி, வர்த்தகம், தொடர்பு",
+                    jupiter: "ஞானம், செல்வம், குழந்தை பாக்கியம்", venus: "திருமணம், கலை, வாகனம்",
+                    saturn: "உழைப்பு, தாமதம், சேமிப்பு", rahu: "திடீர் ஆதாயம், வெளிநாடு",
+                    ketu: "ஆன்மிகம், ஆராய்ச்சி, மறை அறிவு",
+                  };
+                  const dKey = lordKey;
+                  if (!dKey) return null;
+                  const bhuktis = (maha.children || []).map(b => b.lord);
+                  return (
+                    <div style={{ border: "1px solid #000", borderTop: 0, padding: "3px 6px", fontSize: 7.3, lineHeight: 1.35 }}>
+                      <div style={{ fontWeight: 800, marginBottom: 2 }}>தசா-புத்தி கூட்டு பலன் ({maha.lord} மகா தசை):</div>
+                      {bhuktis.map((bL, bi) => {
+                        const bKey = PK[bL];
+                        if (!bKey) return null;
+                        const rel = bKey === dKey ? "சுய (சொந்த)" : FRIENDS[dKey]?.includes(bKey) ? "நட்பு" : ENEMIES[dKey]?.includes(bKey) ? "பகை" : "சம";
+                        const sentiment = rel === "நட்பு" || rel === "சுய (சொந்த)" ? "நற்பலன் மிகுதி" : rel === "பகை" ? "எச்சரிக்கையுடன் செயல்பட" : "மிதமான பலன்";
+                        return (
+                          <div key={bi} style={{ marginBottom: 1 }}>
+                            <b>{TA[dKey]}/{TA[bKey]}</b> ({rel}) — {TRAIT[bKey]}. <i>{sentiment}.</i>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })()}
               </>
             )}
             <table style={{ width: "100%", fontSize: 8, lineHeight: 1.15, borderCollapse: "collapse", border: "1px solid #000", marginTop: 3, tableLayout: "fixed" }}>
