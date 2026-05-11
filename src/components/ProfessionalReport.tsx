@@ -409,8 +409,26 @@ export const ProfessionalReport = ({ result }: Props) => {
             <tr><td style={tdL}><b>தமிழ் நாள்</b></td><td style={tdR}>{tamilCal.day}-ம் நாள்</td><td style={tdL}><b>ஜனன நாழிகை</b></td><td style={tdR}>{naazhi.naazhi} நாழிகை {naazhi.vinaazhi} வினாழிகை</td></tr>
             <tr><td style={tdL}><b>சூரிய உதயம்</b></td><td style={tdR}>{fmtTime12(result.panchangam.sunriseLocal.getHours(), result.panchangam.sunriseLocal.getMinutes())}</td><td style={tdL}><b>சூரிய அஸ்தமனம்</b></td><td style={tdR}>{fmtTime12(result.panchangam.sunsetLocal.getHours(), result.panchangam.sunsetLocal.getMinutes())}</td></tr>
             <tr><td style={tdL}><b>நட்சத்திர எழுத்துக்கள்</b></td><td style={tdR} colSpan={3}>
-              பாதம் 1: <b>{nakLetters[0]}</b> &nbsp;|&nbsp; பாதம் 2: <b>{nakLetters[1]}</b> &nbsp;|&nbsp; பாதம் 3: <b>{nakLetters[2]}</b> &nbsp;|&nbsp; பாதம் 4: <b>{nakLetters[3]}</b>
-              &nbsp; <span style={{color:"#7a1a2b"}}>(உங்கள் எழுத்து: <b>{nakLetters[result.pada-1]}</b>)</span>
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 4, breakInside: "avoid", pageBreakInside: "avoid" }}>
+                {[0,1,2,3].map((p) => {
+                  const isMine = (result.pada - 1) === p;
+                  return (
+                    <div key={p} style={{
+                      border: isMine ? "2px solid #7a1a2b" : "1px solid #c9a050",
+                      background: isMine ? "#fde7ea" : "#fff8ee",
+                      padding: "3px 4px", textAlign: "center",
+                    }}>
+                      <div style={{ fontSize: 8, fontWeight: 700, color: isMine ? "#7a1a2b" : "#555" }}>
+                        பாதம் {p + 1} {isMine && "★"}
+                      </div>
+                      <div style={{ fontSize: isMine ? 14 : 12, fontWeight: 800, color: isMine ? "#7a1a2b" : "#000" }}>
+                        {nakLetters[p]}
+                      </div>
+                      {isMine && <div style={{ fontSize: 7, color: "#7a1a2b", fontWeight: 700 }}>உங்கள் எழுத்து</div>}
+                    </div>
+                  );
+                })}
+              </div>
             </td></tr>
           </tbody>
         </table>
