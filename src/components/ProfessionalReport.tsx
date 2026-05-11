@@ -1392,30 +1392,53 @@ export const ProfessionalReport = ({ result }: Props) => {
                   const TA: Record<string, string> = { sun: "சூரியன்", moon: "சந்திரன்", mars: "செவ்வாய்", mercury: "புதன்", jupiter: "குரு", venus: "சுக்கிரன்", saturn: "சனி", rahu: "ராகு", ketu: "கேது" };
                   const FRIENDS: Record<string, string[]> = { sun: ["moon","mars","jupiter"], moon: ["sun","mercury"], mars: ["sun","moon","jupiter"], mercury: ["sun","venus"], jupiter: ["sun","moon","mars"], venus: ["mercury","saturn"], saturn: ["mercury","venus"], rahu: ["venus","saturn","mercury"], ketu: ["mars","venus","saturn"] };
                   const ENEMIES: Record<string, string[]> = { sun: ["venus","saturn","rahu"], moon: ["rahu","ketu"], mars: ["mercury"], mercury: ["moon"], jupiter: ["mercury","venus"], venus: ["sun","moon"], saturn: ["sun","moon","mars"], rahu: ["sun","moon","mars"], ketu: ["sun","moon"] };
-                  const TRAIT: Record<string, string> = {
-                    sun: "தலைமை, அரசு பலன், ஆரோக்கியம்", moon: "மன அமைதி, தாய்/பெண் ஆதரவு",
-                    mars: "தைரியம், சொத்து, சகோதர விஷயம்", mercury: "கல்வி, வர்த்தகம், தொடர்பு",
-                    jupiter: "ஞானம், செல்வம், குழந்தை பாக்கியம்", venus: "திருமணம், கலை, வாகனம்",
-                    saturn: "உழைப்பு, தாமதம், சேமிப்பு", rahu: "திடீர் ஆதாயம், வெளிநாடு",
-                    ketu: "ஆன்மிகம், ஆராய்ச்சி, மறை அறிவு",
+                  // Maximum / peak benefit per dasha-bhukti combination (9x9 = 81)
+                  const MAX_PALAN: Record<string, Record<string, string>> = {
+                    sun:     { sun: "அரசு பதவி உச்சம், சுய அதிகாரம், புகழ் சிகரம்", moon: "உயர் அதிகாரம் + மக்கள் ஆதரவு, புதிய இல்லம்", mars: "வீர பதவி, நிலம் / அரசு சொத்து வாங்குதல்", mercury: "எழுத்து/பேச்சு வழியாக புகழ், அரசு ஒப்பந்தம்", jupiter: "உயர் பதவி உயர்வு, மரியாதை, செல்வ வரவு", venus: "ஆடம்பர வாகனம், அழகான பெண் சேர்க்கை, நிதி உயர்வு", saturn: "நீண்டகால அரசு பணி நிலைப்பாடு, சேமிப்பு", rahu: "வெளிநாட்டு அரசு வாய்ப்பு, திடீர் பதவி உயர்வு", ketu: "ஆன்மிக அதிகாரம், மறை அறிவு வழியாக மரியாதை" },
+                    moon:    { sun: "தாய் வழி அரசு பலன், மக்கள் தலைமை", moon: "மன அமைதி உச்சம், புது இல்லம், தாய் ஆசி உச்சம்", mars: "சொத்து வாங்குதல், சகோதர நன்மை, வீர செயல்", mercury: "வர்த்தக பெருக்கம், கல்வி உச்சம், புது தொடர்பு", jupiter: "திருமணம், குழந்தை பாக்கியம், செல்வம் உச்சம்", venus: "திருமண சுகம், கலை வெற்றி, வாகனம், ஆடம்பரம்", saturn: "நீண்டகால சொத்து லாபம், மக்கள் சேவை அங்கீகாரம்", rahu: "வெளிநாடு பயணம், பெரும் ஆதாயம் (எச்சரிக்கையுடன்)", ketu: "ஆன்மிக யாத்திரை, தீர்த்த தரிசனம்" },
+                    mars:    { sun: "வீர பதவி, அரசு அங்கீகாரம், எதிரி வெற்றி", moon: "புது நிலம், தாய் வழி சொத்து லாபம்", mars: "தைரியம் உச்சம், சொத்து உச்ச லாபம், வீர செயல்", mercury: "தொழில்நுட்ப வெற்றி, புது வர்த்தகம் தொடக்கம்", jupiter: "சட்ட வெற்றி, சொத்து-நீதி வழக்கு வெற்றி", venus: "திருமணம், வாகனம், கலை-விளையாட்டில் வெற்றி", saturn: "ரியல் எஸ்டேட் / கட்டுமான பெரு லாபம்", rahu: "திடீர் சொத்து லாபம், தொழில்நுட்ப பாய்ச்சல்", ketu: "ஆராய்ச்சி, மருத்துவ துறை வெற்றி, ஆன்மிக ஆற்றல்" },
+                    mercury: { sun: "அரசு ஒப்பந்தம், எழுத்து வழியாக புகழ்", moon: "வர்த்தக நிறுவன பெருக்கம், புது தொடர்புகள்", mars: "தொழில்நுட்ப வெற்றி, சகோதர-வர்த்தக கூட்டு", mercury: "கல்வி + வர்த்தகம் உச்சம், எழுத்தாளராக புகழ்", jupiter: "உயர் கல்வி வெற்றி, வங்கி-நிதி பதவி", venus: "கலை + வர்த்தகம், ஆடம்பர வியாபாரம், திருமணம்", saturn: "நீண்டகால தொழில் நிலைப்பாடு, சேமிப்பு பெருக்கம்", rahu: "ஐடி/மார்க்கெட்டிங் பெரு வெற்றி, வெளிநாட்டு தொடர்பு", ketu: "ஆராய்ச்சி, மருத்துவ-கணித துறை வெற்றி" },
+                    jupiter: { sun: "அரசு உயர் பதவி, தர்ம செயல், புகழ் உச்சம்", moon: "திருமணம், குழந்தை பாக்கியம், செல்வ வரவு உச்சம்", mars: "சொத்து வாங்குதல், தர்ம வழி பெரு வெற்றி", mercury: "உயர் கல்வி, வங்கி-நிதி தொழில் வளர்ச்சி", jupiter: "ஞான உச்சம், குரு பதவி, பெரு செல்வம், புகழ்", venus: "திருமண சுகம் உச்சம், ஆடம்பரம், ஆலய சேவை", saturn: "நீண்டகால சொத்து, சமூக சேவை அங்கீகாரம்", rahu: "வெளிநாட்டு உயர் பதவி, பெரு ஆதாயம்", ketu: "ஆன்மிக குரு பதவி, மோக்ஷ பாதை" },
+                    venus:   { sun: "அரசு + கலை அங்கீகாரம், ஆடம்பர பதவி", moon: "திருமண சுகம் உச்சம், புது இல்லம், அழகு", mars: "வாகனம், சொத்து, கலை வெற்றி, காதல்", mercury: "கலை + வர்த்தகம், ஃபேஷன் / சினிமா வெற்றி", jupiter: "திருமணம், குழந்தை பாக்கியம், செல்வம் உச்சம்", venus: "திருமண சுகம் உச்சம், ஆடம்பரம், கலை வெற்றி", saturn: "நீண்டகால ஆடம்பர சொத்து, கலை நிறுவனம்", rahu: "வெளிநாட்டு கலை வாய்ப்பு, ஃபேஷன் பெரு வெற்றி", ketu: "ஆன்மிக கலை, பக்தி இசை வெற்றி" },
+                    saturn:  { sun: "அரசு பணி நிரந்தரம், ஆட்சி பதவி", moon: "மக்கள் சேவை அங்கீகாரம், சொத்து சேமிப்பு", mars: "ரியல் எஸ்டேட் பெரு லாபம், நிலம் வெற்றி", mercury: "நீண்டகால வர்த்தகம், சேமிப்பு உயர்வு", jupiter: "நிதி-வங்கி உயர் பதவி, தர்ம சொத்து", venus: "ஆடம்பர சொத்து, கலை நிறுவனம், திருமணம்", saturn: "நீண்டகால சேமிப்பு உச்சம், சொத்து குவிப்பு", rahu: "வெளிநாட்டு வேலை நிரந்தரம், பெரு லாபம்", ketu: "ஆன்மிக ஆழம், துறவு பாதை, ஆராய்ச்சி" },
+                    rahu:    { sun: "திடீர் அரசு பதவி, வெளிநாட்டு அங்கீகாரம்", moon: "வெளிநாடு பயணம், பெரு ஆதாயம் (கவனம்)", mars: "திடீர் சொத்து, தொழில்நுட்ப பாய்ச்சல்", mercury: "ஐடி/மார்க்கெட்டிங் உச்சம், வெளிநாட்டு வேலை", jupiter: "வெளிநாட்டு உயர் பதவி, பெரு செல்வம்", venus: "வெளிநாட்டு கலை/ஆடம்பர வாய்ப்பு, புகழ்", saturn: "வெளிநாட்டு வேலை நிரந்தரம், பெரு சேமிப்பு", rahu: "எதிர்பாரா பெரு ஆதாயம், புகழ் உச்சம்", ketu: "ஆன்மிக மாற்றம், ஆராய்ச்சி வெற்றி" },
+                    ketu:    { sun: "ஆன்மிக அதிகாரம், மறை அறிவு வழி புகழ்", moon: "தீர்த்த யாத்திரை, ஆன்மிக அமைதி", mars: "ஆராய்ச்சி, மருத்துவம், ஆன்மிக ஆற்றல்", mercury: "ஆராய்ச்சி, கணித / மருத்துவ வெற்றி", jupiter: "ஆன்மிக குரு பதவி, மோக்ஷ பாதை", venus: "ஆன்மிக கலை, பக்தி இசை, தர்ம செல்வம்", saturn: "துறவு பாதை, நீண்டகால ஆராய்ச்சி", rahu: "ஆன்மிக மாற்றம், மறை அறிவு வெற்றி", ketu: "மோக்ஷ உச்சம், ஆன்மிக விழிப்பு உச்சம்" },
                   };
                   const dKey = lordKey;
                   if (!dKey) return null;
-                  const bhuktis = (maha.children || []).map(b => b.lord);
+                  const bhuktis = (maha.children || []).map(b => ({ lord: b.lord, start: b.startDate, end: b.endDate }));
                   return (
-                    <div style={{ border: "1px solid #000", borderTop: 0, padding: "3px 6px", fontSize: 7.3, lineHeight: 1.35 }}>
-                      <div style={{ fontWeight: 800, marginBottom: 2 }}>தசா-புத்தி கூட்டு பலன் ({maha.lord} மகா தசை):</div>
-                      {bhuktis.map((bL, bi) => {
-                        const bKey = PK[bL];
-                        if (!bKey) return null;
-                        const rel = bKey === dKey ? "சுய (சொந்த)" : FRIENDS[dKey]?.includes(bKey) ? "நட்பு" : ENEMIES[dKey]?.includes(bKey) ? "பகை" : "சம";
-                        const sentiment = rel === "நட்பு" || rel === "சுய (சொந்த)" ? "நற்பலன் மிகுதி" : rel === "பகை" ? "எச்சரிக்கையுடன் செயல்பட" : "மிதமான பலன்";
-                        return (
-                          <div key={bi} style={{ marginBottom: 1 }}>
-                            <b>{TA[dKey]}/{TA[bKey]}</b> ({rel}) — {TRAIT[bKey]}. <i>{sentiment}.</i>
-                          </div>
-                        );
-                      })}
+                    <div style={{ border: "1px solid #7a1a2b", borderTop: 0, padding: "3px 6px", fontSize: 7.4, lineHeight: 1.35, background: "#fff8ee" }}>
+                      <div style={{ fontWeight: 800, marginBottom: 2, color: "#7a1a2b", textAlign: "center", borderBottom: "1px solid #c9a050", paddingBottom: 1 }}>
+                        ★ புத்தி அதிகபட்ச பலன்கள் (Peak Benefits per Bhukti) ★
+                      </div>
+                      <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 7.3 }}>
+                        <thead>
+                          <tr style={{ background: "#fbe9d0" }}>
+                            <th style={{ ...th, padding: "1px 3px", width: "16%" }}>புத்தி</th>
+                            <th style={{ ...th, padding: "1px 3px", width: "10%" }}>நிலை</th>
+                            <th style={{ ...th, padding: "1px 3px", width: "20%" }}>காலம்</th>
+                            <th style={{ ...th, padding: "1px 3px", width: "54%" }}>அதிகபட்ச பலன் (Max)</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {bhuktis.map((b, bi) => {
+                            const bKey = PK[b.lord];
+                            if (!bKey) return null;
+                            const rel = bKey === dKey ? "சுய" : FRIENDS[dKey]?.includes(bKey) ? "நட்பு" : ENEMIES[dKey]?.includes(bKey) ? "பகை" : "சம";
+                            const relColor = rel === "நட்பு" || rel === "சுய" ? "#2e7d32" : rel === "பகை" ? "#c62828" : "#555";
+                            const palan = MAX_PALAN[dKey]?.[bKey] || "—";
+                            return (
+                              <tr key={bi}>
+                                <td style={{ ...td, padding: "1px 3px", fontWeight: 700 }}>{TA[dKey]}/{TA[bKey]}</td>
+                                <td style={{ ...td, padding: "1px 3px", color: relColor, fontWeight: 700, textAlign: "center" }}>{rel}</td>
+                                <td style={{ ...td, padding: "1px 3px", fontSize: 6.8 }}>{fmtDate(b.start)} → {fmtDate(b.end)}</td>
+                                <td style={{ ...td, padding: "1px 3px" }}>{palan}</td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
                     </div>
                   );
                 })()}
