@@ -541,6 +541,7 @@ export const ProfessionalReport = ({ result }: Props) => {
       })}
 
       {/* === Ashtakavarga + Sani === */}
+      {(() => null)()}
       <Page title="அஷ்டகவர்க்கம் & சனி பகுப்பாய்வு" page={next()} total={totalPages} name={i.name}>
         <div style={{ background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>பின்னாஷ்டக வர்க்கம்</div>
         <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
