@@ -541,29 +541,53 @@ export const ProfessionalReport = ({ result }: Props) => {
       })}
 
       {/* === Ashtakavarga + Sani === */}
-      <Page title="அஷ்டகவர்க்கம் & சனி பகுப்பாய்வு" page={next()} total={totalPages} name={i.name}>
-        <div style={{ background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>பின்னாஷ்டக வர்க்கம்</div>
-        <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
-          <thead><tr style={{ background: "#fff8ee" }}>
-            <th style={th}>கிரகம்</th>
-            {RASIS_TAMIL.map(r => <th key={r} style={th}>{r}</th>)}
-            <th style={th}>மொத்தம்</th>
-          </tr></thead>
-          <tbody>
-            {Object.entries(result.ashtakavarga.bhinna).map(([planet, bindus]) => (
-              <tr key={planet}>
-                <td style={{ ...td, fontWeight: 700 }}>{PLANET_TA[planet] || planet}</td>
-                {bindus.map((b, j) => <td key={j} style={{ ...td, textAlign: "center" }}>{b}</td>)}
-                <td style={{ ...td, textAlign: "center", fontWeight: 700 }}>{bindus.reduce((a, b) => a + b, 0)}</td>
-              </tr>
-            ))}
-            <tr style={{ background: "#fff8ee" }}>
-              <td style={{ ...td, fontWeight: 800 }}>சர்வாஷ்டகம்</td>
-              {result.ashtakavarga.sarva.map((b, j) => <td key={j} style={{ ...td, textAlign: "center", fontWeight: 700 }}>{b}</td>)}
-              <td style={{ ...td, textAlign: "center", fontWeight: 800 }}>{result.ashtakavarga.sarva.reduce((a, b) => a + b, 0)}</td>
-            </tr>
-          </tbody>
-        </table>
+        {(() => {
+          const EXPECTED: Record<string, number> = { sun: 48, moon: 49, mars: 39, mercury: 54, jupiter: 56, venus: 52, saturn: 39 };
+          const sarvaTotal = result.ashtakavarga.sarva.reduce((a, b) => a + b, 0);
+          const planetTotals: Record<string, number> = {};
+          Object.entries(result.ashtakavarga.bhinna).forEach(([k, v]) => { planetTotals[k] = v.reduce((a, b) => a + b, 0); });
+          const mismatches = Object.keys(EXPECTED).filter(k => planetTotals[k] !== EXPECTED[k]);
+          const sarvaOk = sarvaTotal === 337;
+          return (
+            <>
+              <div style={{ background: sarvaOk && mismatches.length === 0 ? "#e8f5e9" : "#ffebee", padding: "3px 6px", fontSize: 9.5, fontWeight: 700, border: `1px solid ${sarvaOk && mismatches.length === 0 ? "#2e7d32" : "#c62828"}`, marginBottom: 3 }}>
+                {sarvaOk && mismatches.length === 0
+                  ? `✓ சர்வாஷ்டக மொத்தம் ${sarvaTotal} — திருக்கணித பஞ்சாங்க சாஸ்திர மொத்தம் (337) சரியாக பொருந்துகிறது.`
+                  : `⚠ எச்சரிக்கை: சர்வாஷ்டகம் ${sarvaTotal} (எதிர்பார்ப்பு 337). ${mismatches.length ? "தவறான கிரகம்: " + mismatches.map(k => `${PLANET_TA[k]}=${planetTotals[k]} (சரி ${EXPECTED[k]})`).join(", ") : ""}`}
+              </div>
+              <div style={{ background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>பின்னாஷ்டக வர்க்கம்</div>
+              <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+                <thead><tr style={{ background: "#fff8ee" }}>
+                  <th style={th}>கிரகம்</th>
+                  {RASIS_TAMIL.map(r => <th key={r} style={th}>{r}</th>)}
+                  <th style={th}>மொத்தம்</th>
+                  <th style={th}>சரி</th>
+                </tr></thead>
+                <tbody>
+                  {Object.entries(result.ashtakavarga.bhinna).map(([planet, bindus]) => {
+                    const tot = bindus.reduce((a, b) => a + b, 0);
+                    const exp = EXPECTED[planet];
+                    const ok = tot === exp;
+                    return (
+                      <tr key={planet}>
+                        <td style={{ ...td, fontWeight: 700 }}>{PLANET_TA[planet] || planet}</td>
+                        {bindus.map((b, j) => <td key={j} style={{ ...td, textAlign: "center" }}>{b}</td>)}
+                        <td style={{ ...td, textAlign: "center", fontWeight: 700 }}>{tot}</td>
+                        <td style={{ ...td, textAlign: "center", color: ok ? "#2e7d32" : "#c62828", fontWeight: 700 }}>{ok ? `✓ ${exp}` : `✗ ${exp}`}</td>
+                      </tr>
+                    );
+                  })}
+                  <tr style={{ background: "#fff8ee" }}>
+                    <td style={{ ...td, fontWeight: 800 }}>சர்வாஷ்டகம்</td>
+                    {result.ashtakavarga.sarva.map((b, j) => <td key={j} style={{ ...td, textAlign: "center", fontWeight: 700 }}>{b}</td>)}
+                    <td style={{ ...td, textAlign: "center", fontWeight: 800 }}>{sarvaTotal}</td>
+                    <td style={{ ...td, textAlign: "center", color: sarvaOk ? "#2e7d32" : "#c62828", fontWeight: 800 }}>{sarvaOk ? "✓ 337" : "✗ 337"}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </>
+          );
+        })()}
 
         <div style={{ marginTop: 8, background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>சனி யோகங்கள்</div>
         <table style={{ width: "100%", fontSize: 10, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
@@ -579,7 +603,7 @@ export const ProfessionalReport = ({ result }: Props) => {
 
         <div style={{ marginTop: 8, fontSize: 9, color: "#555", lineHeight: 1.5 }}>
           <b>குறிப்பு :</b> அஷ்டகவர்க்க பிந்துக்கள் ஒரு ராசியில் அதிகமாக இருந்தால், அந்த இடம் வலுவான இடமாக கருதப்படுகிறது.
-          25-க்கு மேல் = வலுவான; 30-க்கு மேல் = மிக சிறந்தது. சர்வாஷ்டக மொத்தம் 337 (சாஸ்திர மொத்தம்).
+          25-க்கு மேல் = வலுவான; 30-க்கு மேல் = மிக சிறந்தது. சர்வாஷ்டக மொத்தம் 337 (சாஸ்திர மொத்தம் — சூரியன் 48 + சந்திரன் 49 + செவ்வாய் 39 + புதன் 54 + குரு 56 + சுக்கிரன் 52 + சனி 39).
         </div>
       </Page>
 
