@@ -20,7 +20,7 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
   const [motherName, setMotherName] = useState("");
   const [phone, setPhone] = useState("");
   const [gender, setGender] = useState("ஆண்");
-  const [date, setDate] = useState("");
+  const [date, setDate] = useState(""); // dd/mm/yyyy
   const [time, setTime] = useState("");
   const [placeOpen, setPlaceOpen] = useState(false);
   const [place, setPlace] = useState("");
@@ -30,10 +30,26 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
   const phoneDigits = phone.replace(/\D/g, "");
   const phoneValid = phoneDigits.length >= 7 && phoneDigits.length <= 15;
 
+  const dateMatch = date.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+  const dateValid = !!dateMatch && (() => {
+    const dd = +dateMatch[1], mm = +dateMatch[2], yyyy = +dateMatch[3];
+    if (mm < 1 || mm > 12 || dd < 1 || dd > 31 || yyyy < 1900 || yyyy > 2100) return false;
+    const d = new Date(yyyy, mm - 1, dd);
+    return d.getFullYear() === yyyy && d.getMonth() === mm - 1 && d.getDate() === dd;
+  })();
+
+  const handleDateChange = (raw: string) => {
+    const digits = raw.replace(/\D/g, "").slice(0, 8);
+    let out = digits;
+    if (digits.length > 4) out = `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+    else if (digits.length > 2) out = `${digits.slice(0, 2)}/${digits.slice(2)}`;
+    setDate(out);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !phoneValid || !date || !time || !placeData) return;
-    const [yyyy, mm, dd] = date.split("-").map(Number);
+    if (!name || !phoneValid || !dateValid || !time || !placeData) return;
+    const dd = +dateMatch![1], mm = +dateMatch![2], yyyy = +dateMatch![3];
     const [hh, min] = time.split(":").map(Number);
     onSubmit({
       year: yyyy,
@@ -159,12 +175,18 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
           </Label>
           <Input
             id="date"
-            type="date"
+            type="text"
+            inputMode="numeric"
             required
             value={date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => handleDateChange(e.target.value)}
+            placeholder="dd/mm/yyyy"
+            maxLength={10}
             className="bg-cream/50 border-gold/40 focus-visible:ring-accent"
           />
+          {date && !dateValid && (
+            <p className="text-xs text-destructive font-tamil">dd/mm/yyyy வடிவத்தில் கொடுக்கவும்</p>
+          )}
         </div>
         <div className="space-y-2">
           <Label htmlFor="time" className="font-tamil flex items-center gap-2 text-maroon-deep">
@@ -227,7 +249,7 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
 
       <Button
         type="submit"
-        disabled={loading || !name || !phoneValid || !date || !time || !placeData}
+        disabled={loading || !name || !phoneValid || !dateValid || !time || !placeData}
         className="w-full bg-gradient-royal hover:opacity-95 text-primary-foreground font-tamil text-lg py-6 shadow-royal border border-gold/40"
       >
         <Sparkles className="w-5 h-5 mr-2 text-gold-bright" />
