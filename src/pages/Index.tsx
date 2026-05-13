@@ -272,7 +272,7 @@ const ResultView = ({
             <Printer className="w-4 h-4 mr-1" /> அச்சிடு
           </Button>
           <DownloadReport
-            targetId={view === "pro" ? "professional-report-root" : view === "onepage" ? "onepage-report-root" : "jathagam-report-root"}
+            targetId={view === "pro" ? "professional-report-root" : view === "onepage" ? "onepage-report-root" : view === "kurippu" ? "kurippu-report-root" : "jathagam-report-root"}
             fileName={`jathagam-${result.input.name.replace(/\s+/g, "-")}.pdf`}
             paperSize={"a4"}
             orientation={"p"}
@@ -287,6 +287,10 @@ const ResultView = ({
       ) : view === "onepage" ? (
         <div id="onepage-report-root" className="overflow-x-auto">
           <OnePageReport result={result} />
+        </div>
+      ) : view === "kurippu" ? (
+        <div id="kurippu-report-root" className="overflow-x-auto">
+          <JenanaKurippu result={result} />
         </div>
       ) : (
         <div id="jathagam-report-root">
