@@ -10,6 +10,7 @@ import { SEO } from "@/components/SEO";
 import { DownloadReport } from "@/components/DownloadReport";
 import { OnePageReport } from "@/components/OnePageReport";
 import { ProfessionalReport } from "@/components/ProfessionalReport";
+import { JenanaKurippu } from "@/components/JenanaKurippu";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { AnnouncementsBanner } from "@/components/AnnouncementsBanner";
