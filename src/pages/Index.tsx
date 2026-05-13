@@ -256,6 +256,12 @@ const ResultView = ({
               <FileText className="w-3.5 h-3.5 inline mr-1" /> ஒரு பக்கம் (A4)
             </button>
             <button
+              onClick={() => setView("kurippu")}
+              className={`px-3 py-1.5 text-xs font-tamil rounded ${view === "kurippu" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
+            >
+              <FileText className="w-3.5 h-3.5 inline mr-1" /> ஜெனன குறிப்பு
+            </button>
+            <button
               onClick={() => setView("detailed")}
               className={`px-3 py-1.5 text-xs font-tamil rounded ${view === "detailed" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
             >
