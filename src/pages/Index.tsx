@@ -232,7 +232,7 @@ const ResultView = ({
   interpretationLoading: boolean;
   onReset: () => void;
 }) => {
-  const [view, setView] = useState<"detailed" | "onepage" | "pro">("pro");
+  const [view, setView] = useState<"detailed" | "onepage" | "pro" | "kurippu">("pro");
   const handlePrint = () => window.print();
 
   return (
