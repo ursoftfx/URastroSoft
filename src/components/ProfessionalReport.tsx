@@ -1563,6 +1563,7 @@ export const ProfessionalReport = ({ result }: Props) => {
                   </table>
                 </Page>
               );
+            })}
 
             {(() => {
               const BHUKTI_PARA: Record<string, string> = {
