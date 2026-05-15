@@ -135,6 +135,14 @@ const Porutham = () => {
               <Input className="font-tamil" value={girlName} onChange={(e) => setGirlName(e.target.value)} placeholder="மணமகள் பெயர்" />
             </div>
             <div>
+              <Label className="font-tamil">தந்தை பெயர்</Label>
+              <Input className="font-tamil" value={girlFather} onChange={(e) => setGirlFather(e.target.value)} placeholder="தந்தை பெயர்" />
+            </div>
+            <div>
+              <Label className="font-tamil">தாய் பெயர்</Label>
+              <Input className="font-tamil" value={girlMother} onChange={(e) => setGirlMother(e.target.value)} placeholder="தாய் பெயர்" />
+            </div>
+            <div>
               <Label className="font-tamil">முகவரி</Label>
               <Textarea className="font-tamil" value={girlAddress} onChange={(e) => setGirlAddress(e.target.value)} placeholder="முகவரி" rows={2} />
             </div>
