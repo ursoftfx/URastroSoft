@@ -187,6 +187,8 @@ const Porutham = () => {
                 <div className="border border-gold/30 rounded-lg p-4 bg-gold/5">
                   <div className="font-bold text-maroon-deep mb-2">ஆண் (மணமகன்)</div>
                   {boyName && <div><span className="text-muted-foreground">பெயர்:</span> <b>{boyName}</b></div>}
+                  {boyFather && <div><span className="text-muted-foreground">தந்தை:</span> {boyFather}</div>}
+                  {boyMother && <div><span className="text-muted-foreground">தாய்:</span> {boyMother}</div>}
                   {boyAddress && <div><span className="text-muted-foreground">முகவரி:</span> {boyAddress}</div>}
                   <div><span className="text-muted-foreground">நட்சத்திரம்:</span> {NAKSHATRAS[+boyNak]}</div>
                   <div><span className="text-muted-foreground">ராசி:</span> {RASIS[+boyRasi]}</div>
@@ -194,6 +196,8 @@ const Porutham = () => {
                 <div className="border border-gold/30 rounded-lg p-4 bg-gold/5">
                   <div className="font-bold text-maroon-deep mb-2">பெண் (மணமகள்)</div>
                   {girlName && <div><span className="text-muted-foreground">பெயர்:</span> <b>{girlName}</b></div>}
+                  {girlFather && <div><span className="text-muted-foreground">தந்தை:</span> {girlFather}</div>}
+                  {girlMother && <div><span className="text-muted-foreground">தாய்:</span> {girlMother}</div>}
                   {girlAddress && <div><span className="text-muted-foreground">முகவரி:</span> {girlAddress}</div>}
                   <div><span className="text-muted-foreground">நட்சத்திரம்:</span> {NAKSHATRAS[+girlNak]}</div>
                   <div><span className="text-muted-foreground">ராசி:</span> {RASIS[+girlRasi]}</div>
