@@ -16,10 +16,14 @@ import {
 
 const Porutham = () => {
   const [boyName, setBoyName] = useState("");
+  const [boyFather, setBoyFather] = useState("");
+  const [boyMother, setBoyMother] = useState("");
   const [boyAddress, setBoyAddress] = useState("");
   const [boyNak, setBoyNak] = useState<string>("");
   const [boyRasi, setBoyRasi] = useState<string>("");
   const [girlName, setGirlName] = useState("");
+  const [girlFather, setGirlFather] = useState("");
+  const [girlMother, setGirlMother] = useState("");
   const [girlAddress, setGirlAddress] = useState("");
   const [girlNak, setGirlNak] = useState<string>("");
   const [girlRasi, setGirlRasi] = useState<string>("");
