@@ -16,10 +16,14 @@ import {
 
 const Porutham = () => {
   const [boyName, setBoyName] = useState("");
+  const [boyFather, setBoyFather] = useState("");
+  const [boyMother, setBoyMother] = useState("");
   const [boyAddress, setBoyAddress] = useState("");
   const [boyNak, setBoyNak] = useState<string>("");
   const [boyRasi, setBoyRasi] = useState<string>("");
   const [girlName, setGirlName] = useState("");
+  const [girlFather, setGirlFather] = useState("");
+  const [girlMother, setGirlMother] = useState("");
   const [girlAddress, setGirlAddress] = useState("");
   const [girlNak, setGirlNak] = useState<string>("");
   const [girlRasi, setGirlRasi] = useState<string>("");
@@ -90,6 +94,14 @@ const Porutham = () => {
               <Input className="font-tamil" value={boyName} onChange={(e) => setBoyName(e.target.value)} placeholder="மணமகன் பெயர்" />
             </div>
             <div>
+              <Label className="font-tamil">தந்தை பெயர்</Label>
+              <Input className="font-tamil" value={boyFather} onChange={(e) => setBoyFather(e.target.value)} placeholder="தந்தை பெயர்" />
+            </div>
+            <div>
+              <Label className="font-tamil">தாய் பெயர்</Label>
+              <Input className="font-tamil" value={boyMother} onChange={(e) => setBoyMother(e.target.value)} placeholder="தாய் பெயர்" />
+            </div>
+            <div>
               <Label className="font-tamil">முகவரி</Label>
               <Textarea className="font-tamil" value={boyAddress} onChange={(e) => setBoyAddress(e.target.value)} placeholder="முகவரி" rows={2} />
             </div>
@@ -121,6 +133,14 @@ const Porutham = () => {
             <div>
               <Label className="font-tamil">பெயர்</Label>
               <Input className="font-tamil" value={girlName} onChange={(e) => setGirlName(e.target.value)} placeholder="மணமகள் பெயர்" />
+            </div>
+            <div>
+              <Label className="font-tamil">தந்தை பெயர்</Label>
+              <Input className="font-tamil" value={girlFather} onChange={(e) => setGirlFather(e.target.value)} placeholder="தந்தை பெயர்" />
+            </div>
+            <div>
+              <Label className="font-tamil">தாய் பெயர்</Label>
+              <Input className="font-tamil" value={girlMother} onChange={(e) => setGirlMother(e.target.value)} placeholder="தாய் பெயர்" />
             </div>
             <div>
               <Label className="font-tamil">முகவரி</Label>
@@ -167,6 +187,8 @@ const Porutham = () => {
                 <div className="border border-gold/30 rounded-lg p-4 bg-gold/5">
                   <div className="font-bold text-maroon-deep mb-2">ஆண் (மணமகன்)</div>
                   {boyName && <div><span className="text-muted-foreground">பெயர்:</span> <b>{boyName}</b></div>}
+                  {boyFather && <div><span className="text-muted-foreground">தந்தை:</span> {boyFather}</div>}
+                  {boyMother && <div><span className="text-muted-foreground">தாய்:</span> {boyMother}</div>}
                   {boyAddress && <div><span className="text-muted-foreground">முகவரி:</span> {boyAddress}</div>}
                   <div><span className="text-muted-foreground">நட்சத்திரம்:</span> {NAKSHATRAS[+boyNak]}</div>
                   <div><span className="text-muted-foreground">ராசி:</span> {RASIS[+boyRasi]}</div>
@@ -174,6 +196,8 @@ const Porutham = () => {
                 <div className="border border-gold/30 rounded-lg p-4 bg-gold/5">
                   <div className="font-bold text-maroon-deep mb-2">பெண் (மணமகள்)</div>
                   {girlName && <div><span className="text-muted-foreground">பெயர்:</span> <b>{girlName}</b></div>}
+                  {girlFather && <div><span className="text-muted-foreground">தந்தை:</span> {girlFather}</div>}
+                  {girlMother && <div><span className="text-muted-foreground">தாய்:</span> {girlMother}</div>}
                   {girlAddress && <div><span className="text-muted-foreground">முகவரி:</span> {girlAddress}</div>}
                   <div><span className="text-muted-foreground">நட்சத்திரம்:</span> {NAKSHATRAS[+girlNak]}</div>
                   <div><span className="text-muted-foreground">ராசி:</span> {RASIS[+girlRasi]}</div>
