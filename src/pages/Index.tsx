@@ -129,6 +129,7 @@ const Index = () => {
   };
 
   return (
+    <>
     <main className="min-h-screen relative">
       <SEO
         title="UR ASTRO SOFT — இலவச தமிழ் ஜாதகம் | Free Horoscope"
