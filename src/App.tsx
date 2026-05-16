@@ -13,6 +13,8 @@ import Porutham from "./pages/Porutham.tsx";
 import Auth from "./pages/Auth.tsx";
 import Admin from "./pages/Admin.tsx";
 import { PostsList, PostDetail } from "./pages/Posts.tsx";
+import { ArticlesList, ArticleDetail } from "./pages/Articles.tsx";
+import { About, Contact, PrivacyPolicy, Terms, Disclaimer } from "./pages/StaticPages.tsx";
 
 const queryClient = new QueryClient();
 
@@ -31,6 +33,13 @@ const App = () => (
             <Route path="/porutham" element={<Porutham />} />
             <Route path="/posts" element={<PostsList />} />
             <Route path="/posts/:slug" element={<PostDetail />} />
+            <Route path="/articles" element={<ArticlesList />} />
+            <Route path="/articles/:slug" element={<ArticleDetail />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms" element={<Terms />} />
+            <Route path="/disclaimer" element={<Disclaimer />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<Admin />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
