@@ -133,16 +133,19 @@ const Index = () => {
     <>
     <main className="min-h-screen relative">
       <SEO
-        title="UR ASTRO SOFT — இலவச தமிழ் ஜாதகம் | Free Horoscope"
-        description="UR ASTRO SOFT — பிறந்த தேதி, நேரம், ஊர் கொண்டு இலவச தமிழ் ஜாதகம், ராசி, நட்சத்திரம், லக்னம், திதி, யோகம், கரணம், தசை, நவாம்சம் A4 அச்சு."
+        title="UR ASTRO SOFT — Free Tamil Astrology Software | UR ASTRO SOFTS"
+        description="UR ASTRO SOFT (UR ASTRO SOFTS / urastrosoft) — free Tamil astrology software online. Jathagam, rasi, nakshatra, lagna, navamsa, dasha-bhukti, panchangam, thirumana porutham, A4 print."
         jsonLd={{
           "@context": "https://schema.org",
-          "@type": "WebApplication",
+          "@type": "SoftwareApplication",
           name: "UR ASTRO SOFT",
+          alternateName: ["UR ASTRO SOFTS", "urastrosoft", "Tamil Astrology Software"],
           applicationCategory: "LifestyleApplication",
-          operatingSystem: "Any",
-          inLanguage: "ta",
+          applicationSubCategory: "Astrology Software",
+          operatingSystem: "Web, Android, iOS, Windows",
+          inLanguage: ["ta", "en"],
           offers: { "@type": "Offer", price: "0", priceCurrency: "INR" },
+          sameAs: ["https://urastrosoft.netlify.app/", "https://kanagadara.lovable.app/"],
           url: typeof window !== "undefined" ? window.location.origin : "",
         }}
       />
