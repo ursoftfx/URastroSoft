@@ -14,6 +14,7 @@ import { JenanaKurippu } from "@/components/JenanaKurippu";
 import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
 import { SiteFooter } from "@/components/SiteFooter";
+import { AstrologyContentSections } from "@/components/AstrologyContentSections";
 import { AnnouncementsBanner } from "@/components/AnnouncementsBanner";
 import { useAuth } from "@/hooks/useAuth";
 
