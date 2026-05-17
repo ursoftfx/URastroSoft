@@ -219,26 +219,8 @@ const Index = () => {
         )}
       </div>
       <WhatsAppButton message="வணக்கம்! எனக்கு ஜாதக ஆலோசனை வேண்டும்." />
-      <section className="max-w-4xl mx-auto px-4 mt-12 print:hidden">
-        <div className="parchment rounded-2xl p-6 md:p-8 font-tamil">
-          <h2 className="text-2xl font-bold text-maroon-deep mb-3">தமிழ் ஜோதிட வழிகாட்டி</h2>
-          <p className="text-foreground/85 leading-relaxed mb-4">
-            UR ASTRO SOFT என்பது பாரம்பரிய வேத ஜோதிடத்தை எளிய தமிழில் வழங்கும் இலவச இணையதளம். உங்கள் பிறந்த தேதி, நேரம், ஊர் கொடுத்தால் — ராசி, நட்சத்திரம், லக்னம், ராசி-நவாம்ச கட்டம், விம்ஷோத்தரி தசா-புத்தி, பஞ்சாங்கம், திருமண பொருத்தம் உள்ளிட்ட முழுமையான ஜாதகத்தை A4 அச்சிடும் வடிவில் பெறலாம். எந்த பதிவும் தேவையில்லை, எந்த கட்டணமும் இல்லை.
-          </p>
-          <h3 className="text-lg font-bold text-maroon-deep mt-5 mb-2">அதிகம் படிக்கப்படும் கட்டுரைகள்</h3>
-          <ul className="grid sm:grid-cols-2 gap-2 text-sm">
-            <li>• <Link to="/articles/jathagam-introduction" className="text-maroon-deep underline">ஜாதகம் என்றால் என்ன?</Link></li>
-            <li>• <Link to="/articles/27-nakshatras" className="text-maroon-deep underline">27 நட்சத்திரங்கள் விளக்கம்</Link></li>
-            <li>• <Link to="/articles/12-rasis" className="text-maroon-deep underline">12 ராசிகள் விளக்கம்</Link></li>
-            <li>• <Link to="/articles/dasha-bukthi" className="text-maroon-deep underline">மகா தசை-புத்தி</Link></li>
-            <li>• <Link to="/articles/thirumana-porutham" className="text-maroon-deep underline">திருமண பொருத்தம் — 10</Link></li>
-            <li>• <Link to="/articles/chevvai-dosham" className="text-maroon-deep underline">செவ்வாய் தோஷம்</Link></li>
-          </ul>
-          <div className="mt-5">
-            <Link to="/articles" className="text-maroon-deep font-semibold underline">அனைத்து கட்டுரைகளும் →</Link>
-          </div>
-        </div>
-      </section>
+      <AstrologyContentSections />
+    </main>
     </main>
     <SiteFooter />
     </>
