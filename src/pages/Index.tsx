@@ -221,7 +221,6 @@ const Index = () => {
       <WhatsAppButton message="வணக்கம்! எனக்கு ஜாதக ஆலோசனை வேண்டும்." />
       <AstrologyContentSections />
     </main>
-    </main>
     <SiteFooter />
     </>
   );
