@@ -7,8 +7,32 @@ import thirumanaImg from "@/assets/thirumana.jpg";
 export const AstrologyContentSections = () => {
   return (
     <div className="print:hidden">
-      {/* Intro with hero image */}
+      {/* SEO brand block */}
       <section className="max-w-5xl mx-auto px-4 mt-16">
+        <div className="parchment rounded-2xl p-6 md:p-8 font-tamil">
+          <h2 className="text-2xl md:text-3xl font-bold text-maroon-deep mb-3">
+            UR ASTRO SOFT — Free Tamil Astrology Software
+          </h2>
+          <p className="text-foreground/85 leading-relaxed mb-3">
+            <b>UR ASTRO SOFT</b> (also known as <b>UR ASTRO SOFTS</b> or <b>urastrosoft</b>) is a free, browser-based Tamil astrology software. It is the modern web edition of the popular tool published at{" "}
+            <a href="https://urastrosoft.netlify.app/" target="_blank" rel="noopener noreferrer" className="text-maroon-deep underline">urastrosoft.netlify.app</a>{" "}— rebuilt for mobile and A4 printing. No install, no registration, no payment.
+          </p>
+          <p className="text-foreground/85 leading-relaxed">
+            Use UR ASTRO SOFT online to generate full Tamil jathagam with rasi & navamsa kattam, 27 nakshatra, lagna, Vimsottari dasha-bhukti, panchangam (tithi, yoga, karana, nalikai), thirumana porutham (10 matching), Chevvai / Rahu-Kethu dosha analysis, and a one-page A4 printable PDF — all in Tamil &amp; English.
+          </p>
+          <div className="grid sm:grid-cols-2 gap-2 text-sm text-foreground/80 mt-4">
+            <div>✓ Free Tamil astrology software online</div>
+            <div>✓ Jathagam / Kundli software in Tamil</div>
+            <div>✓ Marriage matching (porutham) software</div>
+            <div>✓ Panchangam &amp; nalikai calculator</div>
+            <div>✓ A4 printable horoscope PDF</div>
+            <div>✓ Works on mobile, tablet &amp; desktop</div>
+          </div>
+        </div>
+      </section>
+
+      {/* Intro with hero image */}
+      <section className="max-w-5xl mx-auto px-4 mt-10">
         <div className="parchment rounded-2xl overflow-hidden">
           <img
             src={heroImg}
