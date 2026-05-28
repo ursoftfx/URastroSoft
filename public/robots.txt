@@ -12,5 +12,8 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /auth
+Disallow: /admin
+Disallow: /posts
 
 Sitemap: https://kanagadara.lovable.app/sitemap.xml

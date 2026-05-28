@@ -3,9 +3,12 @@ import { Button } from "@/components/ui/button";
 import { SEO } from "@/components/SEO";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { Sparkles, Star, Phone, MessageCircle, ArrowRight } from "lucide-react";
+import { SiteFooter } from "@/components/SiteFooter";
+import { FreeHoroscopePublisherContent } from "@/components/AdSenseContentBlocks";
 
 const FreeHoroscope = () => {
   return (
+    <>
     <main className="min-h-screen relative">
       <SEO
         title="UR ASTRO SOFT — இலவச ஜாதகம் | Free Tamil Horoscope"
@@ -123,10 +126,14 @@ const FreeHoroscope = () => {
             </div>
           </div>
         </section>
+
+        <FreeHoroscopePublisherContent />
       </div>
 
       <WhatsAppButton message="வணக்கம்! எனக்கு இலவச ஜாதகம் வேண்டும்." />
     </main>
+    <SiteFooter />
+    </>
   );
 };
 

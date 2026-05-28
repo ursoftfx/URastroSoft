@@ -2,9 +2,12 @@ import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { Calendar, Clock, MapPin, ArrowRight, MessageCircle } from "lucide-react";
+import { SiteFooter } from "@/components/SiteFooter";
+import { BirthHoroscopePublisherContent } from "@/components/AdSenseContentBlocks";
 
 const BirthHoroscope = () => {
   return (
+    <>
     <main className="min-h-screen relative">
       <SEO
         title="பிறப்பு ஜாதகம் — Birth Horoscope Generator (Tamil)"
@@ -86,10 +89,14 @@ const BirthHoroscope = () => {
             கேள்விகளுக்கு WhatsApp: <a href="https://wa.me/919600543617" className="text-whatsapp-deep font-semibold underline">96005 43617</a>
           </p>
         </div>
+
+        <BirthHoroscopePublisherContent />
       </div>
 
       <WhatsAppButton message="வணக்கம்! எனக்கு பிறப்பு ஜாதகம் தயாரிக்க உதவ முடியுமா?" />
     </main>
+    <SiteFooter />
+    </>
   );
 };
 
