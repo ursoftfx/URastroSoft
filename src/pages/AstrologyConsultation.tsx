@@ -2,12 +2,15 @@ import { Link } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { Phone, MessageCircle, Clock, ShieldCheck, Heart, Briefcase, Users, ArrowRight } from "lucide-react";
+import { SiteFooter } from "@/components/SiteFooter";
+import { ConsultationPublisherContent } from "@/components/AdSenseContentBlocks";
 
 const PHONE_DISPLAY = "+91 96005 43617";
 const PHONE_RAW = "919600543617";
 
 const AstrologyConsultation = () => {
   return (
+    <>
     <main className="min-h-screen relative">
       <SEO
         title="இலவச ஜோதிட ஆலோசனை — Free Astrology Consultation Tamil"
@@ -120,10 +123,14 @@ const AstrologyConsultation = () => {
             முதலில் இலவச ஜாதகம் கணிக்க <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
+
+        <ConsultationPublisherContent />
       </div>
 
       <WhatsAppButton message="வணக்கம்! எனக்கு ஜோதிட ஆலோசனை வேண்டும்." />
     </main>
+    <SiteFooter />
+    </>
   );
 };
 
