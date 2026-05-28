@@ -23,7 +23,7 @@ export const PostsList = () => {
 
   return (
     <main className="min-h-screen max-w-4xl mx-auto px-4 py-10">
-      <SEO title="ஜோதிட கட்டுரைகள் | Tamil Astrology Articles" description="Tamil Vedic astrology articles, tips and guidance." />
+      <SEO title="ஜோதிட கட்டுரைகள் | Tamil Astrology Articles" description="Tamil Vedic astrology articles, tips and guidance." noIndex />
       <Link to="/" className="inline-flex items-center text-sm font-tamil text-maroon-deep mb-6">
         <ArrowLeft className="w-4 h-4 mr-1" /> முகப்பு
       </Link>
@@ -69,7 +69,7 @@ export const PostDetail = () => {
 
   return (
     <main className="min-h-screen max-w-3xl mx-auto px-4 py-10">
-      <SEO title={`${post.title} | ஜோதிடம்`} description={post.excerpt || post.body.slice(0, 155)} />
+      <SEO title={`${post.title} | ஜோதிடம்`} description={post.excerpt || post.body.slice(0, 155)} noIndex />
       <Link to="/posts" className="inline-flex items-center text-sm font-tamil text-maroon-deep mb-6">
         <ArrowLeft className="w-4 h-4 mr-1" /> கட்டுரைகள்
       </Link>
