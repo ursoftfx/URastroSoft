@@ -5,10 +5,11 @@ interface SEOProps {
   description: string;
   canonical?: string;
   jsonLd?: Record<string, any>;
+  noIndex?: boolean;
 }
 
 /** Lightweight head manager — sets title, meta description, canonical, optional JSON-LD. */
-export const SEO = ({ title, description, canonical, jsonLd }: SEOProps) => {
+export const SEO = ({ title, description, canonical, jsonLd, noIndex = false }: SEOProps) => {
   useEffect(() => {
     document.title = title.length > 60 ? title.slice(0, 57) + "…" : title;
 
@@ -28,6 +29,7 @@ export const SEO = ({ title, description, canonical, jsonLd }: SEOProps) => {
     setMeta("og:description", desc, "property");
     setMeta("twitter:title", title);
     setMeta("twitter:description", desc);
+    setMeta("robots", noIndex ? "noindex, nofollow" : "index, follow, max-image-preview:large");
 
     const href = canonical || window.location.href.split("?")[0].split("#")[0];
     let link = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
@@ -48,7 +50,7 @@ export const SEO = ({ title, description, canonical, jsonLd }: SEOProps) => {
     return () => {
       if (ld && ld.parentNode) ld.parentNode.removeChild(ld);
     };
-  }, [title, description, canonical, jsonLd]);
+  }, [title, description, canonical, jsonLd, noIndex]);
 
   return null;
 };
