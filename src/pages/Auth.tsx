@@ -55,7 +55,7 @@ const Auth = () => {
 
   return (
     <main className="min-h-screen flex items-center justify-center px-4 py-10">
-      <SEO title="உள்நுழைவு | Admin Login" description="நிர்வாக உள்நுழைவு" />
+      <SEO title="உள்நுழைவு | Admin Login" description="நிர்வாக உள்நுழைவு" noIndex />
       <div className="w-full max-w-md">
         <Link to="/" className="inline-flex items-center text-sm text-maroon-deep mb-4 font-tamil">
           <ArrowLeft className="w-4 h-4 mr-1" /> முகப்பு
