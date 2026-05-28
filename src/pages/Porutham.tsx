@@ -13,6 +13,8 @@ import { ArrowLeft, Heart, Printer } from "lucide-react";
 import {
   NAKSHATRAS, RASIS, compute10Porutham, PoruthamResult,
 } from "@/lib/porutham";
+import { SiteFooter } from "@/components/SiteFooter";
+import { PoruthamPublisherContent } from "@/components/AdSenseContentBlocks";
 
 const Porutham = () => {
   const [boyName, setBoyName] = useState("");
@@ -44,6 +46,7 @@ const Porutham = () => {
   const handlePrint = () => window.print();
 
   return (
+    <>
     <main className="min-h-screen relative">
       <SEO
         title="திருமண பொருத்தம் — 10 Porutham Calculator | Free Marriage Matching"
@@ -248,12 +251,16 @@ const Porutham = () => {
             </div>
           </section>
         )}
+
+        <PoruthamPublisherContent />
       </div>
 
       <div className="no-print">
         <WhatsAppButton message="வணக்கம்! எனக்கு திருமண பொருத்தம் ஆலோசனை வேண்டும்." />
       </div>
     </main>
+    <SiteFooter />
+    </>
   );
 };
 
