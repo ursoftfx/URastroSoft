@@ -143,7 +143,7 @@ const Admin = () => {
 
   return (
     <main className="min-h-screen p-4 md:p-8 max-w-5xl mx-auto">
-      <SEO title="நிர்வாக பலகை | Admin" description="Admin dashboard" />
+      <SEO title="நிர்வாக பலகை | Admin" description="Admin dashboard" noIndex />
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <Link to="/" className="inline-flex items-center text-sm font-tamil text-maroon-deep">
           <ArrowLeft className="w-4 h-4 mr-1" /> முகப்பு
