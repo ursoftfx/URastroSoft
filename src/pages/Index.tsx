@@ -198,7 +198,12 @@ const Index = () => {
           </header>
         )}
 
-        {!result && <AnnouncementsBanner />}
+        {!result && (
+          <div className="max-w-5xl mx-auto space-y-4 mb-6">
+            <AnnouncementsBanner />
+            <GocharaSummary />
+          </div>
+        )}
 
         {!result ? (
           <div className="max-w-xl mx-auto">
