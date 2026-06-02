@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import { SiteFooter } from "@/components/SiteFooter";
 import { AstrologyContentSections } from "@/components/AstrologyContentSections";
 import { AnnouncementsBanner } from "@/components/AnnouncementsBanner";
+import { GocharaSummary } from "@/components/GocharaSummary";
 import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
