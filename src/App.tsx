@@ -10,6 +10,7 @@ import FreeHoroscope from "./pages/FreeHoroscope.tsx";
 import BirthHoroscope from "./pages/BirthHoroscope.tsx";
 import AstrologyConsultation from "./pages/AstrologyConsultation.tsx";
 import Porutham from "./pages/Porutham.tsx";
+import Gochara from "./pages/Gochara.tsx";
 import Auth from "./pages/Auth.tsx";
 import Admin from "./pages/Admin.tsx";
 import { PostsList, PostDetail } from "./pages/Posts.tsx";
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/birth-horoscope" element={<BirthHoroscope />} />
             <Route path="/astrology-consultation" element={<AstrologyConsultation />} />
             <Route path="/porutham" element={<Porutham />} />
+            <Route path="/gochara" element={<Gochara />} />
             <Route path="/posts" element={<PostsList />} />
             <Route path="/posts/:slug" element={<PostDetail />} />
             <Route path="/articles" element={<ArticlesList />} />
