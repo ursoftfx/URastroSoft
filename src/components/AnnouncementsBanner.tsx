@@ -20,7 +20,7 @@ export const AnnouncementsBanner = () => {
 
   if (items.length === 0) return null;
   return (
-    <div className="max-w-3xl mx-auto mb-6 parchment rounded-xl p-4">
+    <div className="w-full parchment rounded-xl p-4 border border-gold/30">
       <div className="flex items-center gap-2 text-maroon-deep font-tamil font-bold mb-2">
         <Megaphone className="w-5 h-5 text-gold-deep" /> அறிவிப்புகள்
       </div>

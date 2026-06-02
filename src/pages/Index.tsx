@@ -16,6 +16,7 @@ import { Link } from "react-router-dom";
 import { SiteFooter } from "@/components/SiteFooter";
 import { AstrologyContentSections } from "@/components/AstrologyContentSections";
 import { AnnouncementsBanner } from "@/components/AnnouncementsBanner";
+import { GocharaSummary } from "@/components/GocharaSummary";
 import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
@@ -197,7 +198,12 @@ const Index = () => {
           </header>
         )}
 
-        {!result && <AnnouncementsBanner />}
+        {!result && (
+          <div className="max-w-5xl mx-auto space-y-4 mb-6">
+            <AnnouncementsBanner />
+            <GocharaSummary />
+          </div>
+        )}
 
         {!result ? (
           <div className="max-w-xl mx-auto">
