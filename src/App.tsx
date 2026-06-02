@@ -10,6 +10,7 @@ import FreeHoroscope from "./pages/FreeHoroscope.tsx";
 import BirthHoroscope from "./pages/BirthHoroscope.tsx";
 import AstrologyConsultation from "./pages/AstrologyConsultation.tsx";
 import Porutham from "./pages/Porutham.tsx";
+import Gochara from "./pages/Gochara.tsx";
 import Auth from "./pages/Auth.tsx";
 import Admin from "./pages/Admin.tsx";
 import { PostsList, PostDetail } from "./pages/Posts.tsx";
