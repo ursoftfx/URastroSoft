@@ -146,6 +146,71 @@ function rasiAtHouseFromPlanet(planetRasi: number, offset: number) {
   return (planetRasi + offset - 1 + 12) % 12;
 }
 
+// ---------- North Indian (+) diamond chart with BNN placement ----------
+const PLANET_SHORT: Record<string, string> = {
+  sun: "சூ", moon: "சந்", mars: "செ", mercury: "பு", jupiter: "கு",
+  venus: "சுக்", saturn: "சனி", rahu: "ரா", ketu: "கே",
+};
+// House center positions for a 300x300 + diamond chart (house 1 at top)
+const HOUSE_POS: { x: number; y: number }[] = [
+  { x: 150, y: 75 },   // 1
+  { x: 75,  y: 37 },   // 2
+  { x: 37,  y: 75 },   // 3
+  { x: 75,  y: 150 },  // 4
+  { x: 37,  y: 225 },  // 5
+  { x: 75,  y: 263 },  // 6
+  { x: 150, y: 225 },  // 7
+  { x: 225, y: 263 },  // 8
+  { x: 263, y: 225 },  // 9
+  { x: 225, y: 150 },  // 10
+  { x: 263, y: 75 },   // 11
+  { x: 225, y: 37 },   // 12
+];
+
+function NorthIndianChart({ result }: { result: JathagamResult }) {
+  const lagnaIdx = result.ascendant.rasiIndex;
+  const houses = Array.from({ length: 12 }, (_, h) => {
+    const rasiIdx = (lagnaIdx + h) % 12;
+    const planets = result.planets.filter((p) => p.rasiIndex === rasiIdx);
+    return { house: h + 1, rasiIdx, planets };
+  });
+  return (
+    <svg viewBox="0 0 300 300" className="w-full max-w-[340px] mx-auto block">
+      <rect x="2" y="2" width="296" height="296" fill="hsl(var(--card))" stroke="hsl(var(--primary))" strokeWidth="2" />
+      <line x1="2" y1="2" x2="298" y2="298" stroke="hsl(var(--primary))" strokeWidth="1.5" />
+      <line x1="298" y1="2" x2="2" y2="298" stroke="hsl(var(--primary))" strokeWidth="1.5" />
+      <polygon points="150,2 298,150 150,298 2,150" fill="none" stroke="hsl(var(--primary))" strokeWidth="1.5" />
+      {houses.map((h, i) => {
+        const pos = HOUSE_POS[i];
+        return (
+          <g key={h.house}>
+            <text x={pos.x} y={pos.y - 14} textAnchor="middle" className="fill-[hsl(var(--muted-foreground))]" style={{ fontSize: 9 }}>
+              {h.house}・{RASIS_TAMIL[h.rasiIdx]}
+            </text>
+            {h.house === 1 && (
+              <text x={pos.x} y={pos.y - 2} textAnchor="middle" className="fill-[hsl(var(--primary))] font-bold" style={{ fontSize: 11 }}>
+                ல
+              </text>
+            )}
+            {h.planets.map((p, idx) => (
+              <text
+                key={p.key}
+                x={pos.x}
+                y={pos.y + 10 + idx * 11}
+                textAnchor="middle"
+                className="fill-[hsl(var(--foreground))] font-semibold"
+                style={{ fontSize: 11 }}
+              >
+                {PLANET_SHORT[p.key] || p.nameTamil.slice(0, 2)}
+              </text>
+            ))}
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
 const BhriguNandiNadi = () => {
   const [result, setResult] = useState<JathagamResult | null>(null);
 
