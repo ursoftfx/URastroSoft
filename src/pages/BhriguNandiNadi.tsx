@@ -149,10 +149,22 @@ function rasiAtHouseFromPlanet(planetRasi: number, offset: number) {
 const BhriguNandiNadi = () => {
   const [result, setResult] = useState<JathagamResult | null>(null);
 
+  // Auto-load last computed jathagam from Index/Gochara so user doesn't re-enter
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem("lastJathagamResult");
+      if (raw) setResult(JSON.parse(raw));
+    } catch {}
+  }, []);
+
   const onSubmit = (input: BirthInput) => {
     try {
       const r = computeJathagam(input);
       setResult(r);
+      try {
+        sessionStorage.setItem("lastBirthInput", JSON.stringify(input));
+        sessionStorage.setItem("lastJathagamResult", JSON.stringify(r));
+      } catch {}
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e) {
       console.error(e);
