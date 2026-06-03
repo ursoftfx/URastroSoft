@@ -402,6 +402,50 @@ const BhriguNandiNadi = () => {
             </div>
           </section>
 
+          {/* ---------- Ucham / Neecham reference table ---------- */}
+          <section aria-labelledby="bnn-ucham" className="mb-10">
+            <div className="flex items-center gap-2 mb-4">
+              <TrendingUp className="w-5 h-5 text-emerald-700" />
+              <h2 id="bnn-ucham" className="font-tamil text-2xl font-bold text-maroon-deep">
+                உச்சம் & நீச்சம் — கிரக பல அட்டவணை
+              </h2>
+            </div>
+            <p className="font-tamil text-sm text-muted-foreground mb-3">
+              ஒரு கிரகம் உச்ச ராசியில் இருந்தால் பூரண பலம் (100%), நீச்ச ராசியில் இருந்தால் மிக குறைந்த பலம் (0%),
+              சுய ராசியில் இருந்தால் நல்ல பலம். BNN முறையிலும் இந்த பலம் முக்கியம்.
+            </p>
+            <div className="parchment border border-gold/30 rounded-xl overflow-hidden">
+              <table className="w-full text-sm font-tamil">
+                <thead className="bg-gradient-royal text-primary-foreground">
+                  <tr>
+                    <th className="px-3 py-2 text-left">கிரகம்</th>
+                    <th className="px-3 py-2 text-left text-emerald-100">உச்சம் (Exaltation)</th>
+                    <th className="px-3 py-2 text-left text-red-100">நீச்சம் (Debilitation)</th>
+                    <th className="px-3 py-2 text-left">சுய ராசி</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {UCHAM_NEECHAM.map((u) => (
+                    <tr key={u.key} className="border-t border-gold/20">
+                      <td className="px-3 py-2 font-bold text-maroon-deep">{u.tamil}</td>
+                      <td className="px-3 py-2 text-emerald-800">
+                        {RASIS_TAMIL[u.uchamIdx]} <span className="text-xs text-muted-foreground">({u.uchamDeg}°)</span>
+                      </td>
+                      <td className="px-3 py-2 text-red-800">
+                        {RASIS_TAMIL[u.neechamIdx]} <span className="text-xs text-muted-foreground">({u.neechamDeg}°)</span>
+                      </td>
+                      <td className="px-3 py-2 text-foreground/80">
+                        {u.ownIdx.length ? u.ownIdx.map((i) => RASIS_TAMIL[i]).join(", ") : "—"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+
+
           {/* ---------- Form & personalized reading ---------- */}
           <section aria-labelledby="bnn-reading" className="mb-10">
             <h2 id="bnn-reading" className="font-tamil text-2xl font-bold text-maroon-deep text-center mb-6">
