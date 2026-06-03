@@ -473,18 +473,87 @@ const BhriguNandiNadi = () => {
                   </CardHeader>
                 </Card>
 
+                {/* + shape North Indian chart with BNN planet placement */}
                 <div className="grid md:grid-cols-2 gap-4">
-                  {readings.map(({ karaka, planet, house, lines }) => (
+                  <Card className="parchment border-gold/30">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="font-tamil text-base text-maroon-deep">
+                        ராசி கட்டம் (+ வடிவம், BNN அமைப்பு)
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <NorthIndianChart result={result} />
+                      <p className="text-[11px] font-tamil text-muted-foreground mt-2 text-center">
+                        லக்னம் முதல் வீடு. கிரகங்கள் BNN முறையில் ராசி வாரியாக அமைக்கப்பட்டுள்ளன.
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  {/* Nakshatra details table */}
+                  <Card className="parchment border-gold/30">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="font-tamil text-base text-maroon-deep">
+                        கிரக நட்சத்திர விவரம்
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <table className="w-full text-xs font-tamil">
+                        <thead className="bg-cream/60 text-maroon-deep">
+                          <tr>
+                            <th className="px-2 py-1.5 text-left">கிரகம்</th>
+                            <th className="px-2 py-1.5 text-left">ராசி</th>
+                            <th className="px-2 py-1.5 text-left">நட்சத்திரம்</th>
+                            <th className="px-2 py-1.5 text-left">பாதம்</th>
+                            <th className="px-2 py-1.5 text-left">பலம்</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {result.planets.map((p) => {
+                            const s = planetStrength(p.key, p.rasiIndex);
+                            return (
+                              <tr key={p.key} className="border-t border-gold/20">
+                                <td className="px-2 py-1.5 font-bold text-maroon-deep">{p.nameTamil}</td>
+                                <td className="px-2 py-1.5">{p.rasiTamil}</td>
+                                <td className="px-2 py-1.5">{p.nakshatraTamil}</td>
+                                <td className="px-2 py-1.5">{(p as any).pada ?? "—"}</td>
+                                <td className="px-2 py-1.5">
+                                  {s ? (
+                                    <span className={`inline-block px-1.5 py-0.5 rounded border text-[10px] ${s.cls}`}>
+                                      {s.label}
+                                    </span>
+                                  ) : (
+                                    <span className="text-muted-foreground">—</span>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  {readings.map(({ karaka, planet, house, lines }) => {
+                    const s = planetStrength(planet.key, planet.rasiIndex);
+                    return (
                     <Card key={karaka.key} className="parchment border-gold/30">
                       <CardHeader className="pb-2">
-                        <CardTitle className="font-tamil text-lg text-maroon-deep">
-                          {karaka.tamil}{" "}
+                        <CardTitle className="font-tamil text-lg text-maroon-deep flex items-center gap-2 flex-wrap">
+                          <span>{karaka.tamil}</span>
                           <span className="text-sm font-normal text-muted-foreground">
                             ({karaka.signifies.split(",")[0]})
                           </span>
+                          {s && (
+                            <span className={`inline-block px-1.5 py-0.5 rounded border text-[10px] ${s.cls}`}>
+                              {s.label === "உச்சம்" ? <TrendingUp className="inline w-3 h-3 mr-0.5" /> : s.label === "நீச்சம்" ? <TrendingDown className="inline w-3 h-3 mr-0.5" /> : null}
+                              {s.label}
+                            </span>
+                          )}
                         </CardTitle>
                         <div className="text-xs font-tamil text-gold-deep">
-                          {planet.rasiTamil} • {house}ம் இடம்
+                          {planet.rasiTamil} • {house}ம் இடம் • {planet.nakshatraTamil} நட்சத்திரம்
                         </div>
                       </CardHeader>
                       <CardContent>
@@ -495,8 +564,10 @@ const BhriguNandiNadi = () => {
                         </ul>
                       </CardContent>
                     </Card>
-                  ))}
+                  );})}
                 </div>
+
+
 
                 <div className="parchment border border-gold/30 rounded-xl p-4 mt-4">
                   <h3 className="font-tamil font-bold text-maroon-deep mb-2">அடுத்த படி — குரு கோசாரம்</h3>
