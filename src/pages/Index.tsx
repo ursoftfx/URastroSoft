@@ -96,6 +96,11 @@ const Index = () => {
       setResult(r);
       window.scrollTo({ top: 0, behavior: "smooth" });
       streamInterpretation(r);
+      // Share with other pages (Bhrigu Nandi Nadi, Gochara) so users don't re-enter data
+      try {
+        sessionStorage.setItem("lastBirthInput", JSON.stringify(input));
+        sessionStorage.setItem("lastJathagamResult", JSON.stringify(r));
+      } catch {}
 
       // Save lead (fire-and-forget; never block the user)
       const pad = (n: number) => String(n).padStart(2, "0");

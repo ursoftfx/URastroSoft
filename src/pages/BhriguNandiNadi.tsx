@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, BookOpen, Sparkles, Star } from "lucide-react";
+import { ArrowLeft, BookOpen, Sparkles, Star, TrendingUp, TrendingDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SEO } from "@/components/SEO";
@@ -15,6 +15,28 @@ import {
   computeJathagam,
 } from "@/lib/jathagam";
 import { toast } from "sonner";
+
+// Exaltation (உச்சம்) and Debilitation (நீச்சம்) reference — rasi index 0..11 (மேஷம்..மீனம்)
+const UCHAM_NEECHAM: { key: string; tamil: string; uchamIdx: number; uchamDeg: number; neechamIdx: number; neechamDeg: number; ownIdx: number[] }[] = [
+  { key: "sun",     tamil: "சூரியன்",  uchamIdx: 0,  uchamDeg: 10, neechamIdx: 6,  neechamDeg: 10, ownIdx: [4] },
+  { key: "moon",    tamil: "சந்திரன்", uchamIdx: 1,  uchamDeg: 3,  neechamIdx: 7,  neechamDeg: 3,  ownIdx: [3] },
+  { key: "mars",    tamil: "செவ்வாய்", uchamIdx: 9,  uchamDeg: 28, neechamIdx: 3,  neechamDeg: 28, ownIdx: [0, 7] },
+  { key: "mercury", tamil: "புதன்",    uchamIdx: 5,  uchamDeg: 15, neechamIdx: 11, neechamDeg: 15, ownIdx: [2, 5] },
+  { key: "jupiter", tamil: "குரு",     uchamIdx: 3,  uchamDeg: 5,  neechamIdx: 9,  neechamDeg: 5,  ownIdx: [8, 11] },
+  { key: "venus",   tamil: "சுக்ரன்",  uchamIdx: 11, uchamDeg: 27, neechamIdx: 5,  neechamDeg: 27, ownIdx: [1, 6] },
+  { key: "saturn",  tamil: "சனி",      uchamIdx: 6,  uchamDeg: 20, neechamIdx: 0,  neechamDeg: 20, ownIdx: [9, 10] },
+  { key: "rahu",    tamil: "ராகு",     uchamIdx: 1,  uchamDeg: 20, neechamIdx: 7,  neechamDeg: 20, ownIdx: [] },
+  { key: "ketu",    tamil: "கேது",     uchamIdx: 7,  uchamDeg: 20, neechamIdx: 1,  neechamDeg: 20, ownIdx: [] },
+];
+
+function planetStrength(key: string, rasiIndex: number): { label: string; cls: string } | null {
+  const row = UCHAM_NEECHAM.find((r) => r.key === key);
+  if (!row) return null;
+  if (rasiIndex === row.uchamIdx) return { label: "உச்சம்", cls: "text-emerald-700 bg-emerald-50 border-emerald-200" };
+  if (rasiIndex === row.neechamIdx) return { label: "நீச்சம்", cls: "text-red-700 bg-red-50 border-red-200" };
+  if (row.ownIdx.includes(rasiIndex)) return { label: "சுய ஸ்தானம்", cls: "text-amber-800 bg-amber-50 border-amber-200" };
+  return null;
+}
 
 /* ---------------- Bhrigu Nandi Nadi (BNN) core helpers ----------------
  * BNN is a karaka + conjunction based predictive system. We compute simple,
@@ -124,13 +146,90 @@ function rasiAtHouseFromPlanet(planetRasi: number, offset: number) {
   return (planetRasi + offset - 1 + 12) % 12;
 }
 
+// ---------- North Indian (+) diamond chart with BNN placement ----------
+const PLANET_SHORT: Record<string, string> = {
+  sun: "சூ", moon: "சந்", mars: "செ", mercury: "பு", jupiter: "கு",
+  venus: "சுக்", saturn: "சனி", rahu: "ரா", ketu: "கே",
+};
+// House center positions for a 300x300 + diamond chart (house 1 at top)
+const HOUSE_POS: { x: number; y: number }[] = [
+  { x: 150, y: 75 },   // 1
+  { x: 75,  y: 37 },   // 2
+  { x: 37,  y: 75 },   // 3
+  { x: 75,  y: 150 },  // 4
+  { x: 37,  y: 225 },  // 5
+  { x: 75,  y: 263 },  // 6
+  { x: 150, y: 225 },  // 7
+  { x: 225, y: 263 },  // 8
+  { x: 263, y: 225 },  // 9
+  { x: 225, y: 150 },  // 10
+  { x: 263, y: 75 },   // 11
+  { x: 225, y: 37 },   // 12
+];
+
+function NorthIndianChart({ result }: { result: JathagamResult }) {
+  const lagnaIdx = result.ascendant.rasiIndex;
+  const houses = Array.from({ length: 12 }, (_, h) => {
+    const rasiIdx = (lagnaIdx + h) % 12;
+    const planets = result.planets.filter((p) => p.rasiIndex === rasiIdx);
+    return { house: h + 1, rasiIdx, planets };
+  });
+  return (
+    <svg viewBox="0 0 300 300" className="w-full max-w-[340px] mx-auto block">
+      <rect x="2" y="2" width="296" height="296" fill="hsl(var(--card))" stroke="hsl(var(--primary))" strokeWidth="2" />
+      <line x1="2" y1="2" x2="298" y2="298" stroke="hsl(var(--primary))" strokeWidth="1.5" />
+      <line x1="298" y1="2" x2="2" y2="298" stroke="hsl(var(--primary))" strokeWidth="1.5" />
+      <polygon points="150,2 298,150 150,298 2,150" fill="none" stroke="hsl(var(--primary))" strokeWidth="1.5" />
+      {houses.map((h, i) => {
+        const pos = HOUSE_POS[i];
+        return (
+          <g key={h.house}>
+            <text x={pos.x} y={pos.y - 14} textAnchor="middle" className="fill-[hsl(var(--muted-foreground))]" style={{ fontSize: 9 }}>
+              {h.house}・{RASIS_TAMIL[h.rasiIdx]}
+            </text>
+            {h.house === 1 && (
+              <text x={pos.x} y={pos.y - 2} textAnchor="middle" className="fill-[hsl(var(--primary))] font-bold" style={{ fontSize: 11 }}>
+                ல
+              </text>
+            )}
+            {h.planets.map((p, idx) => (
+              <text
+                key={p.key}
+                x={pos.x}
+                y={pos.y + 10 + idx * 11}
+                textAnchor="middle"
+                className="fill-[hsl(var(--foreground))] font-semibold"
+                style={{ fontSize: 11 }}
+              >
+                {PLANET_SHORT[p.key] || p.nameTamil.slice(0, 2)}
+              </text>
+            ))}
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
 const BhriguNandiNadi = () => {
   const [result, setResult] = useState<JathagamResult | null>(null);
+
+  // Auto-load last computed jathagam from Index/Gochara so user doesn't re-enter
+  useEffect(() => {
+    try {
+      const raw = sessionStorage.getItem("lastJathagamResult");
+      if (raw) setResult(JSON.parse(raw));
+    } catch {}
+  }, []);
 
   const onSubmit = (input: BirthInput) => {
     try {
       const r = computeJathagam(input);
       setResult(r);
+      try {
+        sessionStorage.setItem("lastBirthInput", JSON.stringify(input));
+        sessionStorage.setItem("lastJathagamResult", JSON.stringify(r));
+      } catch {}
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (e) {
       console.error(e);
@@ -303,6 +402,50 @@ const BhriguNandiNadi = () => {
             </div>
           </section>
 
+          {/* ---------- Ucham / Neecham reference table ---------- */}
+          <section aria-labelledby="bnn-ucham" className="mb-10">
+            <div className="flex items-center gap-2 mb-4">
+              <TrendingUp className="w-5 h-5 text-emerald-700" />
+              <h2 id="bnn-ucham" className="font-tamil text-2xl font-bold text-maroon-deep">
+                உச்சம் & நீச்சம் — கிரக பல அட்டவணை
+              </h2>
+            </div>
+            <p className="font-tamil text-sm text-muted-foreground mb-3">
+              ஒரு கிரகம் உச்ச ராசியில் இருந்தால் பூரண பலம் (100%), நீச்ச ராசியில் இருந்தால் மிக குறைந்த பலம் (0%),
+              சுய ராசியில் இருந்தால் நல்ல பலம். BNN முறையிலும் இந்த பலம் முக்கியம்.
+            </p>
+            <div className="parchment border border-gold/30 rounded-xl overflow-hidden">
+              <table className="w-full text-sm font-tamil">
+                <thead className="bg-gradient-royal text-primary-foreground">
+                  <tr>
+                    <th className="px-3 py-2 text-left">கிரகம்</th>
+                    <th className="px-3 py-2 text-left text-emerald-100">உச்சம் (Exaltation)</th>
+                    <th className="px-3 py-2 text-left text-red-100">நீச்சம் (Debilitation)</th>
+                    <th className="px-3 py-2 text-left">சுய ராசி</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {UCHAM_NEECHAM.map((u) => (
+                    <tr key={u.key} className="border-t border-gold/20">
+                      <td className="px-3 py-2 font-bold text-maroon-deep">{u.tamil}</td>
+                      <td className="px-3 py-2 text-emerald-800">
+                        {RASIS_TAMIL[u.uchamIdx]} <span className="text-xs text-muted-foreground">({u.uchamDeg}°)</span>
+                      </td>
+                      <td className="px-3 py-2 text-red-800">
+                        {RASIS_TAMIL[u.neechamIdx]} <span className="text-xs text-muted-foreground">({u.neechamDeg}°)</span>
+                      </td>
+                      <td className="px-3 py-2 text-foreground/80">
+                        {u.ownIdx.length ? u.ownIdx.map((i) => RASIS_TAMIL[i]).join(", ") : "—"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+
+
           {/* ---------- Form & personalized reading ---------- */}
           <section aria-labelledby="bnn-reading" className="mb-10">
             <h2 id="bnn-reading" className="font-tamil text-2xl font-bold text-maroon-deep text-center mb-6">
@@ -330,18 +473,87 @@ const BhriguNandiNadi = () => {
                   </CardHeader>
                 </Card>
 
+                {/* + shape North Indian chart with BNN planet placement */}
                 <div className="grid md:grid-cols-2 gap-4">
-                  {readings.map(({ karaka, planet, house, lines }) => (
+                  <Card className="parchment border-gold/30">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="font-tamil text-base text-maroon-deep">
+                        ராசி கட்டம் (+ வடிவம், BNN அமைப்பு)
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <NorthIndianChart result={result} />
+                      <p className="text-[11px] font-tamil text-muted-foreground mt-2 text-center">
+                        லக்னம் முதல் வீடு. கிரகங்கள் BNN முறையில் ராசி வாரியாக அமைக்கப்பட்டுள்ளன.
+                      </p>
+                    </CardContent>
+                  </Card>
+
+                  {/* Nakshatra details table */}
+                  <Card className="parchment border-gold/30">
+                    <CardHeader className="pb-2">
+                      <CardTitle className="font-tamil text-base text-maroon-deep">
+                        கிரக நட்சத்திர விவரம்
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <table className="w-full text-xs font-tamil">
+                        <thead className="bg-cream/60 text-maroon-deep">
+                          <tr>
+                            <th className="px-2 py-1.5 text-left">கிரகம்</th>
+                            <th className="px-2 py-1.5 text-left">ராசி</th>
+                            <th className="px-2 py-1.5 text-left">நட்சத்திரம்</th>
+                            <th className="px-2 py-1.5 text-left">பாதம்</th>
+                            <th className="px-2 py-1.5 text-left">பலம்</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {result.planets.map((p) => {
+                            const s = planetStrength(p.key, p.rasiIndex);
+                            return (
+                              <tr key={p.key} className="border-t border-gold/20">
+                                <td className="px-2 py-1.5 font-bold text-maroon-deep">{p.nameTamil}</td>
+                                <td className="px-2 py-1.5">{p.rasiTamil}</td>
+                                <td className="px-2 py-1.5">{p.nakshatraTamil}</td>
+                                <td className="px-2 py-1.5">{(p as any).pada ?? "—"}</td>
+                                <td className="px-2 py-1.5">
+                                  {s ? (
+                                    <span className={`inline-block px-1.5 py-0.5 rounded border text-[10px] ${s.cls}`}>
+                                      {s.label}
+                                    </span>
+                                  ) : (
+                                    <span className="text-muted-foreground">—</span>
+                                  )}
+                                </td>
+                              </tr>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  {readings.map(({ karaka, planet, house, lines }) => {
+                    const s = planetStrength(planet.key, planet.rasiIndex);
+                    return (
                     <Card key={karaka.key} className="parchment border-gold/30">
                       <CardHeader className="pb-2">
-                        <CardTitle className="font-tamil text-lg text-maroon-deep">
-                          {karaka.tamil}{" "}
+                        <CardTitle className="font-tamil text-lg text-maroon-deep flex items-center gap-2 flex-wrap">
+                          <span>{karaka.tamil}</span>
                           <span className="text-sm font-normal text-muted-foreground">
                             ({karaka.signifies.split(",")[0]})
                           </span>
+                          {s && (
+                            <span className={`inline-block px-1.5 py-0.5 rounded border text-[10px] ${s.cls}`}>
+                              {s.label === "உச்சம்" ? <TrendingUp className="inline w-3 h-3 mr-0.5" /> : s.label === "நீச்சம்" ? <TrendingDown className="inline w-3 h-3 mr-0.5" /> : null}
+                              {s.label}
+                            </span>
+                          )}
                         </CardTitle>
                         <div className="text-xs font-tamil text-gold-deep">
-                          {planet.rasiTamil} • {house}ம் இடம்
+                          {planet.rasiTamil} • {house}ம் இடம் • {planet.nakshatraTamil} நட்சத்திரம்
                         </div>
                       </CardHeader>
                       <CardContent>
@@ -352,8 +564,10 @@ const BhriguNandiNadi = () => {
                         </ul>
                       </CardContent>
                     </Card>
-                  ))}
+                  );})}
                 </div>
+
+
 
                 <div className="parchment border border-gold/30 rounded-xl p-4 mt-4">
                   <h3 className="font-tamil font-bold text-maroon-deep mb-2">அடுத்த படி — குரு கோசாரம்</h3>
