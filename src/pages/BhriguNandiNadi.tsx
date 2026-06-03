@@ -1,6 +1,6 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, BookOpen, Sparkles, Star } from "lucide-react";
+import { ArrowLeft, BookOpen, Sparkles, Star, TrendingUp, TrendingDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SEO } from "@/components/SEO";
@@ -15,6 +15,28 @@ import {
   computeJathagam,
 } from "@/lib/jathagam";
 import { toast } from "sonner";
+
+// Exaltation (உச்சம்) and Debilitation (நீச்சம்) reference — rasi index 0..11 (மேஷம்..மீனம்)
+const UCHAM_NEECHAM: { key: string; tamil: string; uchamIdx: number; uchamDeg: number; neechamIdx: number; neechamDeg: number; ownIdx: number[] }[] = [
+  { key: "sun",     tamil: "சூரியன்",  uchamIdx: 0,  uchamDeg: 10, neechamIdx: 6,  neechamDeg: 10, ownIdx: [4] },
+  { key: "moon",    tamil: "சந்திரன்", uchamIdx: 1,  uchamDeg: 3,  neechamIdx: 7,  neechamDeg: 3,  ownIdx: [3] },
+  { key: "mars",    tamil: "செவ்வாய்", uchamIdx: 9,  uchamDeg: 28, neechamIdx: 3,  neechamDeg: 28, ownIdx: [0, 7] },
+  { key: "mercury", tamil: "புதன்",    uchamIdx: 5,  uchamDeg: 15, neechamIdx: 11, neechamDeg: 15, ownIdx: [2, 5] },
+  { key: "jupiter", tamil: "குரு",     uchamIdx: 3,  uchamDeg: 5,  neechamIdx: 9,  neechamDeg: 5,  ownIdx: [8, 11] },
+  { key: "venus",   tamil: "சுக்ரன்",  uchamIdx: 11, uchamDeg: 27, neechamIdx: 5,  neechamDeg: 27, ownIdx: [1, 6] },
+  { key: "saturn",  tamil: "சனி",      uchamIdx: 6,  uchamDeg: 20, neechamIdx: 0,  neechamDeg: 20, ownIdx: [9, 10] },
+  { key: "rahu",    tamil: "ராகு",     uchamIdx: 1,  uchamDeg: 20, neechamIdx: 7,  neechamDeg: 20, ownIdx: [] },
+  { key: "ketu",    tamil: "கேது",     uchamIdx: 7,  uchamDeg: 20, neechamIdx: 1,  neechamDeg: 20, ownIdx: [] },
+];
+
+function planetStrength(key: string, rasiIndex: number): { label: string; cls: string } | null {
+  const row = UCHAM_NEECHAM.find((r) => r.key === key);
+  if (!row) return null;
+  if (rasiIndex === row.uchamIdx) return { label: "உச்சம்", cls: "text-emerald-700 bg-emerald-50 border-emerald-200" };
+  if (rasiIndex === row.neechamIdx) return { label: "நீச்சம்", cls: "text-red-700 bg-red-50 border-red-200" };
+  if (row.ownIdx.includes(rasiIndex)) return { label: "சுய ஸ்தானம்", cls: "text-amber-800 bg-amber-50 border-amber-200" };
+  return null;
+}
 
 /* ---------------- Bhrigu Nandi Nadi (BNN) core helpers ----------------
  * BNN is a karaka + conjunction based predictive system. We compute simple,
