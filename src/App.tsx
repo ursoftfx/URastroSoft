@@ -14,6 +14,10 @@ import Gochara from "./pages/Gochara.tsx";
 import BhriguNandiNadi from "./pages/BhriguNandiNadi.tsx";
 import Auth from "./pages/Auth.tsx";
 import Admin from "./pages/Admin.tsx";
+import Astrologers from "./pages/Astrologers.tsx";
+import AstrologerDetail from "./pages/AstrologerDetail.tsx";
+import AstrologerApply from "./pages/AstrologerApply.tsx";
+import { MyConsultationsPage, AstrologerDashboardPage } from "./pages/MyConsultations.tsx";
 import { PostsList, PostDetail } from "./pages/Posts.tsx";
 import { ArticlesList, ArticleDetail } from "./pages/Articles.tsx";
 import { About, Contact, PrivacyPolicy, Terms, Disclaimer } from "./pages/StaticPages.tsx";
@@ -35,6 +39,11 @@ const App = () => (
             <Route path="/porutham" element={<Porutham />} />
             <Route path="/gochara" element={<Gochara />} />
             <Route path="/bhrigu-nandi-nadi" element={<BhriguNandiNadi />} />
+            <Route path="/astrologers" element={<Astrologers />} />
+            <Route path="/astrologers/:id" element={<AstrologerDetail />} />
+            <Route path="/astrologer/apply" element={<AstrologerApply />} />
+            <Route path="/astrologer/dashboard" element={<AstrologerDashboardPage />} />
+            <Route path="/my-consultations" element={<MyConsultationsPage />} />
             <Route path="/posts" element={<PostsList />} />
             <Route path="/posts/:slug" element={<PostDetail />} />
             <Route path="/articles" element={<ArticlesList />} />
