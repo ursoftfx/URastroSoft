@@ -191,6 +191,10 @@ const Index = () => {
               <span className="text-gold-deep">•</span>
               <Link to="/bhrigu-nandi-nadi" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">பிருகு நந்தி நாடி</Link>
               <span className="text-gold-deep">•</span>
+              <Link to="/astrologers" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline font-bold">URASTROTALK</Link>
+              <span className="text-gold-deep">•</span>
+              <Link to="/my-consultations" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">என் கேள்விகள்</Link>
+              <span className="text-gold-deep">•</span>
               <Link to="/articles" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">கட்டுரைகள்</Link>
               {isAdmin && (
                 <>
