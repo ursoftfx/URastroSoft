@@ -155,9 +155,11 @@ const Admin = () => {
       </div>
 
       <Tabs defaultValue="posts">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="posts" className="font-tamil">கட்டுரைகள்</TabsTrigger>
           <TabsTrigger value="anns" className="font-tamil">அறிவிப்புகள்</TabsTrigger>
+          <TabsTrigger value="astros" className="font-tamil">ஜோதிடர்கள்</TabsTrigger>
+          <TabsTrigger value="users" className="font-tamil">பயனர்கள்</TabsTrigger>
         </TabsList>
 
         <TabsContent value="posts" className="space-y-6 mt-4">
