@@ -60,7 +60,7 @@ const AstrologerApply = () => {
       contact_phone: phone.trim() || null,
       contact_whatsapp: whatsapp.trim() || null,
       photo_url: photo.trim() || null,
-      status: existing?.status === "approved" ? "approved" : "pending" as const,
+      status: (existing?.status === "approved" ? "approved" : "pending") as "approved" | "pending",
     };
     const { error } = existing
       ? await supabase.from("astrologer_profiles").update(payload).eq("id", existing.id)
