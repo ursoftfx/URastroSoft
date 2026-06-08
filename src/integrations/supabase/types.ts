@@ -50,6 +50,139 @@ export type Database = {
         }
         Relationships: []
       }
+      astrologer_profiles: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          bio: string | null
+          charges_note: string | null
+          contact_phone: string | null
+          contact_whatsapp: string | null
+          created_at: string
+          display_name: string
+          experience_years: number
+          id: string
+          languages: string[]
+          photo_url: string | null
+          specialties: string[]
+          status: Database["public"]["Enums"]["astrologer_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          bio?: string | null
+          charges_note?: string | null
+          contact_phone?: string | null
+          contact_whatsapp?: string | null
+          created_at?: string
+          display_name: string
+          experience_years?: number
+          id?: string
+          languages?: string[]
+          photo_url?: string | null
+          specialties?: string[]
+          status?: Database["public"]["Enums"]["astrologer_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          bio?: string | null
+          charges_note?: string | null
+          contact_phone?: string | null
+          contact_whatsapp?: string | null
+          created_at?: string
+          display_name?: string
+          experience_years?: number
+          id?: string
+          languages?: string[]
+          photo_url?: string | null
+          specialties?: string[]
+          status?: Database["public"]["Enums"]["astrologer_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      consultation_messages: {
+        Row: {
+          body: string
+          consultation_id: string
+          created_at: string
+          id: string
+          sender_id: string
+        }
+        Insert: {
+          body: string
+          consultation_id: string
+          created_at?: string
+          id?: string
+          sender_id: string
+        }
+        Update: {
+          body?: string
+          consultation_id?: string
+          created_at?: string
+          id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consultation_messages_consultation_id_fkey"
+            columns: ["consultation_id"]
+            isOneToOne: false
+            referencedRelation: "consultations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      consultations: {
+        Row: {
+          astrologer_id: string
+          created_at: string
+          id: string
+          mode: Database["public"]["Enums"]["consultation_mode"]
+          question: string
+          status: Database["public"]["Enums"]["consultation_status"]
+          subject: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          astrologer_id: string
+          created_at?: string
+          id?: string
+          mode?: Database["public"]["Enums"]["consultation_mode"]
+          question: string
+          status?: Database["public"]["Enums"]["consultation_status"]
+          subject?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          astrologer_id?: string
+          created_at?: string
+          id?: string
+          mode?: Database["public"]["Enums"]["consultation_mode"]
+          question?: string
+          status?: Database["public"]["Enums"]["consultation_status"]
+          subject?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "consultations_astrologer_id_fkey"
+            columns: ["astrologer_id"]
+            isOneToOne: false
+            referencedRelation: "astrologer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       jathagam_leads: {
         Row: {
           birth_date: string
@@ -146,6 +279,36 @@ export type Database = {
         }
         Relationships: []
       }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string | null
+          id: string
+          phone: string
+          photo_url: string | null
+          updated_at: string
+          whatsapp_number: string | null
+        }
+        Insert: {
+          created_at?: string
+          full_name?: string | null
+          id: string
+          phone: string
+          photo_url?: string | null
+          updated_at?: string
+          whatsapp_number?: string | null
+        }
+        Update: {
+          created_at?: string
+          full_name?: string | null
+          id?: string
+          phone?: string
+          photo_url?: string | null
+          updated_at?: string
+          whatsapp_number?: string | null
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -182,6 +345,9 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      astrologer_status: "pending" | "approved" | "rejected"
+      consultation_mode: "text" | "voice"
+      consultation_status: "open" | "answered" | "closed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -310,6 +476,9 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      astrologer_status: ["pending", "approved", "rejected"],
+      consultation_mode: ["text", "voice"],
+      consultation_status: ["open", "answered", "closed"],
     },
   },
 } as const
