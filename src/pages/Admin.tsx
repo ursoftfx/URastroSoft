@@ -28,6 +28,8 @@ const annSchema = z.object({
 
 interface Post { id: string; title: string; slug: string; published: boolean; created_at: string; }
 interface Ann { id: string; rasi: string | null; title: string; message: string; active_date: string; active: boolean; }
+interface Astro { id: string; user_id: string; display_name: string; experience_years: number; status: string; created_at: string; contact_phone: string | null; specialties: string[]; }
+interface Prof { id: string; full_name: string | null; phone: string; whatsapp_number: string | null; created_at: string; }
 
 const Admin = () => {
   const { user, isAdmin, loading, signOut } = useAuth();
@@ -46,6 +48,8 @@ const Admin = () => {
   const [aMsg, setAMsg] = useState("");
   const [aRasi, setARasi] = useState<string>("all");
   const [anns, setAnns] = useState<Ann[]>([]);
+  const [astros, setAstros] = useState<Astro[]>([]);
+  const [profs, setProfs] = useState<Prof[]>([]);
 
   useEffect(() => {
     if (!loading && !user) nav("/auth", { replace: true });
@@ -60,7 +64,27 @@ const Admin = () => {
     setAnns((data as Ann[]) || []);
   };
 
-  useEffect(() => { if (isAdmin) { loadPosts(); loadAnns(); } }, [isAdmin]);
+  const loadAstros = async () => {
+    const { data } = await supabase.from("astrologer_profiles")
+      .select("id, user_id, display_name, experience_years, status, created_at, contact_phone, specialties")
+      .order("created_at", { ascending: false });
+    setAstros((data as Astro[]) || []);
+  };
+  const loadProfs = async () => {
+    const { data } = await supabase.from("profiles")
+      .select("id, full_name, phone, whatsapp_number, created_at")
+      .order("created_at", { ascending: false });
+    setProfs((data as Prof[]) || []);
+  };
+
+  useEffect(() => { if (isAdmin) { loadPosts(); loadAnns(); loadAstros(); loadProfs(); } }, [isAdmin]);
+
+  const setAstroStatus = async (a: Astro, status: "approved" | "rejected" | "pending") => {
+    const patch: any = { status };
+    if (status === "approved") { patch.approved_at = new Date().toISOString(); patch.approved_by = user?.id; }
+    const { error } = await supabase.from("astrologer_profiles").update(patch).eq("id", a.id);
+    if (error) toast.error(error.message); else { toast.success("புதுப்பிக்கப்பட்டது"); loadAstros(); }
+  };
 
   const submitPost = async (e: React.FormEvent) => {
     e.preventDefault();
