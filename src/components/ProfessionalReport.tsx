@@ -14,7 +14,7 @@ import {
   careerFields, luckyAttributes,
 } from "@/lib/life-predictions";
 
-interface Props { result: JathagamResult }
+interface Props { result: JathagamResult; orientation?: "p" | "l" }
 
 const PLANET_TA: Record<string, string> = {
   sun: "சூரியன்", moon: "சந்திரன்", mars: "செவ்வாய்", mercury: "புதன்",
