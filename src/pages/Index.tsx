@@ -297,21 +297,33 @@ const ResultView = ({
               <LayoutList className="w-3.5 h-3.5 inline mr-1" /> முழு அறிக்கை
             </button>
           </div>
+          {view === "pro" && (
+            <div className="inline-flex rounded-md border border-gold/40 bg-cream/50 p-1">
+              <button
+                onClick={() => setProOrient("p")}
+                className={`px-2 py-1 text-xs font-tamil rounded ${proOrient === "p" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
+              >A5 செங்குத்து</button>
+              <button
+                onClick={() => setProOrient("l")}
+                className={`px-2 py-1 text-xs font-tamil rounded ${proOrient === "l" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
+              >A5 கிடைமட்டம்</button>
+            </div>
+          )}
           <Button onClick={handlePrint} className="bg-gradient-royal text-primary-foreground font-tamil" size="sm">
             <Printer className="w-4 h-4 mr-1" /> அச்சிடு
           </Button>
           <DownloadReport
             targetId={view === "pro" ? "professional-report-root" : view === "onepage" ? "onepage-report-root" : view === "kurippu" ? "kurippu-report-root" : "jathagam-report-root"}
             fileName={`jathagam-${result.input.name.replace(/\s+/g, "-")}.pdf`}
-            paperSize={"a4"}
-            orientation={"p"}
+            paperSize={view === "pro" ? "a5" : "a4"}
+            orientation={view === "pro" ? proOrient : "p"}
           />
         </div>
       </div>
 
       {view === "pro" ? (
         <div className="overflow-x-auto">
-          <ProfessionalReport result={result} />
+          <ProfessionalReport result={result} orientation={proOrient} />
         </div>
       ) : view === "onepage" ? (
         <div id="onepage-report-root" className="overflow-x-auto">
