@@ -10,7 +10,7 @@ interface SEOProps {
 }
 
 /** Lightweight head manager — sets title, meta description, canonical, optional JSON-LD. */
-export const SEO = ({ title, description, canonical, jsonLd, noIndex = false }: SEOProps) => {
+export const SEO = ({ title, description, canonical, jsonLd, noIndex = false, keywords }: SEOProps) => {
   useEffect(() => {
     document.title = title.length > 60 ? title.slice(0, 57) + "…" : title;
 
@@ -31,6 +31,7 @@ export const SEO = ({ title, description, canonical, jsonLd, noIndex = false }: 
     setMeta("twitter:title", title);
     setMeta("twitter:description", desc);
     setMeta("robots", noIndex ? "noindex, nofollow" : "index, follow, max-image-preview:large");
+    if (keywords) setMeta("keywords", keywords);
 
     const href = canonical || window.location.href.split("?")[0].split("#")[0];
     let link = document.head.querySelector<HTMLLinkElement>('link[rel="canonical"]');
@@ -41,17 +42,21 @@ export const SEO = ({ title, description, canonical, jsonLd, noIndex = false }: 
     }
     link.href = href;
 
-    let ld: HTMLScriptElement | null = null;
+    const ldNodes: HTMLScriptElement[] = [];
     if (jsonLd) {
-      ld = document.createElement("script");
-      ld.type = "application/ld+json";
-      ld.text = JSON.stringify(jsonLd);
-      document.head.appendChild(ld);
+      const list = Array.isArray(jsonLd) ? jsonLd : [jsonLd];
+      list.forEach((schema) => {
+        const ld = document.createElement("script");
+        ld.type = "application/ld+json";
+        ld.text = JSON.stringify(schema);
+        document.head.appendChild(ld);
+        ldNodes.push(ld);
+      });
     }
     return () => {
-      if (ld && ld.parentNode) ld.parentNode.removeChild(ld);
+      ldNodes.forEach((n) => n.parentNode && n.parentNode.removeChild(n));
     };
-  }, [title, description, canonical, jsonLd, noIndex]);
+  }, [title, description, canonical, jsonLd, noIndex, keywords]);
 
   return null;
 };
