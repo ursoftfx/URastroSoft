@@ -343,8 +343,12 @@ export const ProfessionalReport = ({ result, orientation = "l" }: Props) => {
           break-after: page;
         }
         #professional-report-root .a5-sheet > div { overflow: visible !important; height: auto !important; }
-        #professional-report-root th, #professional-report-root td { padding: 3px 5px !important; vertical-align: top; }
-        #professional-report-root table { font-size: 14px !important; border-collapse: collapse; }
+        #professional-report-root th, #professional-report-root td { padding: 3px 5px !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; }
+        #professional-report-root table { font-size: 14px !important; border-collapse: collapse; table-layout: fixed; width: 100% !important; max-width: 100% !important; break-inside: auto; page-break-inside: auto; }
+        #professional-report-root tr { break-inside: avoid; page-break-inside: avoid; }
+        #professional-report-root thead { display: table-header-group; }
+        #professional-report-root tbody { break-inside: auto; page-break-inside: auto; }
+        #professional-report-root .flip-wide { transform: rotate(-90deg); transform-origin: top left; }
       `}</style>
 
       <div className="no-print" style={{ display: "flex", justifyContent: "center", gap: 8, padding: "8px", marginBottom: 4 }}>
