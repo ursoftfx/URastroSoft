@@ -14,7 +14,7 @@ import {
   careerFields, luckyAttributes,
 } from "@/lib/life-predictions";
 
-interface Props { result: JathagamResult }
+interface Props { result: JathagamResult; orientation?: "p" | "l" }
 
 const PLANET_TA: Record<string, string> = {
   sun: "சூரியன்", moon: "சந்திரன்", mars: "செவ்வாய்", mercury: "புதன்",
@@ -245,7 +245,7 @@ const Page = ({ children, title, subtitle, page, total, name }: any) => (
 );
 
 // ---------- Main report ----------
-export const ProfessionalReport = ({ result }: Props) => {
+export const ProfessionalReport = ({ result, orientation = "l" }: Props) => {
   const i = result.input;
   const birthDate = new Date(i.year, i.month - 1, i.day);
   const birthDateTime = new Date(i.year, i.month - 1, i.day, i.hour, i.minute);
@@ -322,13 +322,29 @@ export const ProfessionalReport = ({ result }: Props) => {
   ];
 
   return (
-    <div id="professional-report-root">
+    <div id="professional-report-root" data-orient={orientation}>
       <style>{`
-        @media print { @page { size: A4 portrait; margin: 6mm; } .print-area { margin: 0 auto 2mm auto !important; box-shadow: none !important; page-break-after: auto !important; break-after: auto !important; page-break-inside: avoid !important; break-inside: avoid !important; } body { margin: 0; } .no-print { display: none !important; } }
-        #professional-report-root, #professional-report-root * { color: #000 !important; background-color: transparent !important; border-color: #000 !important; box-shadow: none !important; outline-color: #000 !important; }
+        @media print {
+          @page { size: A5 ${orientation === "p" ? "portrait" : "landscape"}; margin: 6mm; }
+          body { margin: 0; }
+          .no-print { display: none !important; }
+          #professional-report-root .print-area { margin: 0 auto !important; box-shadow: none !important; page-break-after: always !important; break-after: page !important; page-break-inside: auto !important; break-inside: auto !important; }
+        }
+        #professional-report-root, #professional-report-root * { color: #000 !important; background-color: transparent !important; border-color: #000 !important; box-shadow: none !important; outline-color: #000 !important; font-weight: 700 !important; }
         #professional-report-root .print-area { background-color: #fff !important; }
-        #professional-report-root table { font-size: 8px; }
-        #professional-report-root th, #professional-report-root td { padding: 1px 2px !important; }
+        #professional-report-root *:not(svg):not(path):not(circle):not(rect):not(line) { font-size: 14px !important; line-height: 1.35 !important; }
+        #professional-report-root .a5-sheet {
+          width: ${orientation === "p" ? "137mm" : "196mm"} !important;
+          height: auto !important;
+          min-height: ${orientation === "p" ? "196mm" : "137mm"} !important;
+          max-height: none !important;
+          overflow: visible !important;
+          page-break-after: always;
+          break-after: page;
+        }
+        #professional-report-root .a5-sheet > div { overflow: visible !important; height: auto !important; }
+        #professional-report-root th, #professional-report-root td { padding: 3px 5px !important; vertical-align: top; }
+        #professional-report-root table { font-size: 14px !important; border-collapse: collapse; }
       `}</style>
 
       <div className="no-print" style={{ display: "flex", justifyContent: "center", gap: 8, padding: "8px", marginBottom: 4 }}>
