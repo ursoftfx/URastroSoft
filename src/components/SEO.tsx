@@ -4,8 +4,9 @@ interface SEOProps {
   title: string;
   description: string;
   canonical?: string;
-  jsonLd?: Record<string, any>;
+  jsonLd?: Record<string, any> | Record<string, any>[];
   noIndex?: boolean;
+  keywords?: string;
 }
 
 /** Lightweight head manager — sets title, meta description, canonical, optional JSON-LD. */
