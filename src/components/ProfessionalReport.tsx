@@ -245,7 +245,7 @@ const Page = ({ children, title, subtitle, page, total, name }: any) => (
 );
 
 // ---------- Main report ----------
-export const ProfessionalReport = ({ result, orientation = "l" }: Props) => {
+export const ProfessionalReport = ({ result, orientation = "p" }: Props) => {
   const i = result.input;
   const birthDate = new Date(i.year, i.month - 1, i.day);
   const birthDateTime = new Date(i.year, i.month - 1, i.day, i.hour, i.minute);
