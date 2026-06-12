@@ -712,52 +712,67 @@ export const ProfessionalReport = ({ result, orientation = "p" }: Props) => {
           });
           const sodhitaSarva = new Array(12).fill(0);
           planetKeys.forEach(k => ekadhipResult[k].forEach((v, i) => sodhitaSarva[i] += v));
+          const half1 = [0, 1, 2, 3, 4, 5];
+          const half2 = [6, 7, 8, 9, 10, 11];
+          const renderHalf = (data: Record<string, number[]>, idxs: number[]) => (
+            <table style={{ width: "100%", fontSize: 8.5, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
+              <thead><tr style={{ background: "#fff8ee" }}>
+                <th style={th}>கிரகம்</th>
+                {idxs.map(ri => <th key={ri} style={th}>{RASIS_TAMIL[ri]}</th>)}
+                <th style={th}>உப</th>
+              </tr></thead>
+              <tbody>
+                {planetKeys.map(k => (
+                  <tr key={k}>
+                    <td style={{ ...td, fontWeight: 700 }}>{PLANET_TA[k]}</td>
+                    {idxs.map(ri => <td key={ri} style={{ ...td, textAlign: "center" }}>{data[k][ri]}</td>)}
+                    <td style={{ ...td, textAlign: "center", fontWeight: 700 }}>{idxs.reduce((a, ri) => a + data[k][ri], 0)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          );
           return (
             <>
               <div style={{ background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>
-                திரிகோண சோதனை (Trikona Shodhana)
+                திரிகோண சோதனை (Trikona Shodhana) — மேஷம் முதல் கன்னி
               </div>
-              <table style={{ width: "100%", fontSize: 8.5, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
-                <thead><tr style={{ background: "#fff8ee" }}>
-                  <th style={th}>கிரகம்</th>
-                  {RASIS_TAMIL.map(r => <th key={r} style={th}>{r}</th>)}
-                  <th style={th}>மொத்தம்</th>
-                </tr></thead>
-                <tbody>
-                  {planetKeys.map(k => (
-                    <tr key={k}>
-                      <td style={{ ...td, fontWeight: 700 }}>{PLANET_TA[k]}</td>
-                      {trikonaResult[k].map((b, j) => <td key={j} style={{ ...td, textAlign: "center" }}>{b}</td>)}
-                      <td style={{ ...td, textAlign: "center", fontWeight: 700 }}>{trikonaResult[k].reduce((a, b) => a + b, 0)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+              {renderHalf(trikonaResult, half1)}
+              <div style={{ marginTop: 4, background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>
+                திரிகோண சோதனை — துலாம் முதல் மீனம்
+              </div>
+              {renderHalf(trikonaResult, half2)}
 
               <div style={{ marginTop: 6, background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>
-                ஏகாதிபத்திய சோதனை (Ekadhipatya Shodhana — சோதித பிந்துக்கள்)
+                ஏகாதிபத்திய சோதனை (Ekadhipatya Shodhana) — மேஷம் முதல் கன்னி
               </div>
-              <table style={{ width: "100%", fontSize: 8.5, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+              {renderHalf(ekadhipResult, half1)}
+              <div style={{ marginTop: 4, background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>
+                ஏகாதிபத்திய சோதனை — துலாம் முதல் மீனம்
+              </div>
+              {renderHalf(ekadhipResult, half2)}
+
+              <div style={{ marginTop: 6, background: "#fff8ee", padding: "3px 6px", fontSize: 10, fontWeight: 700, border: "1px solid #c9a050" }}>
+                சோதித சர்வாஷ்டகம் (Sodhita Sarvashtaka)
+              </div>
+              <table style={{ width: "100%", fontSize: 8.5, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
                 <thead><tr style={{ background: "#fff8ee" }}>
-                  <th style={th}>கிரகம்</th>
-                  {RASIS_TAMIL.map(r => <th key={r} style={th}>{r}</th>)}
-                  <th style={th}>மொத்தம்</th>
+                  {half1.map(ri => <th key={ri} style={th}>{RASIS_TAMIL[ri]}</th>)}
                 </tr></thead>
-                <tbody>
-                  {planetKeys.map(k => (
-                    <tr key={k}>
-                      <td style={{ ...td, fontWeight: 700 }}>{PLANET_TA[k]}</td>
-                      {ekadhipResult[k].map((b, j) => <td key={j} style={{ ...td, textAlign: "center" }}>{b}</td>)}
-                      <td style={{ ...td, textAlign: "center", fontWeight: 700 }}>{ekadhipResult[k].reduce((a, b) => a + b, 0)}</td>
-                    </tr>
-                  ))}
-                  <tr style={{ background: "#fff8ee" }}>
-                    <td style={{ ...td, fontWeight: 800 }}>சோதித சர்வாஷ்டகம்</td>
-                    {sodhitaSarva.map((b, j) => <td key={j} style={{ ...td, textAlign: "center", fontWeight: 700 }}>{b}</td>)}
-                    <td style={{ ...td, textAlign: "center", fontWeight: 800 }}>{sodhitaSarva.reduce((a, b) => a + b, 0)}</td>
-                  </tr>
-                </tbody>
+                <tbody><tr>
+                  {half1.map(ri => <td key={ri} style={{ ...td, textAlign: "center", fontWeight: 700 }}>{sodhitaSarva[ri]}</td>)}
+                </tr></tbody>
+                <thead><tr style={{ background: "#fff8ee" }}>
+                  {half2.map(ri => <th key={ri} style={th}>{RASIS_TAMIL[ri]}</th>)}
+                </tr></thead>
+                <tbody><tr>
+                  {half2.map(ri => <td key={ri} style={{ ...td, textAlign: "center", fontWeight: 700 }}>{sodhitaSarva[ri]}</td>)}
+                </tr></tbody>
               </table>
+              <div style={{ textAlign: "right", fontSize: 9, fontWeight: 700, marginTop: 2 }}>
+                மொத்தம் சோதித சர்வாஷ்டகம்: {sodhitaSarva.reduce((a, b) => a + b, 0)}
+              </div>
+
               <div style={{ marginTop: 6, fontSize: 8.5, color: "#444", lineHeight: 1.45 }}>
                 <b>திரிகோண சோதனை:</b> 1-5-9, 2-6-10, 3-7-11, 4-8-12 ஆகிய திரிகோண வீடுகளில் உள்ள மிகக் குறைந்த பிந்துவை மூன்றிலிருந்தும் கழிக்கப்படும்.<br/>
                 <b>ஏகாதிபத்திய சோதனை:</b> ஒரே கிரகம் ஆளும் இரண்டு ராசிகளில் — இரண்டிலும் கிரகம் இல்லையெனில் குறைந்த பிந்துவை 0 ஆக்கும்; ஒன்றில் மட்டும் கிரகம் இருந்தால் காலியான ராசியின் பிந்துவை 0 ஆக்கும்.<br/>
