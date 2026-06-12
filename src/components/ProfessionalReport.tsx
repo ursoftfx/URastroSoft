@@ -322,7 +322,7 @@ export const ProfessionalReport = ({ result, orientation = "p" }: Props) => {
   ];
 
   return (
-    <div id="professional-report-root" data-orient={orientation}>
+    <div id="professional-report-root" data-orient={orientation} style={{ ["--report-w" as any]: orientation === "p" ? "137mm" : "196mm", ["--report-h" as any]: orientation === "p" ? "196mm" : "137mm" }}>
       <style>{`
         @media print {
           @page { size: A5 ${orientation === "p" ? "portrait" : "landscape"}; margin: 6mm; }
