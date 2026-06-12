@@ -355,14 +355,14 @@ export const ProfessionalReport = ({ result, orientation = "p" }: Props) => {
         #professional-report-root *:not(svg):not(path):not(circle):not(rect):not(line) { font-size: 14px !important; line-height: 1.35 !important; }
         #professional-report-root .a5-sheet {
           width: var(--report-w) !important;
-          height: var(--report-h) !important;
+          height: auto !important;
           min-height: var(--report-h) !important;
-          max-height: var(--report-h) !important;
-          overflow: hidden !important;
-          page-break-after: always;
-          break-after: page;
+          max-height: none !important;
+          overflow: visible !important;
+          page-break-after: auto;
+          break-after: auto;
         }
-        #professional-report-root .a5-sheet > div { overflow: hidden !important; }
+        #professional-report-root .a5-sheet > div { overflow: visible !important; height: auto !important; min-height: 0 !important; }
         #professional-report-root th, #professional-report-root td { padding: 2px 4px !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; }
         #professional-report-root table { font-size: 14px !important; border-collapse: collapse; table-layout: fixed; width: 100% !important; max-width: 100% !important; break-inside: auto; page-break-inside: auto; }
         #professional-report-root tr { break-inside: avoid; page-break-inside: avoid; }
@@ -371,6 +371,7 @@ export const ProfessionalReport = ({ result, orientation = "p" }: Props) => {
         #professional-report-root .flip-wide { transform: rotate(-90deg); transform-origin: center center; }
         #professional-report-root .auto-flipped { transform: rotate(-90deg); transform-origin: center center; max-width: var(--report-h) !important; }
       `}</style>
+
 
 
       <div className="no-print" style={{ display: "flex", justifyContent: "center", gap: 8, padding: "8px", marginBottom: 4 }}>
