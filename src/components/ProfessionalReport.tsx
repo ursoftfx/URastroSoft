@@ -210,7 +210,7 @@ const Chart = ({ title, chart, ascRasi, size = "lg" }: {
 // ---------- Page wrapper (A5 landscape: 210 x 148 mm) — B/W ----------
 const Page = ({ children, title, subtitle, page, total, name }: any) => (
   <div className="a5-sheet print-area" style={{
-    width: "196mm", height: "137mm", maxHeight: "137mm",
+    width: "var(--report-w, 137mm)", height: "var(--report-h, 196mm)", maxHeight: "var(--report-h, 196mm)",
     padding: "2mm", margin: "0 auto 2mm auto",
     background: "#ffffff", color: "#000",
     fontFamily: "'Latha','Tahoma',sans-serif", boxSizing: "border-box",
