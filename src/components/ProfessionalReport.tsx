@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { JathagamResult, RASIS_TAMIL, formatDegree } from "@/lib/jathagam";
 import { detectDoshams } from "@/lib/dosham";
 import { bhavaPalans, LAGNA_PALAN, NAKSHATRA_PALAN, BHAVA_NAMES } from "@/lib/predictions";
@@ -210,7 +210,7 @@ const Chart = ({ title, chart, ascRasi, size = "lg" }: {
 // ---------- Page wrapper (A5 landscape: 210 x 148 mm) — B/W ----------
 const Page = ({ children, title, subtitle, page, total, name }: any) => (
   <div className="a5-sheet print-area" style={{
-    width: "196mm", height: "137mm", maxHeight: "137mm",
+    width: "var(--report-w, 137mm)", height: "var(--report-h, 196mm)", maxHeight: "var(--report-h, 196mm)",
     padding: "2mm", margin: "0 auto 2mm auto",
     background: "#ffffff", color: "#000",
     fontFamily: "'Latha','Tahoma',sans-serif", boxSizing: "border-box",
@@ -245,7 +245,7 @@ const Page = ({ children, title, subtitle, page, total, name }: any) => (
 );
 
 // ---------- Main report ----------
-export const ProfessionalReport = ({ result, orientation = "l" }: Props) => {
+export const ProfessionalReport = ({ result, orientation = "p" }: Props) => {
   const i = result.input;
   const birthDate = new Date(i.year, i.month - 1, i.day);
   const birthDateTime = new Date(i.year, i.month - 1, i.day, i.hour, i.minute);
@@ -259,6 +259,26 @@ export const ProfessionalReport = ({ result, orientation = "l" }: Props) => {
   const planetRasis: Record<string, number> = {};
   result.planets.forEach(p => { planetRasis[p.key] = p.rasiIndex; });
   const palans = bhavaPalans(result.ascendant.rasiIndex, planetRasis, RASIS_TAMIL);
+
+  // Auto-flip any table whose intrinsic width overflows its page container
+  useEffect(() => {
+    const root = document.getElementById("professional-report-root");
+    if (!root) return;
+    const id = window.setTimeout(() => {
+      const tables = root.querySelectorAll<HTMLTableElement>("table");
+      tables.forEach((t) => {
+        t.classList.remove("auto-flipped");
+        const parent = t.parentElement as HTMLElement | null;
+        if (!parent) return;
+        // If the table is wider than its container even after table-layout fixed, flip it
+        if (t.scrollWidth > parent.clientWidth + 2) {
+          t.classList.add("auto-flipped");
+        }
+      });
+    }, 60);
+    return () => window.clearTimeout(id);
+  }, [result, orientation, hideAntharam]);
+
 
   // Total page count
   // Build flat dasha rows per maha and chunk into pages
@@ -322,7 +342,7 @@ export const ProfessionalReport = ({ result, orientation = "l" }: Props) => {
   ];
 
   return (
-    <div id="professional-report-root" data-orient={orientation}>
+    <div id="professional-report-root" data-orient={orientation} style={{ ["--report-w" as any]: orientation === "p" ? "137mm" : "196mm", ["--report-h" as any]: orientation === "p" ? "196mm" : "137mm" }}>
       <style>{`
         @media print {
           @page { size: A5 ${orientation === "p" ? "portrait" : "landscape"}; margin: 6mm; }
@@ -334,22 +354,24 @@ export const ProfessionalReport = ({ result, orientation = "l" }: Props) => {
         #professional-report-root .print-area { background-color: #fff !important; }
         #professional-report-root *:not(svg):not(path):not(circle):not(rect):not(line) { font-size: 14px !important; line-height: 1.35 !important; }
         #professional-report-root .a5-sheet {
-          width: ${orientation === "p" ? "137mm" : "196mm"} !important;
-          height: auto !important;
-          min-height: ${orientation === "p" ? "196mm" : "137mm"} !important;
-          max-height: none !important;
-          overflow: visible !important;
+          width: var(--report-w) !important;
+          height: var(--report-h) !important;
+          min-height: var(--report-h) !important;
+          max-height: var(--report-h) !important;
+          overflow: hidden !important;
           page-break-after: always;
           break-after: page;
         }
-        #professional-report-root .a5-sheet > div { overflow: visible !important; height: auto !important; }
-        #professional-report-root th, #professional-report-root td { padding: 3px 5px !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; }
+        #professional-report-root .a5-sheet > div { overflow: hidden !important; }
+        #professional-report-root th, #professional-report-root td { padding: 2px 4px !important; vertical-align: top; word-break: break-word; overflow-wrap: anywhere; }
         #professional-report-root table { font-size: 14px !important; border-collapse: collapse; table-layout: fixed; width: 100% !important; max-width: 100% !important; break-inside: auto; page-break-inside: auto; }
         #professional-report-root tr { break-inside: avoid; page-break-inside: avoid; }
         #professional-report-root thead { display: table-header-group; }
         #professional-report-root tbody { break-inside: auto; page-break-inside: auto; }
-        #professional-report-root .flip-wide { transform: rotate(-90deg); transform-origin: top left; }
+        #professional-report-root .flip-wide { transform: rotate(-90deg); transform-origin: center center; }
+        #professional-report-root .auto-flipped { transform: rotate(-90deg); transform-origin: center center; max-width: var(--report-h) !important; }
       `}</style>
+
 
       <div className="no-print" style={{ display: "flex", justifyContent: "center", gap: 8, padding: "8px", marginBottom: 4 }}>
         <label style={{ display: "inline-flex", alignItems: "center", gap: 6, fontSize: 13, fontFamily: "sans-serif", cursor: "pointer", padding: "6px 12px", border: "1px solid #c9a050", borderRadius: 4, background: "#fff8ee" }}>

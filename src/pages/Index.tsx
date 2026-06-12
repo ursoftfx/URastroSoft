@@ -317,7 +317,7 @@ const ResultView = ({
   onReset: () => void;
 }) => {
   const [view, setView] = useState<"detailed" | "onepage" | "pro" | "kurippu">("pro");
-  const [proOrient, setProOrient] = useState<"p" | "l">("l");
+  const [proOrient, setProOrient] = useState<"p" | "l">("p");
   const handlePrint = () => window.print();
 
   return (
