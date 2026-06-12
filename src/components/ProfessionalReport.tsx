@@ -260,6 +260,26 @@ export const ProfessionalReport = ({ result, orientation = "p" }: Props) => {
   result.planets.forEach(p => { planetRasis[p.key] = p.rasiIndex; });
   const palans = bhavaPalans(result.ascendant.rasiIndex, planetRasis, RASIS_TAMIL);
 
+  // Auto-flip any table whose intrinsic width overflows its page container
+  useEffect(() => {
+    const root = document.getElementById("professional-report-root");
+    if (!root) return;
+    const id = window.setTimeout(() => {
+      const tables = root.querySelectorAll<HTMLTableElement>("table");
+      tables.forEach((t) => {
+        t.classList.remove("auto-flipped");
+        const parent = t.parentElement as HTMLElement | null;
+        if (!parent) return;
+        // If the table is wider than its container even after table-layout fixed, flip it
+        if (t.scrollWidth > parent.clientWidth + 2) {
+          t.classList.add("auto-flipped");
+        }
+      });
+    }, 60);
+    return () => window.clearTimeout(id);
+  }, [result, orientation, hideAntharam]);
+
+
   // Total page count
   // Build flat dasha rows per maha and chunk into pages
   const DASHA_ROWS_PER_PAGE = 22;
