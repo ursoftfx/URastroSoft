@@ -210,21 +210,20 @@ const Chart = ({ title, chart, ascRasi, size = "lg" }: {
 // ---------- Page wrapper (A5 landscape: 210 x 148 mm) — B/W ----------
 const Page = ({ children, title, subtitle, page, total, name }: any) => (
   <div className="a5-sheet print-area" style={{
-    width: "var(--report-w, 137mm)", height: "var(--report-h, 196mm)", maxHeight: "var(--report-h, 196mm)",
+    width: "var(--report-w, 137mm)", minHeight: "var(--report-h, 196mm)",
     padding: "2mm", margin: "0 auto 2mm auto",
     background: "#ffffff", color: "#000",
     fontFamily: "'Latha','Tahoma',sans-serif", boxSizing: "border-box",
-    pageBreakInside: "avoid", breakInside: "avoid",
-    overflow: "hidden",
+    overflow: "visible",
     fontSize: 8.1, lineHeight: 1.15,
     display: "flex", flexDirection: "column",
   }}>
     <div style={{
-      flex: 1, minHeight: 0,
+      flex: 1,
       border: "2px double #000", outline: "1px solid #000", outlineOffset: 2,
       borderRadius: 0, padding: "2mm 3mm",
       background: "#ffffff",
-      display: "flex", flexDirection: "column", overflow: "hidden",
+      display: "flex", flexDirection: "column", overflow: "visible",
     }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1px solid #000", paddingBottom: 2, marginBottom: 3 }}>
         <div>
