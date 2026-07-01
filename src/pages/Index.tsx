@@ -247,6 +247,8 @@ const Index = () => {
               <span className="text-gold-deep">•</span>
               <Link to="/bhrigu-nandi-nadi" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">பிருகு நந்தி நாடி</Link>
               <span className="text-gold-deep">•</span>
+              <Link to="/nakshatra-karma" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">108 நட்சத்திர கர்மம்</Link>
+              <span className="text-gold-deep">•</span>
               <Link to="/astrologers" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline font-bold">URASTROTALK</Link>
               <span className="text-gold-deep">•</span>
               <Link to="/my-consultations" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">என் கேள்விகள்</Link>
