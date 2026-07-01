@@ -21,6 +21,7 @@ import { MyConsultationsPage, AstrologerDashboardPage } from "./pages/MyConsulta
 import { PostsList, PostDetail } from "./pages/Posts.tsx";
 import { ArticlesList, ArticleDetail } from "./pages/Articles.tsx";
 import { About, Contact, PrivacyPolicy, Terms, Disclaimer } from "./pages/StaticPages.tsx";
+import NakshatraKarma from "./pages/NakshatraKarma.tsx";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
             <Route path="/porutham" element={<Porutham />} />
             <Route path="/gochara" element={<Gochara />} />
             <Route path="/bhrigu-nandi-nadi" element={<BhriguNandiNadi />} />
+            <Route path="/nakshatra-karma" element={<NakshatraKarma />} />
             <Route path="/astrologers" element={<Astrologers />} />
             <Route path="/astrologers/:id" element={<AstrologerDetail />} />
             <Route path="/astrologer/apply" element={<AstrologerApply />} />
