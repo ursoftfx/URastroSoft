@@ -331,7 +331,7 @@ export const ProfessionalReport = ({ result, orientation = "p" }: Props) => {
   const extraPages = 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 3;
   const dashaSummaryPages = 1 + result.dashaTree.length; // summary + per-maha paragraph
   const dashaBhuktiDetailPages = result.dashaTree.length * 2; // 2 pages per maha (5+4 bhuktis)
-  const totalPages = 1 + 1 + 2 + 2 + vargasPages + 2 + 1 + 1 + bhavaPalanPages.length + planetHousePages.length + planetRasiPages.length + 1 + 1 + lifeAreaPages + yogasPages.length + 1 + 1 + bhavaDeepPages + yearForecastPages.length + 1 + 1 + mantraPages.length + 1 + 1 + weekdayRemedyPages.length + 1 + 1 + 1 + 1 + 1 + 3 + dashaPages + dashaSummaryPages + dashaBhuktiDetailPages;
+  const totalPages = 1 + 1 + 2 + 2 + vargasPages + 2 + 1 + 1 + 2 + bhavaPalanPages.length + planetHousePages.length + planetRasiPages.length + 1 + 1 + lifeAreaPages + yogasPages.length + 1 + 1 + bhavaDeepPages + yearForecastPages.length + 1 + 1 + mantraPages.length + 1 + 1 + weekdayRemedyPages.length + 1 + 1 + 1 + 1 + 1 + 3 + dashaPages + dashaSummaryPages + dashaBhuktiDetailPages;
 
   let pn = 0;
   const next = () => ++pn;
@@ -868,6 +868,99 @@ export const ProfessionalReport = ({ result, orientation = "p" }: Props) => {
           </Page>
         );
       })()}
+
+      {/* === Planet Placement Nakshatra Karma Pathivu === */}
+      {(() => {
+        const nakFromLon = (lon: number) => {
+          const l = ((lon % 360) + 360) % 360;
+          const nak = Math.floor(l / (360 / 27)) % 27;
+          const pada = Math.floor((l - nak * (360 / 27)) / (360 / 108)) + 1;
+          return { nak, pada: Math.min(4, Math.max(1, pada)) };
+        };
+        const ASPECT_HOUSES: Record<string, number[]> = {
+          sun: [7], moon: [7], mercury: [7], venus: [7],
+          mars: [4, 7, 8], jupiter: [5, 7, 9], saturn: [3, 7, 10],
+          rahu: [5, 7, 9], ketu: [5, 7, 9],
+        };
+        const planetsOnly = result.planets.map(p => ({
+          key: p.key, lon: p.longitude, nak: p.nakshatraIndex, pada: p.pada,
+        }));
+        return (
+          <>
+            <Page title="கிரக நட்சத்திர பாத கர்ம பதிவு" page={next()} total={totalPages} name={i.name}>
+              <SectionBar>கிரகங்கள் நின்ற நட்சத்திர பாத கர்ம பதிவு</SectionBar>
+              <table style={{ width: "100%", fontSize: 8.4, lineHeight: 1.3, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
+                <thead><tr style={{ background: "#fff8ee" }}>
+                  <th style={{ ...th, width: "11%" }}>கிரகம்</th>
+                  <th style={{ ...th, width: "16%" }}>நட்சத்திரம் / பாதம்</th>
+                  <th style={{ ...th, width: "11%" }}>நவாம்சம்</th>
+                  <th style={th}>முற்பிறவி கர்மம் + பலன்</th>
+                  <th style={{ ...th, width: "22%" }}>பரிகாரம்</th>
+                </tr></thead>
+                <tbody>
+                  {planetsOnly.map(p => {
+                    const n = NAKSHATRA_KARMA_LIST[p.nak];
+                    const pd = n?.padams.find(x => x.padam === p.pada) || n?.padams[0];
+                    return (
+                      <tr key={p.key}>
+                        <td style={{ ...td, fontWeight: 700 }}>{PLANET_TA[p.key]}</td>
+                        <td style={td}>{n?.name} / {p.pada}</td>
+                        <td style={td}>{pd?.navamsaRasi}</td>
+                        <td style={td}>{pd?.karma} <b>பலன்:</b> {pd?.palan}</td>
+                        <td style={td}>{pd?.parikaram}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              <div style={{ marginTop: 6, fontSize: 8.5, lineHeight: 1.45, color: "#6b3a1a" }}>
+                <b>விளக்கம்:</b> ஒவ்வொரு கிரகமும் நின்ற நட்சத்திர பாதத்தின் அடிப்படையில் அந்த கிரகம் தரும் முற்பிறவி கர்ம வினை மற்றும் நிகழ்கால பலன்.
+              </div>
+            </Page>
+
+            <Page title="கிரக பார்வை நட்சத்திர கர்ம பதிவு" page={next()} total={totalPages} name={i.name}>
+              <SectionBar>கிரகங்களின் பார்வையில் விழும் நட்சத்திர பாத கர்ம பதிவு</SectionBar>
+              <div style={{ fontSize: 8.5, marginBottom: 4, color: "#6b3a1a" }}>
+                சூரியன்/சந்திரன்/புதன்/சுக்ரன் — 7-ம் பார்வை · செவ்வாய் — 4, 7, 8 · குரு — 5, 7, 9 · சனி — 3, 7, 10 · ராகு/கேது — 5, 7, 9.
+              </div>
+              <table style={{ width: "100%", fontSize: 8.2, lineHeight: 1.3, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
+                <thead><tr style={{ background: "#fff8ee" }}>
+                  <th style={{ ...th, width: "10%" }}>கிரகம்</th>
+                  <th style={{ ...th, width: "8%" }}>பார்வை</th>
+                  <th style={{ ...th, width: "16%" }}>விழும் நட்சத்திரம்/பாதம்</th>
+                  <th style={{ ...th, width: "11%" }}>நவாம்சம்</th>
+                  <th style={th}>கர்ம பதிவு / பலன்</th>
+                </tr></thead>
+                <tbody>
+                  {planetsOnly.flatMap(p => {
+                    const houses = ASPECT_HOUSES[p.key] || [7];
+                    return houses.map(h => {
+                      const aspectLon = p.lon + (h - 1) * 30;
+                      const { nak, pada } = nakFromLon(aspectLon);
+                      const n = NAKSHATRA_KARMA_LIST[nak];
+                      const pd = n?.padams.find(x => x.padam === pada) || n?.padams[0];
+                      return (
+                        <tr key={`${p.key}-${h}`}>
+                          <td style={{ ...td, fontWeight: 700 }}>{PLANET_TA[p.key]}</td>
+                          <td style={td}>{h}-ம்</td>
+                          <td style={td}>{n?.name} / {pada}</td>
+                          <td style={td}>{pd?.navamsaRasi}</td>
+                          <td style={td}>{pd?.karma} <b>பலன்:</b> {pd?.palan}</td>
+                        </tr>
+                      );
+                    });
+                  })}
+                </tbody>
+              </table>
+              <div style={{ marginTop: 6, fontSize: 8.4, lineHeight: 1.45, color: "#6b3a1a" }}>
+                <b>குறிப்பு:</b> ஒவ்வொரு கிரகமும் தனது பார்வை மூலம் விழும் நட்சத்திர பாதத்தின் கர்ம பதிவை அந்த வாழ்க்கை பகுதிக்கு பரிமாற்றம் செய்கிறது. முழு பலன் தசா-புத்தி மற்றும் கோச்சார அமைப்பைப் பொறுத்து அமையும்.
+              </div>
+            </Page>
+          </>
+        );
+      })()}
+
+
 
       {/* === Bhava lord palans === */}
       {bhavaPalanPages.map((rows, pi) => (
