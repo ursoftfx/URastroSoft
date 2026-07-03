@@ -13,6 +13,7 @@ import {
   yearForecast, sadeSatiTimeline, gemstoneRecommendation, PLANET_MANTRAS,
   careerFields, luckyAttributes,
 } from "@/lib/life-predictions";
+import { NAKSHATRA_KARMA_LIST } from "@/data/nakshatra-karma";
 
 interface Props { result: JathagamResult; orientation?: "p" | "l" }
 
@@ -330,7 +331,7 @@ export const ProfessionalReport = ({ result, orientation = "p" }: Props) => {
   const extraPages = 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 3;
   const dashaSummaryPages = 1 + result.dashaTree.length; // summary + per-maha paragraph
   const dashaBhuktiDetailPages = result.dashaTree.length * 2; // 2 pages per maha (5+4 bhuktis)
-  const totalPages = 1 + 1 + 2 + 2 + vargasPages + 2 + 1 + bhavaPalanPages.length + planetHousePages.length + planetRasiPages.length + 1 + 1 + lifeAreaPages + yogasPages.length + 1 + 1 + bhavaDeepPages + yearForecastPages.length + 1 + 1 + mantraPages.length + 1 + 1 + weekdayRemedyPages.length + 1 + 1 + 1 + 1 + 1 + 3 + dashaPages + dashaSummaryPages + dashaBhuktiDetailPages;
+  const totalPages = 1 + 1 + 2 + 2 + vargasPages + 2 + 1 + 1 + bhavaPalanPages.length + planetHousePages.length + planetRasiPages.length + 1 + 1 + lifeAreaPages + yogasPages.length + 1 + 1 + bhavaDeepPages + yearForecastPages.length + 1 + 1 + mantraPages.length + 1 + 1 + weekdayRemedyPages.length + 1 + 1 + 1 + 1 + 1 + 3 + dashaPages + dashaSummaryPages + dashaBhuktiDetailPages;
 
   let pn = 0;
   const next = () => ++pn;
@@ -806,6 +807,67 @@ export const ProfessionalReport = ({ result, orientation = "p" }: Props) => {
           {NAKSHATRA_PALAN[result.moon.nakshatraIndex]}
         </div>
       </Page>
+
+      {/* === Karma Pathivu — Nakshatra Padam Karma === */}
+      {(() => {
+        const moonNak = NAKSHATRA_KARMA_LIST[result.moon.nakshatraIndex];
+        const lagNak = NAKSHATRA_KARMA_LIST[result.ascendant.nakshatraIndex];
+        const moonPad = moonNak?.padams.find(p => p.padam === result.pada) || moonNak?.padams[0];
+        const lagPad = lagNak?.padams.find(p => p.padam === result.ascendant.pada) || lagNak?.padams[0];
+        return (
+          <Page title="கர்ம பதிவு — நட்சத்திர பாத கர்மம்" page={next()} total={totalPages} name={i.name}>
+            <SectionBar>ஜென்ம நட்சத்திர கர்ம பதிவு</SectionBar>
+            <div style={{ border: "1px solid #c9a050", padding: 8, fontSize: 10, lineHeight: 1.6, background: "#fff8ee" }}>
+              <div style={{ fontWeight: 700, color: "#7a1a2b", marginBottom: 4 }}>
+                {moonNak?.index}. {moonNak?.name} — {result.pada}-ம் பாதம் · நவாம்சம்: {moonPad?.navamsaRasi}
+              </div>
+              <div style={{ fontSize: 9.5, marginBottom: 4 }}>
+                <b>அதிபதி:</b> {moonNak?.lord} · <b>தேவதை:</b> {moonNak?.deity} · <b>சின்னம்:</b> {moonNak?.symbol}
+              </div>
+              <div><b style={{ color: "#7a1a2b" }}>முற்பிறவி கர்மம் :</b> {moonPad?.karma}</div>
+              <div style={{ marginTop: 3 }}><b style={{ color: "#7a1a2b" }}>நிகழ்கால பலன் :</b> {moonPad?.palan}</div>
+              <div style={{ marginTop: 3 }}><b style={{ color: "#7a1a2b" }}>பரிகாரம் :</b> {moonPad?.parikaram}</div>
+            </div>
+
+            <div style={{ marginTop: 8, background: "#fbe9d0", padding: "3px 6px", fontSize: 11, fontWeight: 700, border: "1px solid #c9a050" }}>
+              லக்ன நட்சத்திர கர்ம பதிவு — {lagNak?.name} ({result.ascendant.pada}-ம் பாதம்)
+            </div>
+            <div style={{ border: "1px solid #c9a050", padding: 8, fontSize: 10, lineHeight: 1.6 }}>
+              <div style={{ fontSize: 9.5, marginBottom: 4 }}>
+                <b>அதிபதி:</b> {lagNak?.lord} · <b>தேவதை:</b> {lagNak?.deity} · <b>நவாம்சம்:</b> {lagPad?.navamsaRasi}
+              </div>
+              <div><b style={{ color: "#7a1a2b" }}>முற்பிறவி கர்மம் :</b> {lagPad?.karma}</div>
+              <div style={{ marginTop: 3 }}><b style={{ color: "#7a1a2b" }}>நிகழ்கால பலன் :</b> {lagPad?.palan}</div>
+              <div style={{ marginTop: 3 }}><b style={{ color: "#7a1a2b" }}>பரிகாரம் :</b> {lagPad?.parikaram}</div>
+            </div>
+
+            <SectionBar>{moonNak?.name} — 4 பாத விவரம் (ஒப்பீடு)</SectionBar>
+            <table style={{ width: "100%", fontSize: 8.5, lineHeight: 1.35, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
+              <thead><tr style={{ background: "#fff8ee" }}>
+                <th style={{ ...th, width: "9%" }}>பாதம்</th>
+                <th style={{ ...th, width: "13%" }}>நவாம்சம்</th>
+                <th style={th}>முற்பிறவி கர்மம்</th>
+                <th style={th}>நிகழ்கால பலன்</th>
+                <th style={th}>பரிகாரம்</th>
+              </tr></thead>
+              <tbody>
+                {moonNak?.padams.map(p => (
+                  <tr key={p.padam} style={p.padam === result.pada ? { background: "#fef3c7" } : undefined}>
+                    <td style={{ ...td, fontWeight: 700 }}>{p.padam}</td>
+                    <td style={td}>{p.navamsaRasi}</td>
+                    <td style={td}>{p.karma}</td>
+                    <td style={td}>{p.palan}</td>
+                    <td style={td}>{p.parikaram}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <div style={{ marginTop: 6, fontSize: 8.5, lineHeight: 1.45, color: "#6b3a1a" }}>
+              <b>குறிப்பு:</b> மேலே உள்ள கர்ம விவரங்கள் பாரம்பரிய நாடி ஜோதிட நூல்களின் அடிப்படையில் உங்கள் ஜென்ம நட்சத்திர பாதத்திற்கு வழங்கப்படுகின்றன. முழுமையான பரிகாரங்களுக்கு அனுபவமிக்க ஜோதிடரை அணுகவும்.
+            </div>
+          </Page>
+        );
+      })()}
 
       {/* === Bhava lord palans === */}
       {bhavaPalanPages.map((rows, pi) => (
