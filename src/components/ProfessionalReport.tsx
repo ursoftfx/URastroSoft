@@ -331,7 +331,7 @@ export const ProfessionalReport = ({ result, orientation = "p" }: Props) => {
   const extraPages = 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 3;
   const dashaSummaryPages = 1 + result.dashaTree.length; // summary + per-maha paragraph
   const dashaBhuktiDetailPages = result.dashaTree.length * 2; // 2 pages per maha (5+4 bhuktis)
-  const totalPages = 1 + 1 + 2 + 2 + vargasPages + 2 + 1 + 1 + bhavaPalanPages.length + planetHousePages.length + planetRasiPages.length + 1 + 1 + lifeAreaPages + yogasPages.length + 1 + 1 + bhavaDeepPages + yearForecastPages.length + 1 + 1 + mantraPages.length + 1 + 1 + weekdayRemedyPages.length + 1 + 1 + 1 + 1 + 1 + 3 + dashaPages + dashaSummaryPages + dashaBhuktiDetailPages;
+  const totalPages = 1 + 1 + 2 + 2 + vargasPages + 2 + 1 + 1 + 2 + bhavaPalanPages.length + planetHousePages.length + planetRasiPages.length + 1 + 1 + lifeAreaPages + yogasPages.length + 1 + 1 + bhavaDeepPages + yearForecastPages.length + 1 + 1 + mantraPages.length + 1 + 1 + weekdayRemedyPages.length + 1 + 1 + 1 + 1 + 1 + 3 + dashaPages + dashaSummaryPages + dashaBhuktiDetailPages;
 
   let pn = 0;
   const next = () => ++pn;
