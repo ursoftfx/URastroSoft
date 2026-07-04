@@ -922,7 +922,7 @@ export const ProfessionalReport = ({ result, orientation = "p" }: Props) => {
             <Page title="கிரக பார்வை நட்சத்திர கர்ம பதிவு" page={next()} total={totalPages} name={i.name}>
               <SectionBar>கிரகங்களின் பார்வையில் விழும் நட்சத்திர பாத கர்ம பதிவு</SectionBar>
               <div style={{ fontSize: 8.5, marginBottom: 4, color: "#6b3a1a" }}>
-                சூரியன்/சந்திரன்/புதன்/சுக்ரன் — 7-ம் பார்வை · செவ்வாய் — 4, 7, 8 · குரு — 5, 7, 9 · சனி — 3, 7, 10 · ராகு/கேது — 5, 7, 9.
+                சூரியன்/சந்திரன்/புதன்/சுக்ரன் — 7-ம் பார்வை · செவ்வாய் — 4, 7, 8 · குரு — 5, 7, 9 · சனி — 3, 7, 10 · ராகு/கேது — 5, 7, 9. <b>வக்ர கிரகங்களுக்கு (வ) பார்வை எதிர் திசையில் கணக்கிடப்படுகிறது.</b>
               </div>
               <table style={{ width: "100%", fontSize: 8.2, lineHeight: 1.3, borderCollapse: "collapse", border: "1px solid #c9a050", tableLayout: "fixed" }}>
                 <thead><tr style={{ background: "#fff8ee" }}>
