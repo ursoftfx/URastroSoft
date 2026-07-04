@@ -936,14 +936,15 @@ export const ProfessionalReport = ({ result, orientation = "p" }: Props) => {
                   {planetsOnly.flatMap(p => {
                     const houses = ASPECT_HOUSES[p.key] || [7];
                     return houses.map(h => {
-                      const aspectLon = p.lon + (h - 1) * 30;
+                      const offset = (h - 1) * 30;
+                      const aspectLon = p.retro ? p.lon - offset : p.lon + offset;
                       const { nak, pada } = nakFromLon(aspectLon);
                       const n = NAKSHATRA_KARMA_LIST[nak];
                       const pd = n?.padams.find(x => x.padam === pada) || n?.padams[0];
                       return (
                         <tr key={`${p.key}-${h}`}>
-                          <td style={{ ...td, fontWeight: 700 }}>{PLANET_TA[p.key]}</td>
-                          <td style={td}>{h}-ம்</td>
+                          <td style={{ ...td, fontWeight: 700 }}>{PLANET_TA[p.key]}{p.retro ? " (வ)" : ""}</td>
+                          <td style={td}>{h}-ம்{p.retro ? " ↺" : ""}</td>
                           <td style={td}>{n?.name} / {pada}</td>
                           <td style={td}>{pd?.navamsaRasi}</td>
                           <td style={td}>{pd?.karma} <b>பலன்:</b> {pd?.palan}</td>
