@@ -884,6 +884,7 @@ export const ProfessionalReport = ({ result, orientation = "p" }: Props) => {
         };
         const planetsOnly = result.planets.map(p => ({
           key: p.key, lon: p.longitude, nak: p.nakshatraIndex, pada: p.pada,
+          retro: !!p.retrograde && p.key !== "rahu" && p.key !== "ketu",
         }));
         return (
           <>
