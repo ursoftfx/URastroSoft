@@ -375,6 +375,8 @@ const ResultView = ({
             fileName={`jathagam-${result.input.name.replace(/\s+/g, "-")}.pdf`}
             paperSize={view === "pro" ? "a5" : "a4"}
             orientation={view === "pro" ? proOrient : "p"}
+            priceInRupees={view === "pro" ? 99 : view === "onepage" ? 9 : undefined}
+            productLabel={view === "pro" ? "Professional Report" : view === "onepage" ? "One Page Report" : "Report"}
           />
         </div>
       </div>
