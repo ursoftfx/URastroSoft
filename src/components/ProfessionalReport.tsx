@@ -904,7 +904,7 @@ export const ProfessionalReport = ({ result, orientation = "p" }: Props) => {
                     const pd = n?.padams.find(x => x.padam === p.pada) || n?.padams[0];
                     return (
                       <tr key={p.key}>
-                        <td style={{ ...td, fontWeight: 700 }}>{PLANET_TA[p.key]}</td>
+                        <td style={{ ...td, fontWeight: 700 }}>{PLANET_TA[p.key]}{p.retro ? " (வ)" : ""}</td>
                         <td style={td}>{n?.name} / {p.pada}</td>
                         <td style={td}>{pd?.navamsaRasi}</td>
                         <td style={td}>{pd?.karma} <b>பலன்:</b> {pd?.palan}</td>
