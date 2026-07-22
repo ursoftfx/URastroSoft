@@ -629,6 +629,5 @@ const PadamAspectPage = ({ result }: Props) => {
         © UR ASTRO SOFT — Aspect & 108 Padam Location Chart
       </div>
     </div>
-    </>
   );
 };
