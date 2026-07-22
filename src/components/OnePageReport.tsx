@@ -590,33 +590,73 @@ const PadamAspectPage = ({ result }: Props) => {
       </div>
 
       <div style={{ marginTop: 10, fontSize: 11, fontWeight: 700, textAlign: "center", background: "#fbe9d0", padding: "3px 0", border: "1px solid #c9a050" }}>
-        108 பாத நிலைப்படம் (27 நட்சத்திரம் × 4 பாதம்)
+        108 பாத நிலைப்படம் — 12 ராசி கட்டம் (27 நட்சத்திரம் × 4 பாதம்)
       </div>
-      <table style={{ width: "100%", fontSize: 8, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
-        <thead>
-          <tr style={{ background: "#fff8ee" }}>
-            <th style={{ border: "1px solid #c9a050", padding: 2, width: "4%" }}>#</th>
-            <th style={{ border: "1px solid #c9a050", padding: 2, width: "18%" }}>நட்சத்திரம்</th>
-            <th style={{ border: "1px solid #c9a050", padding: 2, width: "10%" }}>அதிபதி</th>
-            <th style={{ border: "1px solid #c9a050", padding: 2 }}>பாதம் 1</th>
-            <th style={{ border: "1px solid #c9a050", padding: 2 }}>பாதம் 2</th>
-            <th style={{ border: "1px solid #c9a050", padding: 2 }}>பாதம் 3</th>
-            <th style={{ border: "1px solid #c9a050", padding: 2 }}>பாதம் 4</th>
-          </tr>
-        </thead>
+      <table className="w-full" style={{ borderCollapse: "collapse", border: "1px solid #000", tableLayout: "fixed" }}>
         <tbody>
-          {NAKSHATRAS_TAMIL.map((nak, ni) => (
-            <tr key={ni}>
-              <td style={{ border: "1px solid #c9a050", padding: 2, textAlign: "center" }}>{ni + 1}</td>
-              <td style={{ border: "1px solid #c9a050", padding: 2 }}>{nak}</td>
-              <td style={{ border: "1px solid #c9a050", padding: 2 }}>{NAKSHATRA_LORDS_TAMIL[ni]}</td>
-              {[1, 2, 3, 4].map((pd) => {
-                const occ = padamOccupants[`${ni}-${pd}`] || [];
+          {SI_LAYOUT.map((row, r) => (
+            <tr key={r}>
+              {row.map((rasiIdx, c) => {
+                if (rasiIdx === null) {
+                  if (r === 1 && c === 1) {
+                    return (
+                      <td key={c} colSpan={2} rowSpan={2} style={{ border: "1px solid #000", textAlign: "center", verticalAlign: "middle", background: "#e8f5d8", color: "#0a6b3a" }}>
+                        <div style={{ fontSize: 14, fontWeight: 800 }}>12 ராசிகள்</div>
+                        <div style={{ fontSize: 12, fontWeight: 700 }}>27 நட்சத்திரங்கள்</div>
+                        <div style={{ fontSize: 10, marginTop: 3, color: "#555" }}>108 பாதங்கள்</div>
+                      </td>
+                    );
+                  }
+                  return null;
+                }
+                const isLagna = rasiIdx === result.ascendant.rasiIndex;
+                // 9 padams per rasi
+                const padamRows: { nakIdx: number; pada: number; occ: { key: string; retro: boolean }[] }[] = [];
+                for (let p = 0; p < 9; p++) {
+                  const globalPadam = rasiIdx * 9 + p;
+                  const nakIdx = Math.floor(globalPadam / 4);
+                  const pada = (globalPadam % 4) + 1;
+                  padamRows.push({ nakIdx, pada, occ: padamOccupants[`${nakIdx}-${pada}`] || [] });
+                }
                 return (
-                  <td key={pd} style={{ border: "1px solid #c9a050", padding: 2, textAlign: "center", fontSize: 12, fontWeight: 700, color: "#7a1a2b", background: occ.length ? "#fffbe6" : "white" }}>
-                    {occ.map((p, i) => (
-                      <span key={i}>{p.key === "ascendant" ? "La" : PLANET_SYMBOL[p.key]}{p.retro ? "ᴿ" : ""} </span>
-                    ))}
+                  <td key={c} style={{ position: "relative", border: "1px solid #000", width: "25%", verticalAlign: "top", padding: "3px 4px", background: "#fffdf5" }}>
+                    {isLagna && (
+                      <div style={{ position: "absolute", top: 0, left: 0, width: 0, height: 0, borderTop: "10px solid #7a1a2b", borderRight: "10px solid transparent" }} />
+                    )}
+                    <div style={{ fontSize: 9, fontWeight: 800, color: "#7a1a2b", textAlign: "center", borderBottom: "1px dashed #c9a050", marginBottom: 2 }}>
+                      {RASIS_TAMIL[rasiIdx]}
+                    </div>
+                    {/* Group padams by nakshatra */}
+                    {(() => {
+                      const groups: Record<number, number[]> = {};
+                      padamRows.forEach((pr) => { (groups[pr.nakIdx] ||= []).push(pr.pada); });
+                      return Object.keys(groups).map((niStr) => {
+                        const ni = Number(niStr);
+                        const padas = groups[ni];
+                        return (
+                          <div key={ni} style={{ fontSize: 8, lineHeight: 1.25, marginBottom: 1 }}>
+                            <span style={{ fontWeight: 700 }}>{NAKSHATRAS_TAMIL[ni]}</span>{" "}
+                            <span style={{ color: "#555" }}>{padas.join(",")}</span>
+                            {padas.some((pd) => (padamOccupants[`${ni}-${pd}`] || []).length > 0) && (
+                              <span style={{ color: "#7a1a2b", fontWeight: 800 }}>
+                                {" "}
+                                {padas.map((pd) => {
+                                  const occ = padamOccupants[`${ni}-${pd}`] || [];
+                                  if (!occ.length) return null;
+                                  return (
+                                    <span key={pd}>
+                                      [{pd}:{occ.map((p, i) => (
+                                        <span key={i}>{p.key === "ascendant" ? "La" : PLANET_SYMBOL[p.key]}{p.retro ? "ᴿ" : ""}</span>
+                                      ))}]
+                                    </span>
+                                  );
+                                })}
+                              </span>
+                            )}
+                          </div>
+                        );
+                      });
+                    })()}
                   </td>
                 );
               })}
@@ -624,6 +664,9 @@ const PadamAspectPage = ({ result }: Props) => {
           ))}
         </tbody>
       </table>
+      <div style={{ fontSize: 8, marginTop: 3, color: "#333", textAlign: "center" }}>
+        ஒவ்வொரு ராசியிலும் 9 பாதங்கள் (2¼ நட்சத்திரம்). கிரக குறியீடு அந்த பாதத்தில் அமையும் கிரகம் காட்டுகிறது. La = லக்னம்.
+      </div>
 
       <div style={{ marginTop: 6, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 4, color: "#555" }}>
         © UR ASTRO SOFT — Aspect & 108 Padam Location Chart
