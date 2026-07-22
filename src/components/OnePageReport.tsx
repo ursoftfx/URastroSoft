@@ -422,7 +422,213 @@ export const OnePageReport = ({ result }: Props) => {
       <div style={{ marginTop: 8, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 4, color: "#555" }}>
         இது சுத்த திருக்கணித பஞ்சாங்கப்படி கணிக்கப்பெற்ற இலவச ஜாதகம் — © UR ASTRO SOFT
       </div>
+    </div>
+
+    {/* ===== PAGE 2: 108 Padam Location + Aspect (Parvai) Chart ===== */}
+    <PadamAspectPage result={result} />
+    </>
+  );
+};
+
+// ---------- Page 2 ----------
+const PLANET_SYMBOL: Record<string, string> = {
+  sun: "☉", moon: "☽", mars: "♂", mercury: "☿",
+  jupiter: "♃", venus: "♀", saturn: "♄", rahu: "☊", ketu: "☋",
+};
+const PLANET_ORDER = ["sun", "moon", "mars", "mercury", "jupiter", "venus", "saturn", "rahu", "ketu"];
+const ASPECT_HOUSES: Record<string, number[]> = {
+  sun: [7], moon: [7], mercury: [7], venus: [7],
+  mars: [4, 7, 8], jupiter: [5, 7, 9], saturn: [3, 7, 10],
+  rahu: [5, 7, 9], ketu: [5, 7, 9],
+};
+
+const PadamAspectPage = ({ result }: Props) => {
+  const planetInfo = result.planets.map((p) => ({
+    key: p.key,
+    rasi: p.rasiIndex,
+    retro: !!p.retrograde,
+    lon: p.longitude,
+  }));
+
+  const aspectMap: Record<number, { key: string; retro: boolean; house: number }[]> = {};
+  for (let r = 0; r < 12; r++) aspectMap[r] = [];
+  planetInfo.forEach((p) => {
+    (ASPECT_HOUSES[p.key] || []).forEach((h) => {
+      const off = h - 1;
+      const t = p.retro ? ((p.rasi - off) % 12 + 12) % 12 : (p.rasi + off) % 12;
+      aspectMap[t].push({ key: p.key, retro: p.retro, house: h });
+    });
+  });
+
+  const renderAspectChart = () => (
+    <table className="w-full" style={{ borderCollapse: "collapse" }}>
+      <tbody>
+        {SI_LAYOUT.map((row, r) => (
+          <tr key={r}>
+            {row.map((rasiIdx, c) => {
+              if (rasiIdx === null) {
+                if (r === 1 && c === 1) {
+                  return (
+                    <td key={c} colSpan={2} rowSpan={2} style={{ border: "1px solid #000", textAlign: "center", verticalAlign: "middle", background: "#fbe9d0" }}>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: "#7a1a2b" }}>கிரக பார்வை</div>
+                      <div style={{ fontSize: 9 }}>Aspect Chart</div>
+                    </td>
+                  );
+                }
+                return null;
+              }
+              const occupants = planetInfo.filter((p) => p.rasi === rasiIdx);
+              const aspects = aspectMap[rasiIdx] || [];
+              const isLagna = rasiIdx === result.ascendant.rasiIndex;
+              return (
+                <td key={c} style={{ position: "relative", border: "1px solid #000", height: 82, width: "25%", verticalAlign: "top", padding: 3 }}>
+                  {isLagna && (
+                    <div style={{ position: "absolute", top: 0, left: 0, width: 0, height: 0, borderTop: "10px solid #7a1a2b", borderRight: "10px solid transparent" }} />
+                  )}
+                  <div style={{ fontSize: 8, color: "#555", fontWeight: 700 }}>{RASIS_TAMIL[rasiIdx]}</div>
+                  <div style={{ fontSize: 15, lineHeight: 1.2, fontWeight: 700, color: "#7a1a2b" }}>
+                    {occupants.map((p) => (
+                      <span key={p.key}>{PLANET_SYMBOL[p.key]}{p.retro ? "ᴿ" : ""} </span>
+                    ))}
+                  </div>
+                  {aspects.length > 0 && (
+                    <div style={{ fontSize: 9, color: "#0a6b3a", marginTop: 2, lineHeight: 1.2 }}>
+                      <span style={{ fontWeight: 700 }}>▸ </span>
+                      {aspects.map((a, i) => (
+                        <span key={i}>{PLANET_SYMBOL[a.key]}{a.retro ? "↺" : ""} </span>
+                      ))}
+                    </div>
+                  )}
+                </td>
+              );
+            })}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+
+  const nakSize = 360 / 27;
+  const padSize = nakSize / 4;
+  const padamOccupants: Record<string, { key: string; retro: boolean }[]> = {};
+  planetInfo.forEach((p) => {
+    const nakIdx = Math.floor(p.lon / nakSize) % 27;
+    const pada = Math.floor((p.lon - nakIdx * nakSize) / padSize) + 1;
+    (padamOccupants[`${nakIdx}-${pada}`] ||= []).push({ key: p.key, retro: p.retro });
+  });
+  {
+    const lon = result.ascendant.longitude;
+    const nakIdx = Math.floor(lon / nakSize) % 27;
+    const pada = Math.floor((lon - nakIdx * nakSize) / padSize) + 1;
+    (padamOccupants[`${nakIdx}-${pada}`] ||= []).push({ key: "ascendant", retro: false });
+  }
+
+  return (
+    <div className="a4-sheet print-area" style={{ width: "210mm", height: "297mm", padding: "8mm 10mm", margin: "auto", background: "white", color: "#000", fontFamily: "'Latha','Tahoma',sans-serif", boxSizing: "border-box", overflow: "hidden", pageBreakBefore: "always", marginTop: "8mm" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "2px solid #7a1a2b", paddingBottom: 6 }}>
+        <div>
+          <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: 1, color: "#7a1a2b" }}>கிரக பார்வை & 108 பாத நிலைப்படம்</div>
+          <div style={{ fontSize: 10, color: "#555" }}>Planetary Aspects & 108 Padam Location Chart</div>
+        </div>
+        <div style={{ textAlign: "right", fontSize: 10, color: "#555" }}>{result.input.name}</div>
       </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1.05fr 1fr", gap: 10, marginTop: 8 }}>
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 700, textAlign: "center", background: "#fbe9d0", padding: "3px 0", border: "1px solid #c9a050" }}>
+            கிரக பார்வை கட்டம் (Aspect Chart)
+          </div>
+          {renderAspectChart()}
+          <div style={{ fontSize: 8.5, marginTop: 4, color: "#333", lineHeight: 1.4 }}>
+            ☉சூரி ☽சந் ♂செவ் ☿புத ♃குரு ♀சுக் ♄சனி ☊ரா ☋கே — <b>ᴿ</b> வக்ரம் ; <span style={{ color: "#0a6b3a" }}>▸ பார்வை</span> ; <span style={{ color: "#0a6b3a" }}>↺</span> வக்ர எதிர்-பார்வை
+          </div>
+        </div>
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 700, textAlign: "center", background: "#fbe9d0", padding: "3px 0", border: "1px solid #c9a050" }}>
+            பார்வை பட்டியல் (Parvai Table)
+          </div>
+          <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+            <thead>
+              <tr style={{ background: "#fff8ee" }}>
+                <th style={{ border: "1px solid #c9a050", padding: 2 }}>கிரகம்</th>
+                <th style={{ border: "1px solid #c9a050", padding: 2 }}>நிலை</th>
+                <th style={{ border: "1px solid #c9a050", padding: 2 }}>வீடு</th>
+                <th style={{ border: "1px solid #c9a050", padding: 2 }}>பார்க்கும் ராசி</th>
+              </tr>
+            </thead>
+            <tbody>
+              {PLANET_ORDER.map((k) => {
+                const p = planetInfo.find((x) => x.key === k);
+                if (!p) return null;
+                const houses = ASPECT_HOUSES[k] || [];
+                const targets = houses.map((h) => {
+                  const off = h - 1;
+                  const t = p.retro ? ((p.rasi - off) % 12 + 12) % 12 : (p.rasi + off) % 12;
+                  return { h, t };
+                });
+                return (
+                  <tr key={k}>
+                    <td style={{ border: "1px solid #c9a050", padding: 2, fontWeight: 700 }}>
+                      {PLANET_SYMBOL[k]} {PLANET_FULL_TA[k]}{p.retro ? " (வ)" : ""}
+                    </td>
+                    <td style={{ border: "1px solid #c9a050", padding: 2 }}>{RASIS_TAMIL[p.rasi]}</td>
+                    <td style={{ border: "1px solid #c9a050", padding: 2, textAlign: "center" }}>
+                      {houses.join(",")}{p.retro ? " ↺" : ""}
+                    </td>
+                    <td style={{ border: "1px solid #c9a050", padding: 2 }}>
+                      {targets.map((x) => `${x.h}→${RASIS_TAMIL[x.t]}`).join(" ; ")}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <div style={{ fontSize: 8.5, marginTop: 4, color: "#333", lineHeight: 1.35 }}>
+            வக்ர (retrograde) கிரகம் இருந்தால் பார்வை எதிர் திசையில் (↺) கணிக்கப்படுகிறது.
+          </div>
+        </div>
+      </div>
+
+      <div style={{ marginTop: 10, fontSize: 11, fontWeight: 700, textAlign: "center", background: "#fbe9d0", padding: "3px 0", border: "1px solid #c9a050" }}>
+        108 பாத நிலைப்படம் (27 நட்சத்திரம் × 4 பாதம்)
+      </div>
+      <table style={{ width: "100%", fontSize: 8, borderCollapse: "collapse", border: "1px solid #c9a050" }}>
+        <thead>
+          <tr style={{ background: "#fff8ee" }}>
+            <th style={{ border: "1px solid #c9a050", padding: 2, width: "4%" }}>#</th>
+            <th style={{ border: "1px solid #c9a050", padding: 2, width: "18%" }}>நட்சத்திரம்</th>
+            <th style={{ border: "1px solid #c9a050", padding: 2, width: "10%" }}>அதிபதி</th>
+            <th style={{ border: "1px solid #c9a050", padding: 2 }}>பாதம் 1</th>
+            <th style={{ border: "1px solid #c9a050", padding: 2 }}>பாதம் 2</th>
+            <th style={{ border: "1px solid #c9a050", padding: 2 }}>பாதம் 3</th>
+            <th style={{ border: "1px solid #c9a050", padding: 2 }}>பாதம் 4</th>
+          </tr>
+        </thead>
+        <tbody>
+          {NAKSHATRAS_TAMIL.map((nak, ni) => (
+            <tr key={ni}>
+              <td style={{ border: "1px solid #c9a050", padding: 2, textAlign: "center" }}>{ni + 1}</td>
+              <td style={{ border: "1px solid #c9a050", padding: 2 }}>{nak}</td>
+              <td style={{ border: "1px solid #c9a050", padding: 2 }}>{NAKSHATRA_LORDS_TAMIL[ni]}</td>
+              {[1, 2, 3, 4].map((pd) => {
+                const occ = padamOccupants[`${ni}-${pd}`] || [];
+                return (
+                  <td key={pd} style={{ border: "1px solid #c9a050", padding: 2, textAlign: "center", fontSize: 12, fontWeight: 700, color: "#7a1a2b", background: occ.length ? "#fffbe6" : "white" }}>
+                    {occ.map((p, i) => (
+                      <span key={i}>{p.key === "ascendant" ? "La" : PLANET_SYMBOL[p.key]}{p.retro ? "ᴿ" : ""} </span>
+                    ))}
+                  </td>
+                );
+              })}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div style={{ marginTop: 6, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 4, color: "#555" }}>
+        © UR ASTRO SOFT — Aspect & 108 Padam Location Chart
+      </div>
+    </div>
     </>
   );
 };
