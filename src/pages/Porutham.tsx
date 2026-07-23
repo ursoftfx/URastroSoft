@@ -404,8 +404,8 @@ const Porutham = () => {
                 <div className="parchment rounded-2xl p-6 md:p-8">
                   <h3 className="font-tamil text-2xl font-bold text-maroon-deep text-center mb-4">தோஷ விவரம்</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {boyDosh && <DoshamCard title={`ஆண் — ${boy.name || "மணமகன்"}`} list={boyDosh} />}
                     {girlDosh && <DoshamCard title={`பெண் — ${girl.name || "மணமகள்"}`} list={girlDosh} />}
+                    {boyDosh && <DoshamCard title={`ஆண் — ${boy.name || "மணமகன்"}`} list={boyDosh} />}
                   </div>
                 </div>
               )}
