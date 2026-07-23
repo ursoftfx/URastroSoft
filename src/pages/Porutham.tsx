@@ -309,8 +309,8 @@ const Porutham = () => {
           </header>
 
           <form onSubmit={handleSubmit} className="parchment rounded-2xl p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8 no-print">
-            <PersonSection title="ஆண் (மணமகன்)" p={boy} setP={setBoy} />
             <PersonSection title="பெண் (மணமகள்)" p={girl} setP={setGirl} />
+            <PersonSection title="ஆண் (மணமகன்)" p={boy} setP={setBoy} />
             <div className="md:col-span-2">
               <Button type="submit" disabled={!canSubmit} className="w-full bg-gradient-royal text-primary-foreground font-tamil text-lg py-6">
                 ஜாதகம் + பொருத்தம் பார்க்க
