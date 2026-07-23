@@ -309,8 +309,8 @@ const Porutham = () => {
           </header>
 
           <form onSubmit={handleSubmit} className="parchment rounded-2xl p-6 md:p-8 grid grid-cols-1 md:grid-cols-2 gap-8 no-print">
-            <PersonSection title="ஆண் (மணமகன்)" p={boy} setP={setBoy} />
             <PersonSection title="பெண் (மணமகள்)" p={girl} setP={setGirl} />
+            <PersonSection title="ஆண் (மணமகன்)" p={boy} setP={setBoy} />
             <div className="md:col-span-2">
               <Button type="submit" disabled={!canSubmit} className="w-full bg-gradient-royal text-primary-foreground font-tamil text-lg py-6">
                 ஜாதகம் + பொருத்தம் பார்க்க
@@ -329,7 +329,7 @@ const Porutham = () => {
 
                 {/* Names & Addresses */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 font-tamil text-sm">
-                  {[{ p: boy, d: bDerived, title: "ஆண் (மணமகன்)" }, { p: girl, d: gDerived, title: "பெண் (மணமகள்)" }].map((s, i) => (
+                  {[{ p: girl, d: gDerived, title: "பெண் (மணமகள்)" }, { p: boy, d: bDerived, title: "ஆண் (மணமகன்)" }].map((s, i) => (
                     <div key={i} className="border border-gold/30 rounded-lg p-4 bg-gold/5">
                       <div className="font-bold text-maroon-deep mb-2">{s.title}</div>
                       {s.p.name && <div><span className="text-muted-foreground">பெயர்:</span> <b>{s.p.name}</b></div>}
@@ -383,16 +383,16 @@ const Porutham = () => {
                 <div className="parchment rounded-2xl p-6 md:p-8">
                   <h3 className="font-tamil text-2xl font-bold text-maroon-deep text-center mb-4">இரு ஜாதகங்கள் — ராசி சக்கரம்</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {boyJ && (
-                      <div>
-                        <div className="font-tamil font-bold text-center text-maroon-deep mb-2">ஆண் — {boy.name || "மணமகன்"}</div>
-                        <RasiChart result={boyJ} />
-                      </div>
-                    )}
                     {girlJ && (
                       <div>
                         <div className="font-tamil font-bold text-center text-maroon-deep mb-2">பெண் — {girl.name || "மணமகள்"}</div>
                         <RasiChart result={girlJ} />
+                      </div>
+                    )}
+                    {boyJ && (
+                      <div>
+                        <div className="font-tamil font-bold text-center text-maroon-deep mb-2">ஆண் — {boy.name || "மணமகன்"}</div>
+                        <RasiChart result={boyJ} />
                       </div>
                     )}
                   </div>
@@ -404,8 +404,8 @@ const Porutham = () => {
                 <div className="parchment rounded-2xl p-6 md:p-8">
                   <h3 className="font-tamil text-2xl font-bold text-maroon-deep text-center mb-4">தோஷ விவரம்</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {boyDosh && <DoshamCard title={`ஆண் — ${boy.name || "மணமகன்"}`} list={boyDosh} />}
                     {girlDosh && <DoshamCard title={`பெண் — ${girl.name || "மணமகள்"}`} list={girlDosh} />}
+                    {boyDosh && <DoshamCard title={`ஆண் — ${boy.name || "மணமகன்"}`} list={boyDosh} />}
                   </div>
                 </div>
               )}

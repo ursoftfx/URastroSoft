@@ -1,4 +1,8 @@
 import { JathagamResult, RASIS_TAMIL, NAKSHATRAS_TAMIL, NAKSHATRA_LORDS_TAMIL } from "@/lib/jathagam";
+import {
+  padamTemple, thithiTemple, yogamTemple, karanamTemple,
+  NAVAGRAHA_TEMPLES, THITHI_TEMPLES, YOGAM_TEMPLES, KARANAM_TEMPLES,
+} from "@/lib/temples";
 
 interface Props {
   result: JathagamResult;
@@ -426,6 +430,9 @@ export const OnePageReport = ({ result }: Props) => {
 
     {/* ===== PAGE 2: 108 Padam Location + Aspect (Parvai) Chart ===== */}
     <PadamAspectPage result={result} />
+
+    {/* ===== PAGE 3: பரிகார தலங்கள் (Temples) ===== */}
+    <TemplesPage result={result} />
     </>
   );
 };
@@ -670,6 +677,160 @@ const PadamAspectPage = ({ result }: Props) => {
 
       <div style={{ marginTop: 6, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 4, color: "#555" }}>
         © UR ASTRO SOFT — Aspect & 108 Padam Location Chart
+      </div>
+    </div>
+  );
+};
+
+// ---------- Page 3: பரிகார தலங்கள் ----------
+const TemplesPage = ({ result }: Props) => {
+  const userNak = result.moon.nakshatraIndex;
+  const userPada = result.moon.pada;
+  const userThithi = result.panchangam.tithiIndex % 15;
+  const userYoga = result.panchangam.yogaIndex;
+  const userKarana = result.panchangam.karanaIndex;
+
+  const hi = { background: "#fff3cf", fontWeight: 800 as const };
+  const cell: React.CSSProperties = { border: "1px solid #c9a050", padding: "2px 5px", verticalAlign: "top" };
+  const th: React.CSSProperties = { ...cell, background: "#fbe9d0", textAlign: "center", fontWeight: 700 };
+
+  return (
+    <div className="a4-sheet print-area" style={{ width: "210mm", height: "297mm", padding: "8mm 10mm", margin: "auto", background: "white", color: "#000", fontFamily: "'Latha','Tahoma',sans-serif", boxSizing: "border-box", overflow: "hidden", pageBreakBefore: "always", marginTop: "8mm" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "2px solid #7a1a2b", paddingBottom: 6 }}>
+        <div>
+          <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: 1, color: "#7a1a2b" }}>பரிகார தலங்கள்</div>
+          <div style={{ fontSize: 10, color: "#555" }}>Parihara Sthalams — Nakshatra Padam, Thithi, Yogam, Karanam Temples</div>
+        </div>
+        <div style={{ textAlign: "right", fontSize: 10, color: "#555" }}>{result.input.name}</div>
+      </div>
+
+      {/* User-specific summary */}
+      <div style={{ marginTop: 6, fontSize: 10, background: "#fff8ee", border: "1px solid #c9a050", padding: 5 }}>
+        <b>உங்களுக்கான பரிகார தலங்கள்:</b>{" "}
+        <span>நட்சத்திரம்: <b>{NAKSHATRAS_TAMIL[userNak]} - பாதம் {userPada}</b> → {padamTemple(userNak, userPada).temple}</span>
+        {" | "}<span>திதி ({result.panchangam.tithiTamil}): {thithiTemple(userThithi).temple}</span>
+        {" | "}<span>யோகம் ({result.panchangam.yogaTamil}): {yogamTemple(userYoga).temple}</span>
+        {" | "}<span>கரணம் ({result.panchangam.karanaTamil}): {karanamTemple(userKarana).temple}</span>
+      </div>
+
+      {/* Nakshatra Padam temples - full 108 in 3 columns */}
+      <div style={{ marginTop: 6, fontSize: 11, fontWeight: 700, textAlign: "center", background: "#fbe9d0", padding: "3px 0", border: "1px solid #c9a050" }}>
+        108 நட்சத்திர பாத பரிகார தலங்கள் (Navamsa Adhipathi Sthalam)
+      </div>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 4, marginTop: 4 }}>
+        {[0, 1, 2].map((col) => (
+          <table key={col} style={{ width: "100%", fontSize: 7.8, borderCollapse: "collapse" }}>
+            <thead>
+              <tr>
+                <th style={th}>நட்சத்திரம்</th>
+                <th style={th}>பா</th>
+                <th style={th}>தலம்</th>
+              </tr>
+            </thead>
+            <tbody>
+              {NAKSHATRAS_TAMIL.slice(col * 9, col * 9 + 9).map((nak, idx) => {
+                const nakIdx = col * 9 + idx;
+                return [1, 2, 3, 4].map((pd) => {
+                  const t = padamTemple(nakIdx, pd);
+                  const isUser = nakIdx === userNak && pd === userPada;
+                  return (
+                    <tr key={`${nakIdx}-${pd}`} style={isUser ? hi : undefined}>
+                      {pd === 1 && <td style={{ ...cell, fontWeight: 700 }} rowSpan={4}>{nak}</td>}
+                      <td style={{ ...cell, textAlign: "center" }}>{pd}</td>
+                      <td style={cell}>{t.temple}</td>
+                    </tr>
+                  );
+                });
+              })}
+            </tbody>
+          </table>
+        ))}
+      </div>
+
+      {/* Thithi + Karanam + Yogam side by side */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6, marginTop: 8 }}>
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 700, textAlign: "center", background: "#fbe9d0", padding: "3px 0", border: "1px solid #c9a050" }}>
+            15 திதி பரிகார தலங்கள்
+          </div>
+          <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", marginTop: 3 }}>
+            <thead>
+              <tr>
+                <th style={th}>திதி</th>
+                <th style={th}>தேவதை</th>
+                <th style={th}>தலம்</th>
+              </tr>
+            </thead>
+            <tbody>
+              {THITHI_TEMPLES.map((t, i) => (
+                <tr key={i} style={i === userThithi ? hi : undefined}>
+                  <td style={{ ...cell, fontWeight: 700 }}>{i + 1}. {["பிரதமை","துவிதியை","திருதியை","சதுர்த்தி","பஞ்சமி","சஷ்டி","சப்தமி","அஷ்டமி","நவமி","தசமி","ஏகாதசி","துவாதசி","திரயோதசி","சதுர்த்தசி","பௌர்ணமி/அமாவாசை"][i]}</td>
+                  <td style={cell}>{t.deity}</td>
+                  <td style={cell}>{t.temple}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <div style={{ marginTop: 6, fontSize: 11, fontWeight: 700, textAlign: "center", background: "#fbe9d0", padding: "3px 0", border: "1px solid #c9a050" }}>
+            11 கரண பரிகார தலங்கள்
+          </div>
+          <table style={{ width: "100%", fontSize: 9, borderCollapse: "collapse", marginTop: 3 }}>
+            <thead>
+              <tr>
+                <th style={th}>கரணம்</th>
+                <th style={th}>தேவதை</th>
+                <th style={th}>தலம்</th>
+              </tr>
+            </thead>
+            <tbody>
+              {KARANAM_TEMPLES.map((t, i) => {
+                const names = ["பவ","பாலவ","கௌலவ","தைதுல","கரஜ","வணிஜ","விஷ்டி","சகுனி","சதுஷ்பாத","நாகவ","கிம்ஸ்துக்னம்"];
+                return (
+                  <tr key={i} style={i === userKarana ? hi : undefined}>
+                    <td style={{ ...cell, fontWeight: 700 }}>{names[i]}</td>
+                    <td style={cell}>{t.deity}</td>
+                    <td style={cell}>{t.temple}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 700, textAlign: "center", background: "#fbe9d0", padding: "3px 0", border: "1px solid #c9a050" }}>
+            27 யோக பரிகார தலங்கள்
+          </div>
+          <table style={{ width: "100%", fontSize: 8.5, borderCollapse: "collapse", marginTop: 3 }}>
+            <thead>
+              <tr>
+                <th style={th}>#</th>
+                <th style={th}>யோகம்</th>
+                <th style={th}>தலம்</th>
+              </tr>
+            </thead>
+            <tbody>
+              {YOGAM_TEMPLES.map((t, i) => {
+                const names = ["விஷ்கம்பம்","ப்ரீதி","ஆயுஷ்மான்","சௌபாக்கியம்","சோபனம்","அதிகண்டம்","சுகர்மம்","திருதி","சூலம்","கண்டம்","விருத்தி","துருவம்","வியாகாதம்","ஹர்ஷணம்","வஜ்ரம்","சித்தி","வியதீபாதம்","வரியான்","பரிகம்","சிவம்","சித்தம்","சாத்தியம்","சுபம்","சுக்லம்","ப்ரம்மம்","ஐந்திரம்","வைதிருதி"];
+                return (
+                  <tr key={i} style={i === userYoga ? hi : undefined}>
+                    <td style={{ ...cell, textAlign: "center" }}>{i + 1}</td>
+                    <td style={{ ...cell, fontWeight: 700 }}>{names[i]}</td>
+                    <td style={cell}>{t.temple}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style={{ marginTop: 6, fontSize: 8.5, color: "#555", lineHeight: 1.35 }}>
+        <b>குறிப்பு:</b> நட்சத்திர பாத தலம் — அந்த பாதத்தின் நவாம்ச அதிபதி கிரகத்தின் பரிகார ஸ்தலம். மஞ்சள் நிற வரிசைகள் உங்களுக்கு உரிய தலங்களைக் காட்டுகின்றன. திதி/யோகம்/கரணம் தலங்கள் நித்ய தேவி மற்றும் பாரம்பரிய தமிழ் பரிகார ஸ்தலம் அடிப்படையில்.
+      </div>
+      <div style={{ marginTop: 4, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 3, color: "#555" }}>
+        © UR ASTRO SOFT — Parihara Sthalam Reference (Page 3/3)
       </div>
     </div>
   );
