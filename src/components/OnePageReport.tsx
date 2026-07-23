@@ -430,6 +430,9 @@ export const OnePageReport = ({ result }: Props) => {
 
     {/* ===== PAGE 2: 108 Padam Location + Aspect (Parvai) Chart ===== */}
     <PadamAspectPage result={result} />
+
+    {/* ===== PAGE 3: பரிகார தலங்கள் (Temples) ===== */}
+    <TemplesPage result={result} />
     </>
   );
 };
