@@ -329,7 +329,7 @@ const Porutham = () => {
 
                 {/* Names & Addresses */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 font-tamil text-sm">
-                  {[{ p: boy, d: bDerived, title: "ஆண் (மணமகன்)" }, { p: girl, d: gDerived, title: "பெண் (மணமகள்)" }].map((s, i) => (
+                  {[{ p: girl, d: gDerived, title: "பெண் (மணமகள்)" }, { p: boy, d: bDerived, title: "ஆண் (மணமகன்)" }].map((s, i) => (
                     <div key={i} className="border border-gold/30 rounded-lg p-4 bg-gold/5">
                       <div className="font-bold text-maroon-deep mb-2">{s.title}</div>
                       {s.p.name && <div><span className="text-muted-foreground">பெயர்:</span> <b>{s.p.name}</b></div>}
