@@ -383,16 +383,16 @@ const Porutham = () => {
                 <div className="parchment rounded-2xl p-6 md:p-8">
                   <h3 className="font-tamil text-2xl font-bold text-maroon-deep text-center mb-4">இரு ஜாதகங்கள் — ராசி சக்கரம்</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {boyJ && (
-                      <div>
-                        <div className="font-tamil font-bold text-center text-maroon-deep mb-2">ஆண் — {boy.name || "மணமகன்"}</div>
-                        <RasiChart result={boyJ} />
-                      </div>
-                    )}
                     {girlJ && (
                       <div>
                         <div className="font-tamil font-bold text-center text-maroon-deep mb-2">பெண் — {girl.name || "மணமகள்"}</div>
                         <RasiChart result={girlJ} />
+                      </div>
+                    )}
+                    {boyJ && (
+                      <div>
+                        <div className="font-tamil font-bold text-center text-maroon-deep mb-2">ஆண் — {boy.name || "மணமகன்"}</div>
+                        <RasiChart result={boyJ} />
                       </div>
                     )}
                   </div>
