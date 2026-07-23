@@ -1,4 +1,8 @@
 import { JathagamResult, RASIS_TAMIL, NAKSHATRAS_TAMIL, NAKSHATRA_LORDS_TAMIL } from "@/lib/jathagam";
+import {
+  padamTemple, thithiTemple, yogamTemple, karanamTemple,
+  NAVAGRAHA_TEMPLES, THITHI_TEMPLES, YOGAM_TEMPLES, KARANAM_TEMPLES,
+} from "@/lib/temples";
 
 interface Props {
   result: JathagamResult;
