@@ -236,6 +236,27 @@ export const OnePageReport = ({ result }: Props) => {
 
   const yogi = computeYogi(result.sun.longitude, result.moon.longitude);
 
+  // Current gochara (transit) chart for today at birth place
+  let transitChart: string[][] | undefined;
+  let transitDateStr = "";
+  try {
+    const now = new Date();
+    const transit = computeJathagam({
+      name: "gochara",
+      year: now.getFullYear(),
+      month: now.getMonth() + 1,
+      day: now.getDate(),
+      hour: now.getHours(),
+      minute: now.getMinutes(),
+      latitude: i.latitude,
+      longitude: i.longitude,
+      tzOffsetHours: i.tzOffsetHours,
+      placeName: i.placeName,
+    });
+    transitChart = transit.rasiChart;
+    transitDateStr = fmtDate(now);
+  } catch {}
+
   return (
     <>
     <div className="a4-sheet print-area" style={{ width: "210mm", height: "297mm", padding: "8mm 10mm", margin: "auto", background: "white", color: "#000", fontFamily: "'Latha','Tahoma',sans-serif", boxSizing: "border-box", overflow: "hidden" }}>
