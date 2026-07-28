@@ -117,7 +117,7 @@ const SI_LAYOUT: (number | null)[][] = [
   [8, 7, 6, 5],
 ];
 
-const renderChart = (title: string, chart: string[][], ascRasi: number) => (
+const renderChart = (title: string, chart: string[][], ascRasi: number, transitChart?: string[][]) => (
   <table className="w-full" style={{ borderCollapse: "collapse" }}>
     <tbody>
       {SI_LAYOUT.map((row, r) => (
@@ -128,12 +128,18 @@ const renderChart = (title: string, chart: string[][], ascRasi: number) => (
                 return (
                   <td key={c} colSpan={2} rowSpan={2} style={{ border: "1px solid #000", textAlign: "center", verticalAlign: "middle" }}>
                     <div style={{ fontSize: 13, fontWeight: 700 }}>{title}</div>
+                    {transitChart && (
+                      <div style={{ fontSize: 8, fontWeight: 400, color: "#0a6b2c", marginTop: 4, lineHeight: 1.2 }}>
+                        மேல்: ஜென்மம்<br/>கீழ் (பச்சை): கோசாரம்
+                      </div>
+                    )}
                   </td>
                 );
               }
               return null;
             }
             const planets = chart[rasiIdx] || [];
+            const transits = transitChart ? (transitChart[rasiIdx] || []).filter((p) => p !== "ascendant" && p !== "mandi") : [];
             const isLagna = rasiIdx === ascRasi;
             return (
               <td key={c} style={{ position: "relative", border: "1px solid #000", height: 60, width: "25%", verticalAlign: "top" }}>
@@ -143,6 +149,11 @@ const renderChart = (title: string, chart: string[][], ascRasi: number) => (
                 <div style={{ fontSize: 9, padding: 3, lineHeight: 1.3 }}>
                   {planets.map((p) => PLANET_SHORT_TA[p] || p).join(" ")}
                 </div>
+                {transitChart && (
+                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, borderTop: "1px dashed #0a6b2c", background: "#e9f7ee", fontSize: 8, padding: "1px 3px", color: "#0a6b2c", fontWeight: 700, lineHeight: 1.2, minHeight: 12 }}>
+                    {transits.length ? transits.map((p) => PLANET_SHORT_TA[p] || p).join(" ") : "\u00A0"}
+                  </div>
+                )}
               </td>
             );
           })}
