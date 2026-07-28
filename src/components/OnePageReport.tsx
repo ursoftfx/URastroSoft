@@ -349,33 +349,20 @@ export const OnePageReport = ({ result }: Props) => {
         </tbody>
       </table>
 
-  // Current gochara (transit) chart for today at birth place
-  let transitChart: string[][] | undefined;
-  let transitDateStr = "";
-  try {
-    const now = new Date();
-    const transit = computeJathagam({
-      name: "gochara",
-      year: now.getFullYear(),
-      month: now.getMonth() + 1,
-      day: now.getDate(),
-      hour: now.getHours(),
-      minute: now.getMinutes(),
-      latitude: i.latitude,
-      longitude: i.longitude,
-      tzOffsetHours: i.tzOffsetHours,
-      placeName: i.placeName,
-    });
-    transitChart = transit.rasiChart;
-    transitDateStr = fmtDate(now);
-  } catch {}
+      {/* Charts side by side (Rasi shows gochara transits outside natal planets) */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 8 }}>
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 700, textAlign: "center", marginBottom: 2 }}>
+            ராசி கட்டம் (D-1) + கோசாரம் {transitDateStr && <span style={{ color: "#0a6b2c", fontWeight: 400 }}>({transitDateStr})</span>}
+          </div>
+          {renderChart("ராசி + கோசாரம்", result.rasiChart, result.ascendant.rasiIndex, transitChart)}
+        </div>
+        <div>
+          <div style={{ fontSize: 11, fontWeight: 700, textAlign: "center", marginBottom: 2 }}>நவாம்சம் (D-9)</div>
+          {renderChart("நவாம்சம்", result.navamsaChart, navAsc)}
+        </div>
+      </div>
 
-  return (
-    <>
-      {/* injected above via early return removed */}
-    </>
-  );
-};
 
       {/* Planet positions table - full width below charts */}
       <div style={{ marginTop: 8, fontSize: 11, fontWeight: 700, textAlign: "center", background: "#fbe9d0", padding: "3px 0", border: "1px solid #c9a050" }}>
