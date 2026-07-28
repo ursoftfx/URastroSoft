@@ -1,4 +1,4 @@
-import { JathagamResult, RASIS_TAMIL, NAKSHATRAS_TAMIL, NAKSHATRA_LORDS_TAMIL } from "@/lib/jathagam";
+import { JathagamResult, RASIS_TAMIL, NAKSHATRAS_TAMIL, NAKSHATRA_LORDS_TAMIL, computeJathagam } from "@/lib/jathagam";
 import {
   padamTemple, thithiTemple, yogamTemple, karanamTemple,
   NAVAGRAHA_TEMPLES, THITHI_TEMPLES, YOGAM_TEMPLES, KARANAM_TEMPLES,
@@ -117,7 +117,7 @@ const SI_LAYOUT: (number | null)[][] = [
   [8, 7, 6, 5],
 ];
 
-const renderChart = (title: string, chart: string[][], ascRasi: number) => (
+const renderChart = (title: string, chart: string[][], ascRasi: number, transitChart?: string[][]) => (
   <table className="w-full" style={{ borderCollapse: "collapse" }}>
     <tbody>
       {SI_LAYOUT.map((row, r) => (
@@ -128,12 +128,18 @@ const renderChart = (title: string, chart: string[][], ascRasi: number) => (
                 return (
                   <td key={c} colSpan={2} rowSpan={2} style={{ border: "1px solid #000", textAlign: "center", verticalAlign: "middle" }}>
                     <div style={{ fontSize: 13, fontWeight: 700 }}>{title}</div>
+                    {transitChart && (
+                      <div style={{ fontSize: 8, fontWeight: 400, color: "#0a6b2c", marginTop: 4, lineHeight: 1.2 }}>
+                        மேல்: ஜென்மம்<br/>கீழ் (பச்சை): கோசாரம்
+                      </div>
+                    )}
                   </td>
                 );
               }
               return null;
             }
             const planets = chart[rasiIdx] || [];
+            const transits = transitChart ? (transitChart[rasiIdx] || []).filter((p) => p !== "ascendant" && p !== "mandi") : [];
             const isLagna = rasiIdx === ascRasi;
             return (
               <td key={c} style={{ position: "relative", border: "1px solid #000", height: 60, width: "25%", verticalAlign: "top" }}>
@@ -143,6 +149,11 @@ const renderChart = (title: string, chart: string[][], ascRasi: number) => (
                 <div style={{ fontSize: 9, padding: 3, lineHeight: 1.3 }}>
                   {planets.map((p) => PLANET_SHORT_TA[p] || p).join(" ")}
                 </div>
+                {transitChart && (
+                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, borderTop: "1px dashed #0a6b2c", background: "#e9f7ee", fontSize: 8, padding: "1px 3px", color: "#0a6b2c", fontWeight: 700, lineHeight: 1.2, minHeight: 12 }}>
+                    {transits.length ? transits.map((p) => PLANET_SHORT_TA[p] || p).join(" ") : "\u00A0"}
+                  </div>
+                )}
               </td>
             );
           })}
@@ -224,6 +235,27 @@ export const OnePageReport = ({ result }: Props) => {
   ];
 
   const yogi = computeYogi(result.sun.longitude, result.moon.longitude);
+
+  // Current gochara (transit) chart for today at birth place
+  let transitChart: string[][] | undefined;
+  let transitDateStr = "";
+  try {
+    const now = new Date();
+    const transit = computeJathagam({
+      name: "gochara",
+      year: now.getFullYear(),
+      month: now.getMonth() + 1,
+      day: now.getDate(),
+      hour: now.getHours(),
+      minute: now.getMinutes(),
+      latitude: i.latitude,
+      longitude: i.longitude,
+      tzOffsetHours: i.tzOffsetHours,
+      placeName: i.placeName,
+    });
+    transitChart = transit.rasiChart;
+    transitDateStr = fmtDate(now);
+  } catch {}
 
   return (
     <>
@@ -338,17 +370,20 @@ export const OnePageReport = ({ result }: Props) => {
         </tbody>
       </table>
 
-      {/* Charts side by side */}
+      {/* Charts side by side (Rasi shows gochara transits outside natal planets) */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginTop: 8 }}>
         <div>
-          <div style={{ fontSize: 11, fontWeight: 700, textAlign: "center", marginBottom: 2 }}>ராசி கட்டம் (D-1)</div>
-          {renderChart("ராசி", result.rasiChart, result.ascendant.rasiIndex)}
+          <div style={{ fontSize: 11, fontWeight: 700, textAlign: "center", marginBottom: 2 }}>
+            ராசி கட்டம் (D-1) + கோசாரம் {transitDateStr && <span style={{ color: "#0a6b2c", fontWeight: 400 }}>({transitDateStr})</span>}
+          </div>
+          {renderChart("ராசி + கோசாரம்", result.rasiChart, result.ascendant.rasiIndex, transitChart)}
         </div>
         <div>
           <div style={{ fontSize: 11, fontWeight: 700, textAlign: "center", marginBottom: 2 }}>நவாம்சம் (D-9)</div>
           {renderChart("நவாம்சம்", result.navamsaChart, navAsc)}
         </div>
       </div>
+
 
       {/* Planet positions table - full width below charts */}
       <div style={{ marginTop: 8, fontSize: 11, fontWeight: 700, textAlign: "center", background: "#fbe9d0", padding: "3px 0", border: "1px solid #c9a050" }}>
