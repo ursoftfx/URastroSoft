@@ -14,7 +14,7 @@ export const AstrologyContentSections = () => {
             ASTRO UR — Free Tamil Astrology Software
           </h2>
           <p className="text-foreground/85 leading-relaxed mb-3">
-            <b>ASTRO UR</b> (also known as <b>ASTRO URS</b> or <b>astroup</b>) is a free, browser-based Tamil astrology software. It is the modern web edition of the popular tool published at{" "}
+            <b>ASTRO UR</b> (also known as <b>ASTRO UR</b> or <b>astroup</b>) is a free, browser-based Tamil astrology software. It is the modern web edition of the popular tool published at{" "}
             <a href="https://astroup.netlify.app/" target="_blank" rel="noopener noreferrer" className="text-maroon-deep underline">astroup.netlify.app</a>{" "}— rebuilt for mobile and A4 printing. No install, no registration, no payment.
           </p>
           <p className="text-foreground/85 leading-relaxed">

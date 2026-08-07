@@ -147,7 +147,7 @@ const Index = () => {
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
             name: "ASTRO UR — Free Tamil Horoscope Generator",
-            alternateName: ["ASTRO URS", "astroup", "Tamil Astrology Software", "Free Jathagam Generator"],
+            alternateName: ["ASTRO UR", "astroup", "Tamil Astrology Software", "Free Jathagam Generator"],
             applicationCategory: "LifestyleApplication",
             applicationSubCategory: "Astrology Software",
             operatingSystem: "Web, Android, iOS, Windows",
@@ -229,7 +229,7 @@ const Index = () => {
               ✦ TAMIL VEDIC ASTROLOGY ✦
             </div>
             <h1 className="font-tamil text-4xl sm:text-5xl md:text-7xl font-bold text-maroon-deep leading-tight">
-              UR<span className="text-gold"> AstroSofts</span>
+              ASTRO<span className="text-gold"> UR</span>
             </h1>
             <p className="font-tamil text-lg md:text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">
               உங்கள் பிறப்பு விவரங்களின் அடிப்படையில் வேத ஜோதிட பாணியில் முழுமையான ஜாதக பலன் பெறுங்கள்
