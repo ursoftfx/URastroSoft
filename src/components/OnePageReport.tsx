@@ -468,9 +468,106 @@ export const OnePageReport = ({ result }: Props) => {
 
     {/* ===== PAGE 3: பரிகார தலங்கள் (Temples) ===== */}
     <TemplesPage result={result} />
+
+    {/* ===== PAGE 4: திசை அடிப்படையிலான கிரக நிலை ===== */}
+    <DirectionPage result={result} />
     </>
   );
 };
+
+// ---------- Page 4: Direction-based planet placement ----------
+const DIRECTIONS = [
+  { key: "north", label: "வடக்கை", rasis: [3, 7, 11] },   // water
+  { key: "west", label: "மேற்கை", rasis: [2, 6, 10] },     // air
+  { key: "east", label: "கிழக்கை", rasis: [0, 4, 8] },     // fire
+  { key: "south", label: "தெற்கை", rasis: [1, 5, 9] },     // earth
+];
+const DIR_ORDER = ["sun", "moon", "mars", "mercury", "jupiter", "venus", "saturn", "rahu", "ketu"];
+
+const DirectionPage = ({ result }: Props) => {
+  const items = DIR_ORDER.map((k) => {
+    const p = result.planets.find((x) => x.key === k)!;
+    return {
+      key: k,
+      name: PLANET_FULL_TA[k] || p.nameTamil,
+      rasi: p.rasiIndex,
+      rasiTa: RASIS_TAMIL[p.rasiIndex],
+      deg: p.longitude - p.rasiIndex * 30,
+      nak: p.nakshatraTamil,
+      pada: p.pada,
+      retro: !!p.retrograde,
+    };
+  });
+
+  const box: React.CSSProperties = {
+    border: "1px solid #333", background: "#fffdf7", padding: "6px 8px",
+    minHeight: "52mm", boxSizing: "border-box",
+  };
+
+  const renderBox = (d: typeof DIRECTIONS[number]) => {
+    const list = items.filter((it) => d.rasis.includes(it.rasi));
+    return (
+      <div style={box}>
+        <div style={{ fontSize: 9, color: "#7a1a2b", letterSpacing: 1, marginBottom: 6 }}>{d.label}</div>
+        {list.length === 0 && <div style={{ fontSize: 9, color: "#999" }}>—</div>}
+        {list.map((it) => (
+          <div key={it.key} style={{ marginBottom: 6 }}>
+            <div style={{ fontSize: 11, fontWeight: 800, color: "#111" }}>
+              {it.name} <span style={{ color: "#7a1a2b", fontWeight: 400 }}>·</span>{" "}
+              <span style={{ color: "#2a4fb5", fontWeight: 700 }}>{it.rasiTa}</span>
+              {it.retro && <span style={{ color: "#b00", fontSize: 9 }}> (வ)</span>}
+            </div>
+            <div style={{ fontSize: 8.5, color: "#555" }}>{dms(it.deg)}</div>
+            <div style={{ fontSize: 8.5, color: "#b0451a" }}>{it.nak} - {it.pada}</div>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  const north = DIRECTIONS[0], west = DIRECTIONS[1], east = DIRECTIONS[2], south = DIRECTIONS[3];
+
+  return (
+    <div className="a4-sheet print-area" style={{ width: "210mm", height: "297mm", padding: "8mm 10mm", margin: "auto", background: "white", color: "#000", fontFamily: "'Latha','Tahoma',sans-serif", boxSizing: "border-box", overflow: "hidden", pageBreakBefore: "always", marginTop: "8mm" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "2px solid #7a1a2b", paddingBottom: 6 }}>
+        <div>
+          <div style={{ fontSize: 18, fontWeight: 800, letterSpacing: 1, color: "#7a1a2b" }}>திசை அடிப்படையிலான கிரக நிலை</div>
+          <div style={{ fontSize: 10, color: "#555" }}>Direction-wise Planetary Positions (Degrees & Nakshatra)</div>
+        </div>
+        <div style={{ textAlign: "right", fontSize: 10, color: "#555" }}>{result.input.name}</div>
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gridTemplateRows: "auto auto auto", gap: "4mm", marginTop: "10mm" }}>
+        <div />
+        {renderBox(north)}
+        <div />
+
+        {renderBox(west)}
+        <div style={{ ...box, border: "1px dashed #d08", textAlign: "center", display: "flex", flexDirection: "column", justifyContent: "center" }}>
+          <div style={{ fontSize: 9, color: "#b0451a" }}>மத்தி</div>
+          <div style={{ fontSize: 16, fontWeight: 800, color: "#2a4fb5" }}>{RASIS_TAMIL[result.ascendant.rasiIndex]}</div>
+          <div style={{ fontSize: 9, color: "#555" }}>லக்னம்</div>
+          <div style={{ fontSize: 8.5, color: "#555", marginTop: 4 }}>{dms(result.ascendant.longitude - result.ascendant.rasiIndex * 30)}</div>
+          <div style={{ fontSize: 8.5, color: "#b0451a" }}>{result.ascendant.nakshatraTamil} - {result.ascendant.pada}</div>
+        </div>
+        {renderBox(east)}
+
+        <div />
+        {renderBox(south)}
+        <div />
+      </div>
+
+      <div style={{ marginTop: "10mm", fontSize: 9, color: "#555", lineHeight: 1.4 }}>
+        <b>குறிப்பு:</b> கிரகங்கள் அமர்ந்துள்ள ராசியின் தத்துவப்படி திசை பிரிக்கப்பட்டுள்ளது — நெருப்பு ராசிகள் (மேஷம், சிம்மம், தனுசு) கிழக்கு; பூமி ராசிகள் (ரிஷபம், கன்னி, மகரம்) தெற்கு; காற்று ராசிகள் (மிதுனம், துலாம், கும்பம்) மேற்கு; நீர் ராசிகள் (கடகம், விருச்சிகம், மீனம்) வடக்கு. ஒவ்வொரு கிரகத்திற்கும் ராசி, பாகை (டிகிரி), நட்சத்திரம் மற்றும் பாதம் காட்டப்பட்டுள்ளது. (வ) = வக்ர கதி.
+      </div>
+
+      <div style={{ marginTop: 6, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 3, color: "#555" }}>
+        © UR ASTRO SOFT — Direction Chart (Page 4/4)
+      </div>
+    </div>
+  );
+};
+
 
 // ---------- Page 2 ----------
 const PLANET_SYMBOL: Record<string, string> = {
