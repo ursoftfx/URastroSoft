@@ -5,7 +5,7 @@ export const SiteFooter = () => {
     <footer className="mt-16 border-t border-gold-deep/30 bg-parchment/60 print:hidden">
       <div className="max-w-6xl mx-auto px-4 py-10 grid gap-8 md:grid-cols-4 text-sm font-tamil">
         <div>
-          <h3 className="font-bold text-maroon-deep mb-3">UR ASTRO SOFT</h3>
+          <h3 className="font-bold text-maroon-deep mb-3">ASTRO UR</h3>
           <p className="text-muted-foreground leading-relaxed">
             இலவச தமிழ் வேத ஜோதிடம் — ஜாதகம், பஞ்சாங்கம், பொருத்தம், தசா-புத்தி கணிப்பு.
           </p>
@@ -42,7 +42,7 @@ export const SiteFooter = () => {
         </div>
       </div>
       <div className="border-t border-gold-deep/20 py-4 text-center text-xs text-muted-foreground font-tamil">
-        © {new Date().getFullYear()} UR ASTRO SOFT. அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.
+        © {new Date().getFullYear()} ASTRO UR. அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.
       </div>
     </footer>
   );

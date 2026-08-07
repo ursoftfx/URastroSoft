@@ -35,7 +35,7 @@ export default function NakshatraKarma() {
         <header className="parchment rounded-2xl p-6 md:p-8 mb-6 text-center">
           <div className="inline-flex items-center gap-2 text-maroon-deep mb-2">
             <Sparkles className="w-5 h-5" />
-            <span className="font-tamil text-sm tracking-wide">UR ASTRO SOFT</span>
+            <span className="font-tamil text-sm tracking-wide">ASTRO UR</span>
             <Sparkles className="w-5 h-5" />
           </div>
           <h1 className="text-2xl md:text-4xl font-bold text-maroon-deep font-tamil">

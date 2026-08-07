@@ -23,8 +23,8 @@ export default defineConfig(({ mode }) => ({
       registerType: "autoUpdate",
       includeAssets: ["favicon.ico", "robots.txt"],
       manifest: {
-        name: "UR ASTRO SOFT — Tamil Jathagam",
-        short_name: "UR ASTRO SOFT",
+        name: "ASTRO UR — Tamil Jathagam",
+        short_name: "ASTRO UR",
         description: "Tamil Vedic horoscope, jathagam, panchangam — works offline.",
         theme_color: "#7a1a2b",
         background_color: "#f5ecd6",

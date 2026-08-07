@@ -11,14 +11,14 @@ export const AstrologyContentSections = () => {
       <section className="max-w-5xl mx-auto px-4 mt-16">
         <div className="parchment rounded-2xl p-6 md:p-8 font-tamil">
           <h2 className="text-2xl md:text-3xl font-bold text-maroon-deep mb-3">
-            UR ASTRO SOFT — Free Tamil Astrology Software
+            ASTRO UR — Free Tamil Astrology Software
           </h2>
           <p className="text-foreground/85 leading-relaxed mb-3">
-            <b>UR ASTRO SOFT</b> (also known as <b>UR ASTRO SOFTS</b> or <b>urastrosoft</b>) is a free, browser-based Tamil astrology software. It is the modern web edition of the popular tool published at{" "}
-            <a href="https://urastrosoft.netlify.app/" target="_blank" rel="noopener noreferrer" className="text-maroon-deep underline">urastrosoft.netlify.app</a>{" "}— rebuilt for mobile and A4 printing. No install, no registration, no payment.
+            <b>ASTRO UR</b> (also known as <b>ASTRO URS</b> or <b>astroup</b>) is a free, browser-based Tamil astrology software. It is the modern web edition of the popular tool published at{" "}
+            <a href="https://astroup.netlify.app/" target="_blank" rel="noopener noreferrer" className="text-maroon-deep underline">astroup.netlify.app</a>{" "}— rebuilt for mobile and A4 printing. No install, no registration, no payment.
           </p>
           <p className="text-foreground/85 leading-relaxed">
-            Use UR ASTRO SOFT online to generate full Tamil jathagam with rasi & navamsa kattam, 27 nakshatra, lagna, Vimsottari dasha-bhukti, panchangam (tithi, yoga, karana, nalikai), thirumana porutham (10 matching), Chevvai / Rahu-Kethu dosha analysis, and a one-page A4 printable PDF — all in Tamil &amp; English.
+            Use ASTRO UR online to generate full Tamil jathagam with rasi & navamsa kattam, 27 nakshatra, lagna, Vimsottari dasha-bhukti, panchangam (tithi, yoga, karana, nalikai), thirumana porutham (10 matching), Chevvai / Rahu-Kethu dosha analysis, and a one-page A4 printable PDF — all in Tamil &amp; English.
           </p>
           <div className="grid sm:grid-cols-2 gap-2 text-sm text-foreground/80 mt-4">
             <div>✓ Free Tamil astrology software online</div>
@@ -44,10 +44,10 @@ export const AstrologyContentSections = () => {
           />
           <div className="p-6 md:p-10 font-tamil">
             <h2 className="text-2xl md:text-3xl font-bold text-maroon-deep mb-3">
-              தமிழ் ஜோதிட வழிகாட்டி — UR ASTRO SOFT
+              தமிழ் ஜோதிட வழிகாட்டி — ASTRO UR
             </h2>
             <p className="text-foreground/85 leading-relaxed mb-3">
-              UR ASTRO SOFT என்பது பாரம்பரிய வேத ஜோதிடத்தை எளிய தமிழில் வழங்கும் இலவச இணையதளம். உங்கள் பிறந்த தேதி, நேரம், ஊர் கொடுத்தால் — ராசி, நட்சத்திரம், லக்னம், ராசி-நவாம்ச கட்டம், விம்ஷோத்தரி தசா-புத்தி, பஞ்சாங்கம், திருமண பொருத்தம் உள்ளிட்ட முழுமையான ஜாதகத்தை A4 அச்சிடும் வடிவில் பெறலாம். எந்த பதிவும் தேவையில்லை, எந்த கட்டணமும் இல்லை.
+              ASTRO UR என்பது பாரம்பரிய வேத ஜோதிடத்தை எளிய தமிழில் வழங்கும் இலவச இணையதளம். உங்கள் பிறந்த தேதி, நேரம், ஊர் கொடுத்தால் — ராசி, நட்சத்திரம், லக்னம், ராசி-நவாம்ச கட்டம், விம்ஷோத்தரி தசா-புத்தி, பஞ்சாங்கம், திருமண பொருத்தம் உள்ளிட்ட முழுமையான ஜாதகத்தை A4 அச்சிடும் வடிவில் பெறலாம். எந்த பதிவும் தேவையில்லை, எந்த கட்டணமும் இல்லை.
             </p>
             <p className="text-foreground/85 leading-relaxed">
               ஜோதிடம் என்பது வானியல், கணிதம், காலக் கணிப்பு ஆகியவற்றின் கலவையால் உருவான ஆயிரக்கணக்கான ஆண்டுகள் பழமையான அறிவியல். கிரகங்களின் நிலை, நட்சத்திர பாதை, ராசி கூறு ஆகியவை மனிதனின் குணம், திறமை, தொழில், திருமணம், ஆரோக்கியம் பற்றிய நுட்பமான தகவல்களை வெளிப்படுத்துகின்றன. எங்கள் இலவச கருவிகள் இந்த பாரம்பரிய அறிவை அனைவருக்கும் எளிமையாக்குகின்றன.
@@ -171,7 +171,7 @@ export const AstrologyContentSections = () => {
           <h2 className="text-2xl font-bold text-maroon-deep mb-4">அடிக்கடி கேட்கப்படும் கேள்விகள்</h2>
           <div className="space-y-4">
             <div>
-              <h3 className="font-bold text-maroon-deep">UR ASTRO SOFT பயன்படுத்த கட்டணம் உண்டா?</h3>
+              <h3 className="font-bold text-maroon-deep">ASTRO UR பயன்படுத்த கட்டணம் உண்டா?</h3>
               <p className="text-sm text-foreground/80 mt-1">இல்லை. ஜாதகம், பொருத்தம், பஞ்சாங்கம் உள்ளிட்ட எல்லா கருவிகளும் முற்றிலும் இலவசம். பதிவு செய்ய தேவையில்லை.</p>
             </div>
             <div>

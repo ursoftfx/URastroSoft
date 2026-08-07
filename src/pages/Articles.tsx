@@ -14,7 +14,7 @@ export const ArticlesList = () => {
           jsonLd={{
             "@context": "https://schema.org",
             "@type": "Blog",
-            name: "UR ASTRO SOFT — Tamil Astrology Articles",
+            name: "ASTRO UR — Tamil Astrology Articles",
             url: "https://kanagadara.lovable.app/articles",
             inLanguage: "ta",
           }}
@@ -71,7 +71,7 @@ export const ArticleDetail = () => {
     <>
       <main className="min-h-screen max-w-3xl mx-auto px-4 py-10">
         <SEO
-          title={`${article.title} | UR ASTRO SOFT`}
+          title={`${article.title} | ASTRO UR`}
           description={article.excerpt}
           canonical={`https://kanagadara.lovable.app/articles/${article.slug}`}
           jsonLd={{
@@ -81,8 +81,8 @@ export const ArticleDetail = () => {
             description: article.excerpt,
             datePublished: article.date,
             inLanguage: "ta",
-            author: { "@type": "Organization", name: "UR ASTRO SOFT" },
-            publisher: { "@type": "Organization", name: "UR ASTRO SOFT" },
+            author: { "@type": "Organization", name: "ASTRO UR" },
+            publisher: { "@type": "Organization", name: "ASTRO UR" },
             mainEntityOfPage: `https://kanagadara.lovable.app/articles/${article.slug}`,
           }}
         />

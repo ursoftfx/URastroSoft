@@ -243,7 +243,7 @@ export const JenanaKurippu = ({ result }: Props) => {
       </div>
 
       <div style={{ textAlign: "center", marginTop: 18, fontSize: 11, color: "#7a1a2b", fontWeight: 700, borderTop: "1px solid #7a1a2b", paddingTop: 8 }}>
-        UR ASTRO SOFT — தமிழ் வேத ஜோதிட ஜாதகம்
+        ASTRO UR — தமிழ் வேத ஜோதிட ஜாதகம்
       </div>
     </div>
   );

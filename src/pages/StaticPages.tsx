@@ -31,13 +31,13 @@ const Shell = ({
 
 export const About = () => (
   <Shell
-    title="எங்களை பற்றி | About UR ASTRO SOFT"
-    description="UR ASTRO SOFT — இலவச தமிழ் வேத ஜோதிட இணையதளம். எங்களின் நோக்கம், கணிப்பு முறை மற்றும் சேவைகள் பற்றிய தகவல்."
+    title="எங்களை பற்றி | About ASTRO UR"
+    description="ASTRO UR — இலவச தமிழ் வேத ஜோதிட இணையதளம். எங்களின் நோக்கம், கணிப்பு முறை மற்றும் சேவைகள் பற்றிய தகவல்."
     canonical="https://kanagadara.lovable.app/about"
   >
     <h1 className="text-3xl font-bold text-maroon-deep mb-4">எங்களை பற்றி</h1>
     <p className="mb-4">
-      UR ASTRO SOFT என்பது தமிழ் மக்களுக்காக உருவாக்கப்பட்ட இலவச வேத ஜோதிட இணையதளம். எங்களின் நோக்கம் — பாரம்பரிய ஜோதிட அறிவை எளிய தமிழில், எவரும் புரிந்து கொள்ளக்கூடிய வகையில், எந்த கட்டணமும் இல்லாமல் வழங்குவதாகும்.
+      ASTRO UR என்பது தமிழ் மக்களுக்காக உருவாக்கப்பட்ட இலவச வேத ஜோதிட இணையதளம். எங்களின் நோக்கம் — பாரம்பரிய ஜோதிட அறிவை எளிய தமிழில், எவரும் புரிந்து கொள்ளக்கூடிய வகையில், எந்த கட்டணமும் இல்லாமல் வழங்குவதாகும்.
     </p>
     <h2 className="text-xl font-bold text-maroon-deep mt-6 mb-2">எங்கள் சேவைகள்</h2>
     <ul className="list-disc pl-6 space-y-1">
@@ -53,15 +53,15 @@ export const About = () => (
     </p>
     <h2 className="text-xl font-bold text-maroon-deep mt-6 mb-2">நோக்கம்</h2>
     <p>
-      ஜோதிடம் என்பது வழிகாட்டி — விதியின் கட்டளை அல்ல. தனிப்பட்ட சவால்களை அறிந்து தயாராக இருக்கவும், சாதகமான காலங்களில் முக்கிய முடிவுகள் எடுக்கவும் இது உதவும் ஒரு கருவி. UR ASTRO SOFT இதை மக்களுக்கு அன்பளிப்பாக வழங்குகிறது.
+      ஜோதிடம் என்பது வழிகாட்டி — விதியின் கட்டளை அல்ல. தனிப்பட்ட சவால்களை அறிந்து தயாராக இருக்கவும், சாதகமான காலங்களில் முக்கிய முடிவுகள் எடுக்கவும் இது உதவும் ஒரு கருவி. ASTRO UR இதை மக்களுக்கு அன்பளிப்பாக வழங்குகிறது.
     </p>
   </Shell>
 );
 
 export const Contact = () => (
   <Shell
-    title="தொடர்பு | Contact UR ASTRO SOFT"
-    description="UR ASTRO SOFT — ஜோதிட ஆலோசனை, கருத்து, தொழில்நுட்ப ஆதரவுக்கு எங்களை தொடர்பு கொள்ள."
+    title="தொடர்பு | Contact ASTRO UR"
+    description="ASTRO UR — ஜோதிட ஆலோசனை, கருத்து, தொழில்நுட்ப ஆதரவுக்கு எங்களை தொடர்பு கொள்ள."
     canonical="https://kanagadara.lovable.app/contact"
   >
     <h1 className="text-3xl font-bold text-maroon-deep mb-4">தொடர்பு கொள்ள</h1>
@@ -83,7 +83,7 @@ export const Contact = () => (
 export const PrivacyPolicy = () => (
   <Shell
     title="தனியுரிமை கொள்கை | Privacy Policy"
-    description="UR ASTRO SOFT தனியுரிமை கொள்கை — தரவு சேகரிப்பு, பயன்பாடு, குக்கீ, மூன்றாம் தரப்பு சேவைகள் பற்றிய விளக்கம்."
+    description="ASTRO UR தனியுரிமை கொள்கை — தரவு சேகரிப்பு, பயன்பாடு, குக்கீ, மூன்றாம் தரப்பு சேவைகள் பற்றிய விளக்கம்."
     canonical="https://kanagadara.lovable.app/privacy-policy"
   >
     <h1 className="text-3xl font-bold text-maroon-deep mb-4">தனியுரிமை கொள்கை</h1>
@@ -124,7 +124,7 @@ export const PrivacyPolicy = () => (
 export const Terms = () => (
   <Shell
     title="பயன்பாட்டு நிபந்தனைகள் | Terms of Service"
-    description="UR ASTRO SOFT பயன்பாட்டு நிபந்தனைகள் — சேவை விதிமுறைகள், பொறுப்புத்துறப்பு மற்றும் பயனர் கடமைகள்."
+    description="ASTRO UR பயன்பாட்டு நிபந்தனைகள் — சேவை விதிமுறைகள், பொறுப்புத்துறப்பு மற்றும் பயனர் கடமைகள்."
     canonical="https://kanagadara.lovable.app/terms"
   >
     <h1 className="text-3xl font-bold text-maroon-deep mb-4">பயன்பாட்டு நிபந்தனைகள்</h1>
@@ -132,7 +132,7 @@ export const Terms = () => (
 
     <h2 className="text-xl font-bold text-maroon-deep mt-4 mb-2">1. சேவை</h2>
     <p className="mb-3">
-      UR ASTRO SOFT இலவச ஜோதிட கணிப்பு கருவிகள் மற்றும் கல்வி தொடர்பான கட்டுரைகளை வழங்குகிறது. இந்த தளத்தை பயன்படுத்துவதன் மூலம் இங்குள்ள நிபந்தனைகளை நீங்கள் ஏற்றுக்கொள்கிறீர்கள்.
+      ASTRO UR இலவச ஜோதிட கணிப்பு கருவிகள் மற்றும் கல்வி தொடர்பான கட்டுரைகளை வழங்குகிறது. இந்த தளத்தை பயன்படுத்துவதன் மூலம் இங்குள்ள நிபந்தனைகளை நீங்கள் ஏற்றுக்கொள்கிறீர்கள்.
     </p>
 
     <h2 className="text-xl font-bold text-maroon-deep mt-4 mb-2">2. பொறுப்புத்துறப்பு</h2>
@@ -149,12 +149,12 @@ export const Terms = () => (
 
     <h2 className="text-xl font-bold text-maroon-deep mt-4 mb-2">4. அறிவுசார் சொத்து</h2>
     <p className="mb-3">
-      இந்த தளத்தின் அனைத்து உள்ளடக்கம், வடிவமைப்பு, லோகோ — UR ASTRO SOFT-க்கு சொந்தமானது. தனிப்பட்ட பயன்பாட்டிற்கு மட்டுமே அனுமதிக்கப்படுகிறது.
+      இந்த தளத்தின் அனைத்து உள்ளடக்கம், வடிவமைப்பு, லோகோ — ASTRO UR-க்கு சொந்தமானது. தனிப்பட்ட பயன்பாட்டிற்கு மட்டுமே அனுமதிக்கப்படுகிறது.
     </p>
 
     <h2 className="text-xl font-bold text-maroon-deep mt-4 mb-2">5. பொறுப்பு வரம்பு</h2>
     <p>
-      ஜோதிட பலன்களின் அடிப்படையில் எடுக்கும் முடிவுகளுக்கு UR ASTRO SOFT பொறுப்பல்ல. தளம் "as is" அடிப்படையில் வழங்கப்படுகிறது.
+      ஜோதிட பலன்களின் அடிப்படையில் எடுக்கும் முடிவுகளுக்கு ASTRO UR பொறுப்பல்ல. தளம் "as is" அடிப்படையில் வழங்கப்படுகிறது.
     </p>
   </Shell>
 );
@@ -162,12 +162,12 @@ export const Terms = () => (
 export const Disclaimer = () => (
   <Shell
     title="பொறுப்புத்துறப்பு | Astrology Disclaimer"
-    description="UR ASTRO SOFT — ஜோதிட பலன்கள் கல்வி நோக்கம் மட்டுமே என்ற பொறுப்புத்துறப்பு."
+    description="ASTRO UR — ஜோதிட பலன்கள் கல்வி நோக்கம் மட்டுமே என்ற பொறுப்புத்துறப்பு."
     canonical="https://kanagadara.lovable.app/disclaimer"
   >
     <h1 className="text-3xl font-bold text-maroon-deep mb-4">பொறுப்புத்துறப்பு</h1>
     <p className="mb-4">
-      UR ASTRO SOFT வழங்கும் அனைத்து ஜோதிட கணிப்புகள், கட்டுரைகள் மற்றும் பலன்கள் — <strong>கல்வி, தகவல் மற்றும் கலாச்சார நோக்கங்களுக்காக மட்டுமே</strong>. இதை ஒரு வழிகாட்டியாக கருதவேண்டுமே தவிர, விதியின் இறுதி தீர்ப்பாக அல்ல.
+      ASTRO UR வழங்கும் அனைத்து ஜோதிட கணிப்புகள், கட்டுரைகள் மற்றும் பலன்கள் — <strong>கல்வி, தகவல் மற்றும் கலாச்சார நோக்கங்களுக்காக மட்டுமே</strong>. இதை ஒரு வழிகாட்டியாக கருதவேண்டுமே தவிர, விதியின் இறுதி தீர்ப்பாக அல்ல.
     </p>
 
     <h2 className="text-xl font-bold text-maroon-deep mt-6 mb-2">மருத்துவ ஆலோசனை அல்ல</h2>
@@ -187,7 +187,7 @@ export const Disclaimer = () => (
 
     <h2 className="text-xl font-bold text-maroon-deep mt-6 mb-2">உங்கள் பொறுப்பு</h2>
     <p>
-      உங்கள் வாழ்க்கை முடிவுகள் முழுமையாக உங்களுடையதே. UR ASTRO SOFT வழங்கும் தகவல்களின் அடிப்படையில் எடுக்கும் எந்த நடவடிக்கைக்கும் தளம் பொறுப்பேற்காது.
+      உங்கள் வாழ்க்கை முடிவுகள் முழுமையாக உங்களுடையதே. ASTRO UR வழங்கும் தகவல்களின் அடிப்படையில் எடுக்கும் எந்த நடவடிக்கைக்கும் தளம் பொறுப்பேற்காது.
     </p>
   </Shell>
 );
