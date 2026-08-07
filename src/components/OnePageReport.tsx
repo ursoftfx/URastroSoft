@@ -477,10 +477,10 @@ export const OnePageReport = ({ result }: Props) => {
 
 // ---------- Page 4: Direction-based planet placement ----------
 const DIRECTIONS = [
-  { key: "north", label: "வடக்கை", rasis: [3, 7, 11] },   // water
-  { key: "west", label: "மேற்கை", rasis: [2, 6, 10] },     // air
-  { key: "east", label: "கிழக்கை", rasis: [0, 4, 8] },     // fire
-  { key: "south", label: "தெற்கை", rasis: [1, 5, 9] },     // earth
+  { key: "north", label: "வடக்கை", rasis: [3, 7, 11], flow: "down" as const },   // water
+  { key: "west", label: "மேற்கை", rasis: [2, 6, 10], flow: "up" as const },      // air
+  { key: "east", label: "கிழக்கை", rasis: [0, 4, 8], flow: "down" as const },    // fire
+  { key: "south", label: "தெற்கை", rasis: [1, 5, 9], flow: "up" as const },      // earth
 ];
 const DIR_ORDER = ["sun", "moon", "mars", "mercury", "jupiter", "venus", "saturn", "rahu", "ketu"];
 
@@ -505,22 +505,33 @@ const DirectionPage = ({ result }: Props) => {
   };
 
   const renderBox = (d: typeof DIRECTIONS[number]) => {
-    const list = items.filter((it) => d.rasis.includes(it.rasi));
+    // order by பாகை (degree within rasi): 0 → 30 in the direction of flow
+    const list = items
+      .filter((it) => d.rasis.includes(it.rasi))
+      .sort((a, b) => (d.flow === "down" ? a.deg - b.deg : b.deg - a.deg));
+    const scale = d.flow === "down" ? ["0°", "↓", "30°"] : ["30°", "↑", "0°"];
     return (
-      <div style={box}>
-        <div style={{ fontSize: 9, color: "#7a1a2b", letterSpacing: 1, marginBottom: 6 }}>{d.label}</div>
-        {list.length === 0 && <div style={{ fontSize: 9, color: "#999" }}>—</div>}
-        {list.map((it) => (
-          <div key={it.key} style={{ marginBottom: 6 }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: "#111" }}>
-              {it.name} <span style={{ color: "#7a1a2b", fontWeight: 400 }}>·</span>{" "}
-              <span style={{ color: "#2a4fb5", fontWeight: 700 }}>{it.rasiTa}</span>
-              {it.retro && <span style={{ color: "#b00", fontSize: 9 }}> (வ)</span>}
+      <div style={{ display: "flex", gap: 3, alignItems: "stretch" }}>
+        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center", fontSize: 8, color: "#b0451a", fontWeight: 700, padding: "2px 0" }}>
+          <span>{scale[0]}</span>
+          <span style={{ fontSize: 11 }}>{scale[1]}</span>
+          <span>{scale[2]}</span>
+        </div>
+        <div style={{ ...box, flex: 1 }}>
+          <div style={{ fontSize: 9, color: "#7a1a2b", letterSpacing: 1, marginBottom: 6 }}>{d.label}</div>
+          {list.length === 0 && <div style={{ fontSize: 9, color: "#999" }}>—</div>}
+          {list.map((it) => (
+            <div key={it.key} style={{ marginBottom: 6 }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: "#111" }}>
+                {it.name} <span style={{ color: "#7a1a2b", fontWeight: 400 }}>·</span>{" "}
+                <span style={{ color: "#2a4fb5", fontWeight: 700 }}>{it.rasiTa}</span>
+                {it.retro && <span style={{ color: "#b00", fontSize: 9 }}> (வ)</span>}
+              </div>
+              <div style={{ fontSize: 8.5, color: "#555" }}>{dms(it.deg)}</div>
+              <div style={{ fontSize: 8.5, color: "#b0451a" }}>{it.nak} - {it.pada}</div>
             </div>
-            <div style={{ fontSize: 8.5, color: "#555" }}>{dms(it.deg)}</div>
-            <div style={{ fontSize: 8.5, color: "#b0451a" }}>{it.nak} - {it.pada}</div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     );
   };
@@ -558,7 +569,7 @@ const DirectionPage = ({ result }: Props) => {
       </div>
 
       <div style={{ marginTop: "10mm", fontSize: 9, color: "#555", lineHeight: 1.4 }}>
-        <b>குறிப்பு:</b> கிரகங்கள் அமர்ந்துள்ள ராசியின் தத்துவப்படி திசை பிரிக்கப்பட்டுள்ளது — நெருப்பு ராசிகள் (மேஷம், சிம்மம், தனுசு) கிழக்கு; பூமி ராசிகள் (ரிஷபம், கன்னி, மகரம்) தெற்கு; காற்று ராசிகள் (மிதுனம், துலாம், கும்பம்) மேற்கு; நீர் ராசிகள் (கடகம், விருச்சிகம், மீனம்) வடக்கு. ஒவ்வொரு கிரகத்திற்கும் ராசி, பாகை (டிகிரி), நட்சத்திரம் மற்றும் பாதம் காட்டப்பட்டுள்ளது. (வ) = வக்ர கதி.
+        <b>குறிப்பு:</b> கிரகங்கள் அமர்ந்துள்ள ராசியின் தத்துவப்படி திசை பிரிக்கப்பட்டுள்ளது — நெருப்பு ராசிகள் (மேஷம், சிம்மம், தனுசு) கிழக்கு; பூமி ராசிகள் (ரிஷபம், கன்னி, மகரம்) தெற்கு; காற்று ராசிகள் (மிதுனம், துலாம், கும்பம்) மேற்கு; நீர் ராசிகள் (கடகம், விருச்சிகம், மீனம்) வடக்கு. ஒவ்வொரு பெட்டியிலும் கிரகங்கள் <b>பாகை (0° → 30°)</b> வரிசைப்படி அடுக்கப்பட்டுள்ளன — வடக்கு &amp; கிழக்கு பெட்டிகளில் மேலிருந்து கீழ் (0°↓30°), மேற்கு &amp; தெற்கு பெட்டிகளில் கீழிருந்து மேல் (0°↑30°). (வ) = வக்ர கதி.
       </div>
 
       <div style={{ marginTop: 6, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 3, color: "#555" }}>
