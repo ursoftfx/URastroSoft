@@ -962,7 +962,7 @@ const TemplesPage = ({ result }: Props) => {
         <b>குறிப்பு:</b> நட்சத்திர பாத தலம் — அந்த பாதத்தின் நவாம்ச அதிபதி கிரகத்தின் பரிகார ஸ்தலம். மஞ்சள் நிற வரிசைகள் உங்களுக்கு உரிய தலங்களைக் காட்டுகின்றன. திதி/யோகம்/கரணம் தலங்கள் நித்ய தேவி மற்றும் பாரம்பரிய தமிழ் பரிகார ஸ்தலம் அடிப்படையில்.
       </div>
       <div style={{ marginTop: 4, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 3, color: "#555" }}>
-        © UR ASTRO SOFT — Parihara Sthalam Reference (Page 3/3)
+        © UR ASTRO SOFT — Parihara Sthalam Reference (Page 3/4)
       </div>
     </div>
   );
