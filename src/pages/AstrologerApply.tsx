@@ -73,7 +73,7 @@ const AstrologerApply = () => {
 
   return (
     <main className="min-h-screen px-4 py-8 max-w-2xl mx-auto">
-      <SEO title="ஜோதிடராக சேர | URASTROTALK" description="URASTROTALK இல் ஜோதிடராக பதிவு செய்யுங்கள்" noIndex />
+      <SEO title="ஜோதிடராக சேர | ASTRO UR TALK" description="ASTRO UR TALK இல் ஜோதிடராக பதிவு செய்யுங்கள்" noIndex />
       <Link to="/astrologers" className="inline-flex items-center text-sm font-tamil text-maroon-deep mb-4">
         <ArrowLeft className="w-4 h-4 mr-1" /> பின் செல்
       </Link>

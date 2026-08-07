@@ -139,15 +139,15 @@ const Index = () => {
     <>
     <main className="min-h-screen relative">
       <SEO
-        title="UR ASTRO SOFT — Free Tamil Horoscope Generator & Astrologer Chat"
+        title="ASTRO UR — Free Tamil Horoscope Generator & Astrologer Chat"
         description="Generate free Tamil horoscope (jathagam) online instantly — rasi, nakshatra, lagna, navamsa, dasha, panchangam. Free astrologer chat & predictions. தமிழ் ஜோதிடம்."
-        keywords="free horoscope, tamil horoscope, free jathagam, horoscope generator, free astrology chat, astrologer chat free, tamil astrology, online jathagam, rasi palan, nakshatra, lagna, navamsa, dasha bhukti, panchangam, thirumana porutham, bhrigu nandi nadi, gochara palan, free kundli tamil, urastrosoft, UR ASTRO SOFT, இலவச ஜாதகம், தமிழ் ஜோதிடம், ஜாதக பலன், ஜோசியர் chat"
+        keywords="free horoscope, tamil horoscope, free jathagam, horoscope generator, free astrology chat, astrologer chat free, tamil astrology, online jathagam, rasi palan, nakshatra, lagna, navamsa, dasha bhukti, panchangam, thirumana porutham, bhrigu nandi nadi, gochara palan, free kundli tamil, astroup, ASTRO UR, இலவச ஜாதகம், தமிழ் ஜோதிடம், ஜாதக பலன், ஜோசியர் chat"
         jsonLd={[
           {
             "@context": "https://schema.org",
             "@type": "SoftwareApplication",
-            name: "UR ASTRO SOFT — Free Tamil Horoscope Generator",
-            alternateName: ["UR ASTRO SOFTS", "urastrosoft", "Tamil Astrology Software", "Free Jathagam Generator"],
+            name: "ASTRO UR — Free Tamil Horoscope Generator",
+            alternateName: ["ASTRO UR", "astroup", "Tamil Astrology Software", "Free Jathagam Generator"],
             applicationCategory: "LifestyleApplication",
             applicationSubCategory: "Astrology Software",
             operatingSystem: "Web, Android, iOS, Windows",
@@ -163,7 +163,7 @@ const Index = () => {
               "Free astrologer chat & consultation",
               "A4 / A5 printable PDF reports",
             ],
-            sameAs: ["https://urastrosoft.netlify.app/", "https://kanagadara.lovable.app/"],
+            sameAs: ["https://astroup.netlify.app/", "https://kanagadara.lovable.app/"],
             url: typeof window !== "undefined" ? window.location.origin : "",
           },
           {
@@ -173,17 +173,17 @@ const Index = () => {
             serviceType: "Vedic Astrology / Jathagam",
             areaServed: ["IN", "Worldwide"],
             audience: { "@type": "Audience", audienceType: "Tamil speakers, astrology seekers" },
-            provider: { "@type": "Organization", name: "UR ASTRO SOFT", url: "https://kanagadara.lovable.app/" },
+            provider: { "@type": "Organization", name: "ASTRO UR", url: "https://kanagadara.lovable.app/" },
             offers: { "@type": "Offer", price: "0", priceCurrency: "INR", availability: "https://schema.org/InStock" },
             description: "Generate an accurate Tamil horoscope (jathagam) free online using birth date, time and place — rasi, nakshatra, lagna, navamsa, dasha-bhukti and AI predictions.",
           },
           {
             "@context": "https://schema.org",
             "@type": "Service",
-            name: "Free Astrologer Chat & Consultation (URASTROTALK)",
+            name: "Free Astrologer Chat & Consultation (ASTRO UR TALK)",
             serviceType: "Astrology Consultation",
             areaServed: ["IN", "Worldwide"],
-            provider: { "@type": "Organization", name: "UR ASTRO SOFT", url: "https://kanagadara.lovable.app/astrologers" },
+            provider: { "@type": "Organization", name: "ASTRO UR", url: "https://kanagadara.lovable.app/astrologers" },
             offers: { "@type": "Offer", price: "0", priceCurrency: "INR", availability: "https://schema.org/InStock" },
             description: "Chat free with verified Tamil astrologers — ask horoscope questions, marriage match, career, dasha, dosham remedies via text or WhatsApp voice call.",
           },
@@ -191,8 +191,8 @@ const Index = () => {
             "@context": "https://schema.org",
             "@type": "FAQPage",
             mainEntity: [
-              { "@type": "Question", name: "Is the Tamil horoscope generator really free?", acceptedAnswer: { "@type": "Answer", text: "Yes. UR ASTRO SOFT generates complete Tamil horoscope reports — rasi, nakshatra, lagna, navamsa, dasha, panchangam — 100% free." } },
-              { "@type": "Question", name: "Can I chat with an astrologer for free?", acceptedAnswer: { "@type": "Answer", text: "Yes. Register with your phone number, browse approved astrologers in URASTROTALK and send your question free; astrologers reply via chat or WhatsApp voice call." } },
+              { "@type": "Question", name: "Is the Tamil horoscope generator really free?", acceptedAnswer: { "@type": "Answer", text: "Yes. ASTRO UR generates complete Tamil horoscope reports — rasi, nakshatra, lagna, navamsa, dasha, panchangam — 100% free." } },
+              { "@type": "Question", name: "Can I chat with an astrologer for free?", acceptedAnswer: { "@type": "Answer", text: "Yes. Register with your phone number, browse approved astrologers in ASTRO UR TALK and send your question free; astrologers reply via chat or WhatsApp voice call." } },
               { "@type": "Question", name: "What details are needed to generate a horoscope?", acceptedAnswer: { "@type": "Answer", text: "Date of birth, exact time of birth and place of birth (city) are required. Approximate time still gives accurate rasi and nakshatra." } },
               { "@type": "Question", name: "Can I download the horoscope as PDF?", acceptedAnswer: { "@type": "Answer", text: "Yes. Reports can be downloaded as A4 or A5 (portrait/landscape) PDFs and printed." } },
               { "@type": "Question", name: "Does it support Bhrigu Nandi Nadi predictions?", acceptedAnswer: { "@type": "Answer", text: "Yes — the BNN page shows step-by-step rules, neecham/ucham tables and a plus-shape planet layout for prediction." } },
@@ -201,7 +201,7 @@ const Index = () => {
           {
             "@context": "https://schema.org",
             "@type": "WebSite",
-            name: "UR ASTRO SOFT",
+            name: "ASTRO UR",
             url: "https://kanagadara.lovable.app/",
             potentialAction: {
               "@type": "SearchAction",
@@ -229,7 +229,7 @@ const Index = () => {
               ✦ TAMIL VEDIC ASTROLOGY ✦
             </div>
             <h1 className="font-tamil text-4xl sm:text-5xl md:text-7xl font-bold text-maroon-deep leading-tight">
-              UR<span className="text-gold"> AstroSofts</span>
+              ASTRO<span className="text-gold"> UR</span>
             </h1>
             <p className="font-tamil text-lg md:text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">
               உங்கள் பிறப்பு விவரங்களின் அடிப்படையில் வேத ஜோதிட பாணியில் முழுமையான ஜாதக பலன் பெறுங்கள்
@@ -249,7 +249,7 @@ const Index = () => {
               <span className="text-gold-deep">•</span>
               <Link to="/nakshatra-karma" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">108 நட்சத்திர கர்மம்</Link>
               <span className="text-gold-deep">•</span>
-              <Link to="/astrologers" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline font-bold">URASTROTALK</Link>
+              <Link to="/astrologers" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline font-bold">ASTRO UR TALK</Link>
               <span className="text-gold-deep">•</span>
               <Link to="/my-consultations" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">என் கேள்விகள்</Link>
               <span className="text-gold-deep">•</span>

@@ -157,7 +157,7 @@ export const DashaA4Pages = ({ result }: Props) => {
               color: "#555",
             }}
           >
-            விம்சோத்தரி தசா • © UR ASTRO SOFT
+            விம்சோத்தரி தசா • © ASTRO UR
           </div>
         </div>
       ))}

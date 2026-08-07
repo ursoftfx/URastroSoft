@@ -52,7 +52,7 @@ const AstrologerDetail = () => {
     toast.success("கேள்வி அனுப்பப்பட்டது");
     nav(`/my-consultations`);
     if (mode === "voice" && a?.contact_whatsapp) {
-      const msg = encodeURIComponent(`Hi ${a.display_name}, I just booked a voice consultation on URASTROTALK. Subject: ${subject}`);
+      const msg = encodeURIComponent(`Hi ${a.display_name}, I just booked a voice consultation on ASTRO UR TALK. Subject: ${subject}`);
       window.open(`https://wa.me/${a.contact_whatsapp.replace(/\D/g, "")}?text=${msg}`, "_blank");
     }
   };
@@ -61,7 +61,7 @@ const AstrologerDetail = () => {
 
   return (
     <main className="min-h-screen px-4 py-8 max-w-3xl mx-auto">
-      <SEO title={`${a.display_name} | URASTROTALK ஜோதிடர்`} description={a.bio?.slice(0, 150) || `Consult ${a.display_name}`} />
+      <SEO title={`${a.display_name} | ASTRO UR TALK ஜோதிடர்`} description={a.bio?.slice(0, 150) || `Consult ${a.display_name}`} />
       <Link to="/astrologers" className="inline-flex items-center text-sm font-tamil text-maroon-deep mb-4">
         <ArrowLeft className="w-4 h-4 mr-1" /> ஜோதிடர் பட்டியல்
       </Link>

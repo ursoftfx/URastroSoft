@@ -24,7 +24,7 @@ interface Props {
 }
 
 const UPI_ID = "udhayaraj24-1@oksbi";
-const UPI_PAYEE = "UR Astro Soft";
+const UPI_PAYEE = "ASTRO UR";
 
 const buildUpiUrl = (amount: number, note: string) =>
   `upi://pay?pa=${encodeURIComponent(UPI_ID)}&pn=${encodeURIComponent(
@@ -121,7 +121,7 @@ export const DownloadReport = ({
   };
 
   const upiLink = priceInRupees
-    ? buildUpiUrl(priceInRupees, `${productLabel} - UR Astro Soft`)
+    ? buildUpiUrl(priceInRupees, `${productLabel} - ASTRO UR`)
     : "";
 
   return (

@@ -265,11 +265,11 @@ export const OnePageReport = ({ result }: Props) => {
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "2px solid #7a1a2b", paddingBottom: 6 }}>
         <div>
-          <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: 1.5, color: "#7a1a2b" }}>UR ASTRO SOFT</div>
+          <div style={{ fontSize: 22, fontWeight: 800, letterSpacing: 1.5, color: "#7a1a2b" }}>ASTRO UR</div>
           <div style={{ fontSize: 11, color: "#555" }}>தமிழ் வேத ஜோதிட ஜாதகம் • Tamil Vedic Horoscope</div>
         </div>
         <div style={{ textAlign: "right", fontSize: 10, color: "#555" }}>
-          <div>www.urastrosoft.com</div>
+          <div>www.astroup.com</div>
           <div>{fmtDate(new Date())}</div>
         </div>
       </div>
@@ -459,7 +459,7 @@ export const OnePageReport = ({ result }: Props) => {
 
       {/* Footer */}
       <div style={{ marginTop: 8, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 4, color: "#555" }}>
-        இது சுத்த திருக்கணித பஞ்சாங்கப்படி கணிக்கப்பெற்ற இலவச ஜாதகம் — © UR ASTRO SOFT
+        இது சுத்த திருக்கணித பஞ்சாங்கப்படி கணிக்கப்பெற்ற இலவச ஜாதகம் — © ASTRO UR
       </div>
     </div>
 
@@ -573,7 +573,7 @@ const DirectionPage = ({ result }: Props) => {
       </div>
 
       <div style={{ marginTop: 6, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 3, color: "#555" }}>
-        © UR ASTRO SOFT — Direction Chart (Page 4/4)
+        © ASTRO UR — Direction Chart (Page 4/4)
       </div>
     </div>
   );
@@ -819,7 +819,7 @@ const PadamAspectPage = ({ result }: Props) => {
       </div>
 
       <div style={{ marginTop: 6, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 4, color: "#555" }}>
-        © UR ASTRO SOFT — Aspect & 108 Padam Location Chart
+        © ASTRO UR — Aspect & 108 Padam Location Chart
       </div>
     </div>
   );
@@ -973,7 +973,7 @@ const TemplesPage = ({ result }: Props) => {
         <b>குறிப்பு:</b> நட்சத்திர பாத தலம் — அந்த பாதத்தின் நவாம்ச அதிபதி கிரகத்தின் பரிகார ஸ்தலம். மஞ்சள் நிற வரிசைகள் உங்களுக்கு உரிய தலங்களைக் காட்டுகின்றன. திதி/யோகம்/கரணம் தலங்கள் நித்ய தேவி மற்றும் பாரம்பரிய தமிழ் பரிகார ஸ்தலம் அடிப்படையில்.
       </div>
       <div style={{ marginTop: 4, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 3, color: "#555" }}>
-        © UR ASTRO SOFT — Parihara Sthalam Reference (Page 3/4)
+        © ASTRO UR — Parihara Sthalam Reference (Page 3/4)
       </div>
     </div>
   );

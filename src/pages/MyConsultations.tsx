@@ -76,7 +76,7 @@ const MyConsultations = ({ asAstrologer = false }: { asAstrologer?: boolean }) =
 
   return (
     <main className="min-h-screen px-4 py-8 max-w-5xl mx-auto">
-      <SEO title={asAstrologer ? "ஜோதிடர் டாஷ்போர்டு" : "என் கேள்விகள்"} description="URASTROTALK consultations" noIndex />
+      <SEO title={asAstrologer ? "ஜோதிடர் டாஷ்போர்டு" : "என் கேள்விகள்"} description="ASTRO UR TALK consultations" noIndex />
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <Link to="/" className="inline-flex items-center text-sm font-tamil text-maroon-deep">
           <ArrowLeft className="w-4 h-4 mr-1" /> முகப்பு
