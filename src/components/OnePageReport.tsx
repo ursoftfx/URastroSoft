@@ -505,22 +505,33 @@ const DirectionPage = ({ result }: Props) => {
   };
 
   const renderBox = (d: typeof DIRECTIONS[number]) => {
-    const list = items.filter((it) => d.rasis.includes(it.rasi));
+    // order by பாகை (degree within rasi): 0 → 30 in the direction of flow
+    const list = items
+      .filter((it) => d.rasis.includes(it.rasi))
+      .sort((a, b) => (d.flow === "down" ? a.deg - b.deg : b.deg - a.deg));
+    const scale = d.flow === "down" ? ["0°", "↓", "30°"] : ["30°", "↑", "0°"];
     return (
-      <div style={box}>
-        <div style={{ fontSize: 9, color: "#7a1a2b", letterSpacing: 1, marginBottom: 6 }}>{d.label}</div>
-        {list.length === 0 && <div style={{ fontSize: 9, color: "#999" }}>—</div>}
-        {list.map((it) => (
-          <div key={it.key} style={{ marginBottom: 6 }}>
-            <div style={{ fontSize: 11, fontWeight: 800, color: "#111" }}>
-              {it.name} <span style={{ color: "#7a1a2b", fontWeight: 400 }}>·</span>{" "}
-              <span style={{ color: "#2a4fb5", fontWeight: 700 }}>{it.rasiTa}</span>
-              {it.retro && <span style={{ color: "#b00", fontSize: 9 }}> (வ)</span>}
+      <div style={{ display: "flex", gap: 3, alignItems: "stretch" }}>
+        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", alignItems: "center", fontSize: 8, color: "#b0451a", fontWeight: 700, padding: "2px 0" }}>
+          <span>{scale[0]}</span>
+          <span style={{ fontSize: 11 }}>{scale[1]}</span>
+          <span>{scale[2]}</span>
+        </div>
+        <div style={{ ...box, flex: 1 }}>
+          <div style={{ fontSize: 9, color: "#7a1a2b", letterSpacing: 1, marginBottom: 6 }}>{d.label}</div>
+          {list.length === 0 && <div style={{ fontSize: 9, color: "#999" }}>—</div>}
+          {list.map((it) => (
+            <div key={it.key} style={{ marginBottom: 6 }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: "#111" }}>
+                {it.name} <span style={{ color: "#7a1a2b", fontWeight: 400 }}>·</span>{" "}
+                <span style={{ color: "#2a4fb5", fontWeight: 700 }}>{it.rasiTa}</span>
+                {it.retro && <span style={{ color: "#b00", fontSize: 9 }}> (வ)</span>}
+              </div>
+              <div style={{ fontSize: 8.5, color: "#555" }}>{dms(it.deg)}</div>
+              <div style={{ fontSize: 8.5, color: "#b0451a" }}>{it.nak} - {it.pada}</div>
             </div>
-            <div style={{ fontSize: 8.5, color: "#555" }}>{dms(it.deg)}</div>
-            <div style={{ fontSize: 8.5, color: "#b0451a" }}>{it.nak} - {it.pada}</div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     );
   };
