@@ -477,10 +477,10 @@ export const OnePageReport = ({ result }: Props) => {
 
 // ---------- Page 4: Direction-based planet placement ----------
 const DIRECTIONS = [
-  { key: "north", label: "வடக்கை", rasis: [3, 7, 11] },   // water
-  { key: "west", label: "மேற்கை", rasis: [2, 6, 10] },     // air
-  { key: "east", label: "கிழக்கை", rasis: [0, 4, 8] },     // fire
-  { key: "south", label: "தெற்கை", rasis: [1, 5, 9] },     // earth
+  { key: "north", label: "வடக்கை", rasis: [3, 7, 11], flow: "down" as const },   // water
+  { key: "west", label: "மேற்கை", rasis: [2, 6, 10], flow: "up" as const },      // air
+  { key: "east", label: "கிழக்கை", rasis: [0, 4, 8], flow: "down" as const },    // fire
+  { key: "south", label: "தெற்கை", rasis: [1, 5, 9], flow: "up" as const },      // earth
 ];
 const DIR_ORDER = ["sun", "moon", "mars", "mercury", "jupiter", "venus", "saturn", "rahu", "ketu"];
 
