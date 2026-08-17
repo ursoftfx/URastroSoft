@@ -236,15 +236,15 @@ const Index = () => {
             <p className="font-tamil text-lg md:text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">
               உங்கள் பிறப்பு விவரங்களின் அடிப்படையில் வேத ஜோதிட பாணியில் முழுமையான ஜாதக பலன் பெறுங்கள்
             </p>
-            <nav aria-label="Main menu" className="mt-8 max-w-xl mx-auto">
+            {!isForm && (<nav aria-label="Main menu" className="mt-8 max-w-xl mx-auto">
               <div className="parchment rounded-xl border-2 border-gold-deep/50 p-3 md:p-5">
                 <div className="font-tamil text-2xl md:text-3xl font-bold text-maroon-deep text-center mb-3 tracking-wide">
                   திருக்கணிதம்
                 </div>
                 <ul className="divide-y divide-gold-deep/30 border-y border-gold-deep/30">
                   {[
-                    { to: "/free-horoscope", label: "ஜாதகம் பதிவு" },
-                    { to: "/birth-horoscope", label: "ஜாதகம் கணிப்பு" },
+                    { to: "/jathagam", label: "ஜாதகம் பதிவு" },
+                    { to: "/jathagam", label: "ஜாதகம் கணிப்பு" },
                     { to: "/porutham", label: "திருமண பொருத்தம்" },
                     { to: "/gochara", label: "தினசரி கோசாரம்" },
                     { to: "/bhrigu-nandi-nadi", label: "பிருகு நந்தி நாடி" },
@@ -280,7 +280,7 @@ const Index = () => {
                   வாழ்க வளமுடன் — ASTRO UR
                 </div>
               </div>
-            </nav>
+            </nav>)}
 
             <div className="temple-divider mt-8 max-w-md mx-auto" />
           </header>
