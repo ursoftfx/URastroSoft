@@ -12,7 +12,7 @@ import { OnePageReport } from "@/components/OnePageReport";
 import { ProfessionalReport } from "@/components/ProfessionalReport";
 import { JenanaKurippu } from "@/components/JenanaKurippu";
 import { supabase } from "@/integrations/supabase/client";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { SiteFooter } from "@/components/SiteFooter";
 import { AstrologyContentSections } from "@/components/AstrologyContentSections";
 import { AnnouncementsBanner } from "@/components/AnnouncementsBanner";
@@ -21,7 +21,9 @@ import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
   const { isAdmin } = useAuth();
+  const isForm = useLocation().pathname === "/jathagam";
   const [result, setResult] = useState<JathagamResult | null>(null);
+
   const [interpretation, setInterpretation] = useState("");
   const [interpretationLoading, setInterpretationLoading] = useState(false);
 
@@ -234,15 +236,15 @@ const Index = () => {
             <p className="font-tamil text-lg md:text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">
               உங்கள் பிறப்பு விவரங்களின் அடிப்படையில் வேத ஜோதிட பாணியில் முழுமையான ஜாதக பலன் பெறுங்கள்
             </p>
-            <nav aria-label="Main menu" className="mt-8 max-w-xl mx-auto">
+            {!isForm && (<nav aria-label="Main menu" className="mt-8 max-w-xl mx-auto">
               <div className="parchment rounded-xl border-2 border-gold-deep/50 p-3 md:p-5">
                 <div className="font-tamil text-2xl md:text-3xl font-bold text-maroon-deep text-center mb-3 tracking-wide">
                   திருக்கணிதம்
                 </div>
                 <ul className="divide-y divide-gold-deep/30 border-y border-gold-deep/30">
                   {[
-                    { to: "/free-horoscope", label: "ஜாதகம் பதிவு" },
-                    { to: "/birth-horoscope", label: "ஜாதகம் கணிப்பு" },
+                    { to: "/jathagam", label: "ஜாதகம் பதிவு" },
+                    { to: "/jathagam", label: "ஜாதகம் கணிப்பு" },
                     { to: "/porutham", label: "திருமண பொருத்தம்" },
                     { to: "/gochara", label: "தினசரி கோசாரம்" },
                     { to: "/bhrigu-nandi-nadi", label: "பிருகு நந்தி நாடி" },
@@ -252,7 +254,7 @@ const Index = () => {
                     { to: "/articles", label: "உதவி — கட்டுரைகள்" },
                     { to: "/about", label: "சுபம்" },
                   ].map((m) => (
-                    <li key={m.to}>
+                    <li key={m.label}>
                       <Link
                         to={m.to}
                         className="group flex items-center justify-center gap-2 py-2 font-tamil text-lg md:text-xl font-bold text-maroon-deep hover:text-gold transition-colors"
@@ -278,7 +280,7 @@ const Index = () => {
                   வாழ்க வளமுடன் — ASTRO UR
                 </div>
               </div>
-            </nav>
+            </nav>)}
 
             <div className="temple-divider mt-8 max-w-md mx-auto" />
           </header>
@@ -292,8 +294,13 @@ const Index = () => {
         )}
 
         {!result ? (
+          isForm ? (
           <div className="max-w-xl mx-auto">
+            <div className="mb-4 no-print">
+              <Link to="/" className="font-tamil text-sm text-maroon-deep hover:text-gold">← முதன்மை பட்டி</Link>
+            </div>
             <BirthForm onSubmit={handleSubmit} />
+
             <div className="mt-8 grid grid-cols-3 gap-4 text-center">
               {[
                 { t: "ராசி & நட்சத்திரம்", s: "துல்லியமான கணிப்பு" },
@@ -307,7 +314,9 @@ const Index = () => {
               ))}
             </div>
           </div>
+          ) : null
         ) : (
+
           <ResultView
             result={result}
             interpretation={interpretation}
