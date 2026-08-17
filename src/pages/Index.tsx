@@ -234,35 +234,52 @@ const Index = () => {
             <p className="font-tamil text-lg md:text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">
               உங்கள் பிறப்பு விவரங்களின் அடிப்படையில் வேத ஜோதிட பாணியில் முழுமையான ஜாதக பலன் பெறுங்கள்
             </p>
-            <nav aria-label="Quick links" className="flex flex-wrap justify-center gap-x-3 gap-y-2 mt-6 text-sm font-tamil">
-              <Link to="/free-horoscope" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">இலவச ஜாதகம்</Link>
-              <span className="text-gold-deep">•</span>
-              <Link to="/birth-horoscope" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">பிறப்பு ஜாதகம்</Link>
-              <span className="text-gold-deep">•</span>
-              <Link to="/astrology-consultation" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">இலவச ஆலோசனை</Link>
-              <span className="text-gold-deep">•</span>
-              <Link to="/porutham" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">திருமண பொருத்தம்</Link>
-              <span className="text-gold-deep">•</span>
-              <Link to="/gochara" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">தினசரி கோசாரம்</Link>
-              <span className="text-gold-deep">•</span>
-              <Link to="/bhrigu-nandi-nadi" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">பிருகு நந்தி நாடி</Link>
-              <span className="text-gold-deep">•</span>
-              <Link to="/nakshatra-karma" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">108 நட்சத்திர கர்மம்</Link>
-              <span className="text-gold-deep">•</span>
-              <Link to="/astrologers" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline font-bold">ASTRO UR TALK</Link>
-              <span className="text-gold-deep">•</span>
-              <Link to="/my-consultations" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">என் கேள்விகள்</Link>
-              <span className="text-gold-deep">•</span>
-              <Link to="/articles" className="text-maroon-deep hover:text-gold underline-offset-4 hover:underline">கட்டுரைகள்</Link>
-              {isAdmin && (
-                <>
-                  <span className="text-gold-deep">•</span>
-                  <Link to="/admin" className="inline-flex items-center gap-1 text-maroon-deep hover:text-gold underline-offset-4 hover:underline">
-                    <Shield className="w-3 h-3" /> நிர்வாகம்
-                  </Link>
-                </>
-              )}
+            <nav aria-label="Main menu" className="mt-8 max-w-xl mx-auto">
+              <div className="parchment rounded-xl border-2 border-gold-deep/50 p-3 md:p-5">
+                <div className="font-tamil text-2xl md:text-3xl font-bold text-maroon-deep text-center mb-3 tracking-wide">
+                  திருக்கணிதம்
+                </div>
+                <ul className="divide-y divide-gold-deep/30 border-y border-gold-deep/30">
+                  {[
+                    { to: "/free-horoscope", label: "ஜாதகம் பதிவு" },
+                    { to: "/birth-horoscope", label: "ஜாதகம் கணிப்பு" },
+                    { to: "/porutham", label: "திருமண பொருத்தம்" },
+                    { to: "/gochara", label: "தினசரி கோசாரம்" },
+                    { to: "/bhrigu-nandi-nadi", label: "பிருகு நந்தி நாடி" },
+                    { to: "/nakshatra-karma", label: "108 நட்சத்திர கர்மம்" },
+                    { to: "/astrologers", label: "ASTRO UR TALK" },
+                    { to: "/my-consultations", label: "என் கேள்விகள்" },
+                    { to: "/articles", label: "உதவி — கட்டுரைகள்" },
+                    { to: "/about", label: "சுபம்" },
+                  ].map((m) => (
+                    <li key={m.to}>
+                      <Link
+                        to={m.to}
+                        className="group flex items-center justify-center gap-2 py-2 font-tamil text-lg md:text-xl font-bold text-maroon-deep hover:text-gold transition-colors"
+                      >
+                        <span className="w-5 text-gold opacity-0 group-hover:opacity-100">✓</span>
+                        <span>{m.label}</span>
+                        <span className="w-5" />
+                      </Link>
+                    </li>
+                  ))}
+                  {isAdmin && (
+                    <li>
+                      <Link
+                        to="/admin"
+                        className="group flex items-center justify-center gap-2 py-2 font-tamil text-lg md:text-xl font-bold text-maroon-deep hover:text-gold transition-colors"
+                      >
+                        <Shield className="w-4 h-4" /> நிர்வாகம்
+                      </Link>
+                    </li>
+                  )}
+                </ul>
+                <div className="font-tamil text-center text-sm text-gold-deep mt-3">
+                  வாழ்க வளமுடன் — ASTRO UR
+                </div>
+              </div>
             </nav>
+
             <div className="temple-divider mt-8 max-w-md mx-auto" />
           </header>
         )}
