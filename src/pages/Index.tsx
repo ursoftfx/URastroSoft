@@ -292,8 +292,13 @@ const Index = () => {
         )}
 
         {!result ? (
+          isForm ? (
           <div className="max-w-xl mx-auto">
+            <div className="mb-4 no-print">
+              <Link to="/" className="font-tamil text-sm text-maroon-deep hover:text-gold">← முதன்மை பட்டி</Link>
+            </div>
             <BirthForm onSubmit={handleSubmit} />
+
             <div className="mt-8 grid grid-cols-3 gap-4 text-center">
               {[
                 { t: "ராசி & நட்சத்திரம்", s: "துல்லியமான கணிப்பு" },
