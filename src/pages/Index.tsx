@@ -21,7 +21,9 @@ import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
   const { isAdmin } = useAuth();
+  const isForm = typeof window !== "undefined" && window.location.pathname === "/jathagam";
   const [result, setResult] = useState<JathagamResult | null>(null);
+
   const [interpretation, setInterpretation] = useState("");
   const [interpretationLoading, setInterpretationLoading] = useState(false);
 
