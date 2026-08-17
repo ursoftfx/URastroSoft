@@ -312,7 +312,9 @@ const Index = () => {
               ))}
             </div>
           </div>
+          ) : null
         ) : (
+
           <ResultView
             result={result}
             interpretation={interpretation}
