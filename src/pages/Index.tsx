@@ -12,7 +12,7 @@ import { OnePageReport } from "@/components/OnePageReport";
 import { ProfessionalReport } from "@/components/ProfessionalReport";
 import { JenanaKurippu } from "@/components/JenanaKurippu";
 import { supabase } from "@/integrations/supabase/client";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { SiteFooter } from "@/components/SiteFooter";
 import { AstrologyContentSections } from "@/components/AstrologyContentSections";
 import { AnnouncementsBanner } from "@/components/AnnouncementsBanner";
@@ -21,7 +21,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
   const { isAdmin } = useAuth();
-  const isForm = typeof window !== "undefined" && window.location.pathname === "/jathagam";
+  const isForm = useLocation().pathname === "/jathagam";
   const [result, setResult] = useState<JathagamResult | null>(null);
 
   const [interpretation, setInterpretation] = useState("");
@@ -254,7 +254,7 @@ const Index = () => {
                     { to: "/articles", label: "உதவி — கட்டுரைகள்" },
                     { to: "/about", label: "சுபம்" },
                   ].map((m) => (
-                    <li key={m.to}>
+                    <li key={m.label}>
                       <Link
                         to={m.to}
                         className="group flex items-center justify-center gap-2 py-2 font-tamil text-lg md:text-xl font-bold text-maroon-deep hover:text-gold transition-colors"
