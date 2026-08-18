@@ -205,12 +205,43 @@ const PanchangaDeities = () => {
               lines={[bird.nature, `நண்பர்: ${bird.friends.join(", ") || "—"}`, `எதிரி: ${bird.enemies.join(", ") || "—"}`]}
             />
           </div>
+
+          <div className="flex flex-wrap justify-center gap-3 mt-8 no-print">
+            <Button onClick={() => window.print()} className="font-tamil">
+              <Printer className="w-4 h-4 mr-2" /> 16 × 20 அச்சிடு (படங்கள் மட்டும்)
+            </Button>
+            <Button variant="outline" onClick={downloadSheet} className="font-tamil">
+              <Download className="w-4 h-4 mr-2" /> 16 × 20 பதிவிறக்கம்
+            </Button>
+          </div>
         </div>
         <SiteFooter />
       </main>
+
+      {/* 16in x 20in image-only print sheet */}
+      <div className="print-sheet-1620">
+        <div className="sheet-grid">
+          {SHEET_IMAGES.map((src, i) => (
+            <img key={i} src={src} alt="" />
+          ))}
+        </div>
+      </div>
+
+      <style>{`
+        .print-sheet-1620 { display: none; }
+        .sheet-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); width: 100%; height: 100%; gap: 0; }
+        .sheet-grid img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        @media print {
+          @page { size: 16in 20in; margin: 0; }
+          body * { visibility: hidden !important; }
+          .print-sheet-1620, .print-sheet-1620 * { visibility: visible !important; }
+          .print-sheet-1620 { display: block !important; position: absolute; inset: 0; width: 16in; height: 20in; }
+        }
+      `}</style>
       <WhatsAppButton />
     </>
   );
 };
+
 
 export default PanchangaDeities;
