@@ -249,6 +249,7 @@ const Index = () => {
                     { to: "/gochara", label: "தினசரி கோசாரம்" },
                     { to: "/bhrigu-nandi-nadi", label: "பிருகு நந்தி நாடி" },
                     { to: "/nakshatra-karma", label: "108 நட்சத்திர கர்மம்" },
+                    { to: "/panchanga-deities", label: "பஞ்சாங்க அதிதேவதைகள்" },
                     { to: "/astrologers", label: "ASTRO UR TALK" },
                     { to: "/my-consultations", label: "என் கேள்விகள்" },
                     { to: "/articles", label: "உதவி — கட்டுரைகள்" },
