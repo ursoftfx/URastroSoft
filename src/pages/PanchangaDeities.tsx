@@ -24,6 +24,8 @@ import imgYogam from "@/assets/deity-yogam.jpg";
 import imgKaranam from "@/assets/deity-karanam.jpg";
 import imgPakshi from "@/assets/deity-panchapakshi.jpg";
 
+const SHEET_IMAGES = [imgNaal, imgNak, imgThithi, imgYogam, imgKaranam, imgPakshi];
+
 const WEEKDAY_TAMIL = ["ஞாயிற்றுக்கிழமை", "திங்கட்கிழமை", "செவ்வாய்க்கிழமை", "புதன்கிழமை", "வியாழக்கிழமை", "வெள்ளிக்கிழமை", "சனிக்கிழமை"];
 
 const WEEKDAY_DEITY = [
