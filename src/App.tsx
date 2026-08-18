@@ -22,6 +22,7 @@ import { PostsList, PostDetail } from "./pages/Posts.tsx";
 import { ArticlesList, ArticleDetail } from "./pages/Articles.tsx";
 import { About, Contact, PrivacyPolicy, Terms, Disclaimer } from "./pages/StaticPages.tsx";
 import NakshatraKarma from "./pages/NakshatraKarma.tsx";
+import PanchangaDeities from "./pages/PanchangaDeities.tsx";
 
 const queryClient = new QueryClient();
 
