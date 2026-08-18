@@ -105,6 +105,38 @@ const PanchangaDeities = () => {
   const yogam = p ? YOGAM_TEMPLES[p.yogaIndex % 27] : null;
   const karanam = p ? KARANAM_TEMPLES[p.karanaIndex % 11] : null;
 
+  const downloadSheet = async () => {
+    // 16in x 20in @ 150 DPI
+    const W = 2400, H = 3000;
+    const canvas = document.createElement("canvas");
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, W, H);
+    const cw = W / 2, ch = H / 3;
+    const load = (src: string) =>
+      new Promise<HTMLImageElement>((res, rej) => {
+        const im = new Image();
+        im.crossOrigin = "anonymous";
+        im.onload = () => res(im);
+        im.onerror = rej;
+        im.src = src;
+      });
+    const imgs = await Promise.all(SHEET_IMAGES.map(load));
+    imgs.forEach((im, i) => {
+      const dx = (i % 2) * cw, dy = Math.floor(i / 2) * ch;
+      const scale = Math.max(cw / im.width, ch / im.height);
+      const sw = cw / scale, sh = ch / scale;
+      ctx.drawImage(im, (im.width - sw) / 2, (im.height - sh) / 2, sw, sh, dx, dy, cw, ch);
+    });
+    const a = document.createElement("a");
+    a.href = canvas.toDataURL("image/jpeg", 0.95);
+    a.download = "panchanga-deities-16x20.jpg";
+    a.click();
+  };
+
+
   return (
     <>
       <main className="min-h-screen">
