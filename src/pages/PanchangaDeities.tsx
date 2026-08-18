@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Calendar as CalendarIcon } from "lucide-react";
+import { ArrowLeft, Calendar as CalendarIcon, Printer, Download } from "lucide-react";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,6 +23,8 @@ import imgThithi from "@/assets/deity-thithi.jpg";
 import imgYogam from "@/assets/deity-yogam.jpg";
 import imgKaranam from "@/assets/deity-karanam.jpg";
 import imgPakshi from "@/assets/deity-panchapakshi.jpg";
+
+const SHEET_IMAGES = [imgNaal, imgNak, imgThithi, imgYogam, imgKaranam, imgPakshi];
 
 const WEEKDAY_TAMIL = ["ஞாயிற்றுக்கிழமை", "திங்கட்கிழமை", "செவ்வாய்க்கிழமை", "புதன்கிழமை", "வியாழக்கிழமை", "வெள்ளிக்கிழமை", "சனிக்கிழமை"];
 
@@ -104,6 +106,38 @@ const PanchangaDeities = () => {
   const thithi = p ? THITHI_TEMPLES[p.tithiIndex % 15] : null;
   const yogam = p ? YOGAM_TEMPLES[p.yogaIndex % 27] : null;
   const karanam = p ? KARANAM_TEMPLES[p.karanaIndex % 11] : null;
+
+  const downloadSheet = async () => {
+    // 16in x 20in @ 150 DPI
+    const W = 2400, H = 3000;
+    const canvas = document.createElement("canvas");
+    canvas.width = W; canvas.height = H;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, W, H);
+    const cw = W / 2, ch = H / 3;
+    const load = (src: string) =>
+      new Promise<HTMLImageElement>((res, rej) => {
+        const im = new Image();
+        im.crossOrigin = "anonymous";
+        im.onload = () => res(im);
+        im.onerror = rej;
+        im.src = src;
+      });
+    const imgs = await Promise.all(SHEET_IMAGES.map(load));
+    imgs.forEach((im, i) => {
+      const dx = (i % 2) * cw, dy = Math.floor(i / 2) * ch;
+      const scale = Math.max(cw / im.width, ch / im.height);
+      const sw = cw / scale, sh = ch / scale;
+      ctx.drawImage(im, (im.width - sw) / 2, (im.height - sh) / 2, sw, sh, dx, dy, cw, ch);
+    });
+    const a = document.createElement("a");
+    a.href = canvas.toDataURL("image/jpeg", 0.95);
+    a.download = "panchanga-deities-16x20.jpg";
+    a.click();
+  };
+
 
   return (
     <>
@@ -205,12 +239,43 @@ const PanchangaDeities = () => {
               lines={[bird.nature, `நண்பர்: ${bird.friends.join(", ") || "—"}`, `எதிரி: ${bird.enemies.join(", ") || "—"}`]}
             />
           </div>
+
+          <div className="flex flex-wrap justify-center gap-3 mt-8 no-print">
+            <Button onClick={() => window.print()} className="font-tamil">
+              <Printer className="w-4 h-4 mr-2" /> 16 × 20 அச்சிடு (படங்கள் மட்டும்)
+            </Button>
+            <Button variant="outline" onClick={downloadSheet} className="font-tamil">
+              <Download className="w-4 h-4 mr-2" /> 16 × 20 பதிவிறக்கம்
+            </Button>
+          </div>
         </div>
         <SiteFooter />
       </main>
+
+      {/* 16in x 20in image-only print sheet */}
+      <div className="print-sheet-1620">
+        <div className="sheet-grid">
+          {SHEET_IMAGES.map((src, i) => (
+            <img key={i} src={src} alt="" />
+          ))}
+        </div>
+      </div>
+
+      <style>{`
+        .print-sheet-1620 { display: none; }
+        .sheet-grid { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); width: 100%; height: 100%; gap: 0; }
+        .sheet-grid img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        @media print {
+          @page { size: 16in 20in; margin: 0; }
+          body * { visibility: hidden !important; }
+          .print-sheet-1620, .print-sheet-1620 * { visibility: visible !important; }
+          .print-sheet-1620 { display: block !important; position: absolute; inset: 0; width: 16in; height: 20in; }
+        }
+      `}</style>
       <WhatsAppButton />
     </>
   );
 };
+
 
 export default PanchangaDeities;
