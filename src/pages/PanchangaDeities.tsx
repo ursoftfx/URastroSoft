@@ -99,7 +99,7 @@ const PanchangaDeities = () => {
   const weekday = date.getDay();
   const wd = WEEKDAY_DEITY[weekday];
   const p = result?.panchangam;
-  const nakIdx = result?.nakshatraIndex ?? 0;
+  const nakIdx = result?.moon.nakshatraIndex ?? 0;
   const bird = panchaPakshi(nakIdx);
   const thithi = p ? THITHI_TEMPLES[p.tithiIndex % 15] : null;
   const yogam = p ? YOGAM_TEMPLES[p.yogaIndex % 27] : null;
@@ -171,7 +171,7 @@ const PanchangaDeities = () => {
             />
             <Section
               title="நட்சத்திரம்"
-              value={`${result?.nakshatraTamil ?? "—"} (பாதம் ${result?.nakshatraPada ?? "—"})`}
+              value={`${result?.nakshatraTamil ?? "—"} (பாதம் ${result?.pada ?? "—"})`}
               img={imgNak}
               deity={NAKSHATRA_DEVATA[nakIdx]}
               lines={[`நட்சத்திர அதிபதி: ${result?.nakshatraLordTamil ?? "—"}`, "நட்சத்திர நாளில் அதிதேவதைக்கு தீபம் ஏற்றி வழிபடவும்."]}
