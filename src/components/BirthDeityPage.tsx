@@ -1,5 +1,5 @@
 import { JathagamResult, NAKSHATRAS_TAMIL } from "@/lib/jathagam";
-import { thithiTemple, yogamTemple, karanamTemple, padamTemple, NAVAGRAHA_TEMPLES } from "@/lib/temples";
+import { thithiTemple, yogamTemple, karanamTemple, padamTemple } from "@/lib/temples";
 import { panchaPakshi } from "@/lib/pancha-pakshi";
 import { deityImage, BIRD_IMAGES, WEEKDAY_DEITY, WEEKDAY_TAMIL, NAKSHATRA_DEVATA } from "@/lib/deity-images";
 
@@ -87,7 +87,7 @@ export const BirthDeityPage = ({ result }: Props) => {
           deity={devata}
           img={deityImage(devata)}
           temple={padT.temple}
-          note={`பாத நவாம்ச அதிபதி: ${NAVAGRAHA_TEMPLES[padT.lordKey] ? padT.lordKey : padT.lordKey}`}
+          note="பாத நவாம்ச அதிபதி பரிகார ஸ்தலம்"
         />
         <Cell
           title="திதி"
