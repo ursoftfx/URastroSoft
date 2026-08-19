@@ -3,6 +3,7 @@ import {
   padamTemple, thithiTemple, yogamTemple, karanamTemple,
   NAVAGRAHA_TEMPLES, THITHI_TEMPLES, YOGAM_TEMPLES, KARANAM_TEMPLES,
 } from "@/lib/temples";
+import { BirthDeityPage } from "@/components/BirthDeityPage";
 
 interface Props {
   result: JathagamResult;
@@ -471,6 +472,9 @@ export const OnePageReport = ({ result }: Props) => {
 
     {/* ===== PAGE 4: திசை அடிப்படையிலான கிரக நிலை ===== */}
     <DirectionPage result={result} />
+
+    {/* ===== PAGE 5: ஜென்ம பஞ்சாங்க அதிதேவதைகள் ===== */}
+    <BirthDeityPage result={result} />
     </>
   );
 };
