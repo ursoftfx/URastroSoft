@@ -48,20 +48,25 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !phoneValid || !dateValid || !time || !placeData) return;
-    const dd = +dateMatch![1], mm = +dateMatch![2], yyyy = +dateMatch![3];
-    const [hh, min] = time.split(":").map(Number);
+    const now = new Date();
+    const yyyy = dateValid ? +dateMatch![3] : now.getFullYear();
+    const mm = dateValid ? +dateMatch![2] : now.getMonth() + 1;
+    const dd = dateValid ? +dateMatch![1] : now.getDate();
+    const [hh, min] = time && /^\d{1,2}:\d{2}/.test(time)
+      ? time.split(":").map(Number)
+      : [now.getHours(), now.getMinutes()];
+    const pd = placeData ?? PLACES[0];
     onSubmit({
       year: yyyy,
       month: mm,
       day: dd,
       hour: hh,
       minute: min,
-      tzOffsetHours: placeData.tz,
-      latitude: placeData.lat,
-      longitude: placeData.lon,
-      placeName: placeData.name,
-      name,
+      tzOffsetHours: pd.tz,
+      latitude: pd.lat,
+      longitude: pd.lon,
+      placeName: pd.name,
+      name: name.trim() || "பெயர் இல்லை",
       gender,
       phone: phone.trim(),
       fatherName: fatherName.trim() || undefined,
@@ -76,7 +81,7 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
           பிறப்பு விவரங்கள்
         </div>
         <div className="text-muted-foreground text-sm mt-1 font-tamil">
-          உங்கள் ஜாதகத்தை அறிய தகவல்களை பூர்த்தி செய்யவும்
+          அனைத்தும் விருப்பம் — காலியாக விட்டால் தற்போதைய தேதி/நேரம் எடுக்கப்படும்
         </div>
         <div className="temple-divider mt-4" />
       </div>
@@ -88,7 +93,6 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
         </Label>
         <Input
           id="name"
-          required
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="உங்கள் பெயர்"
@@ -127,12 +131,11 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
       {/* Phone */}
       <div className="space-y-2">
         <Label htmlFor="phone" className="font-tamil flex items-center gap-2 text-maroon-deep">
-          <Phone className="w-4 h-4" /> தொலைபேசி எண் <span className="text-destructive">*</span>
+          <Phone className="w-4 h-4" /> தொலைபேசி எண்
         </Label>
         <Input
           id="phone"
           type="tel"
-          required
           inputMode="tel"
           autoComplete="tel"
           value={phone}
@@ -177,8 +180,7 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
             id="date"
             type="text"
             inputMode="numeric"
-            required
-            value={date}
+              value={date}
             onChange={(e) => handleDateChange(e.target.value)}
             placeholder="dd/mm/yyyy"
             maxLength={10}
@@ -195,8 +197,7 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
           <Input
             id="time"
             type="time"
-            required
-            value={time}
+              value={time}
             onChange={(e) => setTime(e.target.value)}
             className="bg-cream/50 border-gold/40 focus-visible:ring-accent"
           />
@@ -249,7 +250,7 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
 
       <Button
         type="submit"
-        disabled={loading || !name || !phoneValid || !dateValid || !time || !placeData}
+        disabled={loading}
         className="w-full bg-gradient-royal hover:opacity-95 text-primary-foreground font-tamil text-lg py-6 shadow-royal border border-gold/40"
       >
         <Sparkles className="w-5 h-5 mr-2 text-gold-bright" />
