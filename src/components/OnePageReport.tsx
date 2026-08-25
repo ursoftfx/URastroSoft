@@ -4,6 +4,7 @@ import {
   NAVAGRAHA_TEMPLES, THITHI_TEMPLES, YOGAM_TEMPLES, KARANAM_TEMPLES,
 } from "@/lib/temples";
 import { BirthDeityPage } from "@/components/BirthDeityPage";
+import { DashaTableA4 } from "@/components/DashaTableA4";
 
 interface Props {
   result: JathagamResult;
@@ -475,6 +476,9 @@ export const OnePageReport = ({ result }: Props) => {
 
     {/* ===== PAGE 5: ஜென்ம பஞ்சாங்க அதிதேவதைகள் ===== */}
     <BirthDeityPage result={result} />
+
+    {/* ===== PAGE 6+: தசா – புத்தி – அந்தரம் அட்டவணை ===== */}
+    <DashaTableA4 result={result} />
     </>
   );
 };
