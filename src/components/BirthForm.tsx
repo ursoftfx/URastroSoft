@@ -48,20 +48,25 @@ export const BirthForm = ({ onSubmit, loading }: Props) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !phoneValid || !dateValid || !time || !placeData) return;
-    const dd = +dateMatch![1], mm = +dateMatch![2], yyyy = +dateMatch![3];
-    const [hh, min] = time.split(":").map(Number);
+    const now = new Date();
+    const yyyy = dateValid ? +dateMatch![3] : now.getFullYear();
+    const mm = dateValid ? +dateMatch![2] : now.getMonth() + 1;
+    const dd = dateValid ? +dateMatch![1] : now.getDate();
+    const [hh, min] = time && /^\d{1,2}:\d{2}/.test(time)
+      ? time.split(":").map(Number)
+      : [now.getHours(), now.getMinutes()];
+    const pd = placeData ?? PLACES[0];
     onSubmit({
       year: yyyy,
       month: mm,
       day: dd,
       hour: hh,
       minute: min,
-      tzOffsetHours: placeData.tz,
-      latitude: placeData.lat,
-      longitude: placeData.lon,
-      placeName: placeData.name,
-      name,
+      tzOffsetHours: pd.tz,
+      latitude: pd.lat,
+      longitude: pd.lon,
+      placeName: pd.name,
+      name: name.trim() || "பெயர் இல்லை",
       gender,
       phone: phone.trim(),
       fatherName: fatherName.trim() || undefined,
