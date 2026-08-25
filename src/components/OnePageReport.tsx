@@ -4,6 +4,7 @@ import {
   NAVAGRAHA_TEMPLES, THITHI_TEMPLES, YOGAM_TEMPLES, KARANAM_TEMPLES,
 } from "@/lib/temples";
 import { BirthDeityPage } from "@/components/BirthDeityPage";
+import { DashaTableA4 } from "@/components/DashaTableA4";
 
 interface Props {
   result: JathagamResult;
