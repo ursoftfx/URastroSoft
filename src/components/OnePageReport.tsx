@@ -475,6 +475,9 @@ export const OnePageReport = ({ result }: Props) => {
 
     {/* ===== PAGE 5: ஜென்ம பஞ்சாங்க அதிதேவதைகள் ===== */}
     <BirthDeityPage result={result} />
+
+    {/* ===== PAGE 6+: தசா – புத்தி – அந்தரம் அட்டவணை ===== */}
+    <DashaTableA4 result={result} />
     </>
   );
 };
