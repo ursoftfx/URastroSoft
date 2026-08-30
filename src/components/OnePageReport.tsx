@@ -5,6 +5,9 @@ import {
 } from "@/lib/temples";
 import { BirthDeityPage } from "@/components/BirthDeityPage";
 import { DashaTableA4 } from "@/components/DashaTableA4";
+import { RuthuJathagamPage } from "@/components/RuthuJathagamPage";
+import { DhanishtaPanchamiPage } from "@/components/DhanishtaPanchamiPage";
+import { TharaPalanPage } from "@/components/TharaPalanPage";
 
 interface Props {
   result: JathagamResult;
@@ -479,6 +482,9 @@ export const OnePageReport = ({ result }: Props) => {
 
     {/* ===== PAGE 6+: தசா – புத்தி – அந்தரம் அட்டவணை ===== */}
     <DashaTableA4 result={result} />
+    <RuthuJathagamPage result={result} />
+    <DhanishtaPanchamiPage result={result} />
+    <TharaPalanPage result={result} />
     </>
   );
 };
