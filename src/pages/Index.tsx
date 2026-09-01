@@ -377,6 +377,12 @@ const ResultView = ({
               <FileText className="w-3.5 h-3.5 inline mr-1" /> ஜெனன குறிப்பு
             </button>
             <button
+              onClick={() => setView("babynames")}
+              className={`px-3 py-1.5 text-xs font-tamil rounded ${view === "babynames" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
+            >
+              <FileText className="w-3.5 h-3.5 inline mr-1" /> குழந்தை பெயர்கள்
+            </button>
+            <button
               onClick={() => setView("detailed")}
               className={`px-3 py-1.5 text-xs font-tamil rounded ${view === "detailed" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
             >
@@ -399,7 +405,7 @@ const ResultView = ({
             <Printer className="w-4 h-4 mr-1" /> அச்சிடு
           </Button>
           <DownloadReport
-            targetId={view === "pro" ? "professional-report-root" : view === "onepage" ? "onepage-report-root" : view === "kurippu" ? "kurippu-report-root" : "jathagam-report-root"}
+            targetId={view === "pro" ? "professional-report-root" : view === "onepage" ? "onepage-report-root" : view === "kurippu" ? "kurippu-report-root" : view === "babynames" ? "babynames-report-root" : "jathagam-report-root"}
             fileName={`jathagam-${result.input.name.replace(/\s+/g, "-")}.pdf`}
             paperSize={view === "pro" ? "a5" : "a4"}
             orientation={view === "pro" ? proOrient : "p"}
