@@ -18,6 +18,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { AstrologyContentSections } from "@/components/AstrologyContentSections";
 import { AnnouncementsBanner } from "@/components/AnnouncementsBanner";
 import { GocharaSummary } from "@/components/GocharaSummary";
+import { TodayPanchangam } from "@/components/TodayPanchangam";
 import { useAuth } from "@/hooks/useAuth";
 
 const Index = () => {
@@ -291,6 +292,31 @@ const Index = () => {
         {!result && (
           <div className="max-w-5xl mx-auto space-y-4 mb-6">
             <AnnouncementsBanner />
+            {/* Quick access to report tabs */}
+            <div className="parchment rounded-xl border-2 border-gold-deep/50 p-4 no-print">
+              <div className="font-tamil text-lg font-bold text-maroon-deep text-center mb-3">அறிக்கைகள் — விரைவு அணுகல்</div>
+              <div className="flex flex-wrap justify-center gap-2">
+                {[
+                  { label: "Professional PDF" },
+                  { label: "ஒரு பக்கம் (A4)" },
+                  { label: "ஜெனன குறிப்பு" },
+                  { label: "குழந்தை பெயர்கள்" },
+                  { label: "முழு அறிக்கை" },
+                ].map((t) => (
+                  <Link
+                    key={t.label}
+                    to="/jathagam"
+                    className="px-3 py-1.5 text-xs font-tamil rounded border border-gold/40 bg-cream/50 text-maroon-deep hover:bg-gradient-royal hover:text-primary-foreground transition-colors"
+                  >
+                    <FileText className="w-3.5 h-3.5 inline mr-1" /> {t.label}
+                  </Link>
+                ))}
+              </div>
+              <div className="font-tamil text-xs text-muted-foreground text-center mt-2">
+                பிறப்பு விவரம் உள்ளிட்டவுடன் மேற்கண்ட அனைத்து அறிக்கைகளும் தாவல்களாகக் காணலாம்
+              </div>
+            </div>
+            <TodayPanchangam />
             <GocharaSummary />
           </div>
         )}
