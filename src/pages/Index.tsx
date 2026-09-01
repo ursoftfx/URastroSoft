@@ -11,6 +11,7 @@ import { DownloadReport } from "@/components/DownloadReport";
 import { OnePageReport } from "@/components/OnePageReport";
 import { ProfessionalReport } from "@/components/ProfessionalReport";
 import { JenanaKurippu } from "@/components/JenanaKurippu";
+import { BabyNamesPage } from "@/components/BabyNamesPage";
 import { supabase } from "@/integrations/supabase/client";
 import { Link, useLocation } from "react-router-dom";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -345,7 +346,7 @@ const ResultView = ({
   interpretationLoading: boolean;
   onReset: () => void;
 }) => {
-  const [view, setView] = useState<"detailed" | "onepage" | "pro" | "kurippu">("pro");
+  const [view, setView] = useState<"detailed" | "onepage" | "pro" | "kurippu" | "babynames">("pro");
   const [proOrient, setProOrient] = useState<"p" | "l">("p");
   const handlePrint = () => window.print();
 
