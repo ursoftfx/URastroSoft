@@ -427,6 +427,10 @@ const ResultView = ({
         <div id="kurippu-report-root" className="overflow-x-auto">
           <JenanaKurippu result={result} />
         </div>
+      ) : view === "babynames" ? (
+        <div id="babynames-report-root" className="overflow-x-auto">
+          <BabyNamesPage result={result} />
+        </div>
       ) : (
         <div id="jathagam-report-root">
           <JathagamReport result={result} interpretation={interpretation} interpretationLoading={interpretationLoading} />
