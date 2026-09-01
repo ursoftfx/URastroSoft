@@ -11,6 +11,7 @@ import { DownloadReport } from "@/components/DownloadReport";
 import { OnePageReport } from "@/components/OnePageReport";
 import { ProfessionalReport } from "@/components/ProfessionalReport";
 import { JenanaKurippu } from "@/components/JenanaKurippu";
+import { BabyNamesPage } from "@/components/BabyNamesPage";
 import { supabase } from "@/integrations/supabase/client";
 import { Link, useLocation } from "react-router-dom";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -345,7 +346,7 @@ const ResultView = ({
   interpretationLoading: boolean;
   onReset: () => void;
 }) => {
-  const [view, setView] = useState<"detailed" | "onepage" | "pro" | "kurippu">("pro");
+  const [view, setView] = useState<"detailed" | "onepage" | "pro" | "kurippu" | "babynames">("pro");
   const [proOrient, setProOrient] = useState<"p" | "l">("p");
   const handlePrint = () => window.print();
 
@@ -376,6 +377,12 @@ const ResultView = ({
               <FileText className="w-3.5 h-3.5 inline mr-1" /> ஜெனன குறிப்பு
             </button>
             <button
+              onClick={() => setView("babynames")}
+              className={`px-3 py-1.5 text-xs font-tamil rounded ${view === "babynames" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
+            >
+              <FileText className="w-3.5 h-3.5 inline mr-1" /> குழந்தை பெயர்கள்
+            </button>
+            <button
               onClick={() => setView("detailed")}
               className={`px-3 py-1.5 text-xs font-tamil rounded ${view === "detailed" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
             >
@@ -398,7 +405,7 @@ const ResultView = ({
             <Printer className="w-4 h-4 mr-1" /> அச்சிடு
           </Button>
           <DownloadReport
-            targetId={view === "pro" ? "professional-report-root" : view === "onepage" ? "onepage-report-root" : view === "kurippu" ? "kurippu-report-root" : "jathagam-report-root"}
+            targetId={view === "pro" ? "professional-report-root" : view === "onepage" ? "onepage-report-root" : view === "kurippu" ? "kurippu-report-root" : view === "babynames" ? "babynames-report-root" : "jathagam-report-root"}
             fileName={`jathagam-${result.input.name.replace(/\s+/g, "-")}.pdf`}
             paperSize={view === "pro" ? "a5" : "a4"}
             orientation={view === "pro" ? proOrient : "p"}
@@ -419,6 +426,10 @@ const ResultView = ({
       ) : view === "kurippu" ? (
         <div id="kurippu-report-root" className="overflow-x-auto">
           <JenanaKurippu result={result} />
+        </div>
+      ) : view === "babynames" ? (
+        <div id="babynames-report-root" className="overflow-x-auto">
+          <BabyNamesPage result={result} />
         </div>
       ) : (
         <div id="jathagam-report-root">
