@@ -385,16 +385,18 @@ const Index = () => {
 
 const ResultView = ({
   result,
+  initialView,
   interpretation,
   interpretationLoading,
   onReset,
 }: {
   result: JathagamResult;
+  initialView?: ReportView | null;
   interpretation: string;
   interpretationLoading: boolean;
   onReset: () => void;
 }) => {
-  const [view, setView] = useState<"detailed" | "onepage" | "pro" | "kurippu" | "babynames">("pro");
+  const [view, setView] = useState<ReportView>(initialView ?? "pro");
   const [proOrient, setProOrient] = useState<"p" | "l">("p");
   const handlePrint = () => window.print();
 
