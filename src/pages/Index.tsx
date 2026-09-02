@@ -368,6 +368,7 @@ const Index = () => {
 
           <ResultView
             result={result}
+            initialView={searchParams.get("tab") as ReportView | null}
             interpretation={interpretation}
             interpretationLoading={interpretationLoading}
             onReset={handleReset}
