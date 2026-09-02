@@ -4,7 +4,7 @@ import { JathagamReport } from "@/components/JathagamReport";
 import { BirthInput, computeJathagam, JathagamResult } from "@/lib/jathagam";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Printer, FileText, LayoutList, Shield } from "lucide-react";
+import { ArrowLeft, Printer, FileText, LayoutList, Shield, ScrollText, Baby, BookOpen } from "lucide-react";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SEO } from "@/components/SEO";
 import { DownloadReport } from "@/components/DownloadReport";
@@ -30,6 +30,8 @@ const REPORT_TABS = [
 ] as const;
 
 type ReportView = (typeof REPORT_TABS)[number]["key"];
+
+const TAB_ICONS = [FileText, LayoutList, ScrollText, Baby, BookOpen];
 
 const Index = () => {
   const { isAdmin } = useAuth();
@@ -308,9 +310,10 @@ const Index = () => {
             {/* Quick access to report tabs — selectable list */}
             <div className="parchment rounded-xl border-2 border-gold-deep/50 p-4 no-print">
               <div className="font-tamil text-lg font-bold text-maroon-deep text-center mb-3">அறிக்கைகள் — தேர்வு பட்டியல்</div>
-              <ul className="divide-y divide-gold-deep/30 border-y border-gold-deep/30">
-                {REPORT_TABS.map((t) => {
+              <ul className="grid gap-3 sm:grid-cols-2">
+                {REPORT_TABS.map((t, i) => {
                   const active = selectedTab === t.key;
+                  const Icon = TAB_ICONS[i % TAB_ICONS.length];
                   return (
                     <li key={t.key}>
                       <button
@@ -319,15 +322,15 @@ const Index = () => {
                           navigate(`/jathagam?tab=${t.key}`);
                         }}
                         aria-pressed={active}
-                        className={`group flex w-full items-center justify-center gap-2 py-2.5 font-tamil text-base md:text-lg font-bold transition-colors rounded ${
-                          active
-                            ? "bg-gradient-royal/10 text-gold-deep"
-                            : "text-maroon-deep hover:text-gold"
-                        }`}
+                        className={`pill-btn pill-g${(i % 5) + 1}`}
                       >
-                        <span className={`w-5 text-gold ${active ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>✓</span>
-                        <span>{t.label}</span>
-                        <span className="w-5" />
+                        <span className="pill-icon">
+                          <Icon className="h-5 w-5" />
+                        </span>
+                        <span className="pill-label font-tamil text-base md:text-lg">
+                          {t.label}
+                          {active && <span className="ml-2">✓</span>}
+                        </span>
                       </button>
                     </li>
                   );
