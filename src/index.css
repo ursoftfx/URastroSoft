@@ -257,3 +257,27 @@
   font-family: 'ReportNum', 'Latha', 'Tahoma', sans-serif;
   font-variant-numeric: lining-nums tabular-nums;
 }
+
+/* Gradient pill report buttons (index page) */
+@layer components {
+  .pill-btn {
+    @apply relative flex w-full items-center overflow-hidden rounded-full transition-transform duration-200;
+    box-shadow: 0 8px 20px -8px hsl(var(--maroon) / 0.45);
+  }
+  .pill-btn:hover { transform: translateY(-2px) scale(1.01); }
+  .pill-btn .pill-icon {
+    @apply flex h-12 w-14 shrink-0 items-center justify-center;
+    background: linear-gradient(180deg, hsl(38 55% 98%), hsl(38 40% 88%));
+    color: hsl(var(--maroon));
+  }
+  .pill-btn .pill-label {
+    @apply flex h-12 flex-1 items-center justify-center px-4 font-bold;
+    color: hsl(var(--primary-foreground));
+  }
+  .pill-g1 .pill-label { background: linear-gradient(135deg, hsl(var(--maroon-deep)), hsl(var(--maroon-glow))); }
+  .pill-g2 .pill-label { background: linear-gradient(135deg, hsl(var(--gold-deep)), hsl(var(--gold-bright))); }
+  .pill-g3 .pill-label { background: linear-gradient(135deg, hsl(18 80% 45%), hsl(35 90% 55%)); }
+  .pill-g4 .pill-label { background: linear-gradient(135deg, hsl(280 55% 40%), hsl(330 65% 50%)); }
+  .pill-g5 .pill-label { background: linear-gradient(135deg, hsl(200 75% 35%), hsl(190 70% 48%)); }
+  .pill-btn[aria-pressed="true"] { box-shadow: 0 0 0 3px hsl(var(--gold) / 0.7), 0 10px 24px -8px hsl(var(--maroon) / 0.5); }
+}
