@@ -13,7 +13,7 @@ import { ProfessionalReport } from "@/components/ProfessionalReport";
 import { JenanaKurippu } from "@/components/JenanaKurippu";
 import { BabyNamesPage } from "@/components/BabyNamesPage";
 import { supabase } from "@/integrations/supabase/client";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { SiteFooter } from "@/components/SiteFooter";
 import { AstrologyContentSections } from "@/components/AstrologyContentSections";
 import { AnnouncementsBanner } from "@/components/AnnouncementsBanner";
@@ -21,10 +21,23 @@ import { GocharaSummary } from "@/components/GocharaSummary";
 import { TodayPanchangam } from "@/components/TodayPanchangam";
 import { useAuth } from "@/hooks/useAuth";
 
+const REPORT_TABS = [
+  { key: "pro", label: "Professional PDF" },
+  { key: "onepage", label: "ஒரு பக்கம் (A4)" },
+  { key: "kurippu", label: "ஜெனன குறிப்பு" },
+  { key: "babynames", label: "குழந்தை பெயர்கள்" },
+  { key: "detailed", label: "முழு அறிக்கை" },
+] as const;
+
+type ReportView = (typeof REPORT_TABS)[number]["key"];
+
 const Index = () => {
   const { isAdmin } = useAuth();
   const isForm = useLocation().pathname === "/jathagam";
+  const navigate = useNavigate();
+  const searchParams = useSearchParams()[0];
   const [result, setResult] = useState<JathagamResult | null>(null);
+  const [selectedTab, setSelectedTab] = useState<ReportView>("pro");
 
   const [interpretation, setInterpretation] = useState("");
   const [interpretationLoading, setInterpretationLoading] = useState(false);
