@@ -4,7 +4,7 @@ import { JathagamReport } from "@/components/JathagamReport";
 import { BirthInput, computeJathagam, JathagamResult } from "@/lib/jathagam";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Printer, FileText, LayoutList, Shield } from "lucide-react";
+import { ArrowLeft, Printer, FileText, LayoutList, Shield, ScrollText, Baby, BookOpen } from "lucide-react";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SEO } from "@/components/SEO";
 import { DownloadReport } from "@/components/DownloadReport";
