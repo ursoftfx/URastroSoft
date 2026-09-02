@@ -305,28 +305,36 @@ const Index = () => {
         {!result && (
           <div className="max-w-5xl mx-auto space-y-4 mb-6">
             <AnnouncementsBanner />
-            {/* Quick access to report tabs */}
+            {/* Quick access to report tabs — selectable list */}
             <div className="parchment rounded-xl border-2 border-gold-deep/50 p-4 no-print">
-              <div className="font-tamil text-lg font-bold text-maroon-deep text-center mb-3">அறிக்கைகள் — விரைவு அணுகல்</div>
-              <div className="flex flex-wrap justify-center gap-2">
-                {[
-                  { label: "Professional PDF" },
-                  { label: "ஒரு பக்கம் (A4)" },
-                  { label: "ஜெனன குறிப்பு" },
-                  { label: "குழந்தை பெயர்கள்" },
-                  { label: "முழு அறிக்கை" },
-                ].map((t) => (
-                  <Link
-                    key={t.label}
-                    to="/jathagam"
-                    className="px-3 py-1.5 text-xs font-tamil rounded border border-gold/40 bg-cream/50 text-maroon-deep hover:bg-gradient-royal hover:text-primary-foreground transition-colors"
-                  >
-                    <FileText className="w-3.5 h-3.5 inline mr-1" /> {t.label}
-                  </Link>
-                ))}
-              </div>
+              <div className="font-tamil text-lg font-bold text-maroon-deep text-center mb-3">அறிக்கைகள் — தேர்வு பட்டியல்</div>
+              <ul className="divide-y divide-gold-deep/30 border-y border-gold-deep/30">
+                {REPORT_TABS.map((t) => {
+                  const active = selectedTab === t.key;
+                  return (
+                    <li key={t.key}>
+                      <button
+                        onClick={() => {
+                          setSelectedTab(t.key);
+                          navigate(`/jathagam?tab=${t.key}`);
+                        }}
+                        aria-pressed={active}
+                        className={`group flex w-full items-center justify-center gap-2 py-2.5 font-tamil text-base md:text-lg font-bold transition-colors rounded ${
+                          active
+                            ? "bg-gradient-royal/10 text-gold-deep"
+                            : "text-maroon-deep hover:text-gold"
+                        }`}
+                      >
+                        <span className={`w-5 text-gold ${active ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>✓</span>
+                        <span>{t.label}</span>
+                        <span className="w-5" />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ul>
               <div className="font-tamil text-xs text-muted-foreground text-center mt-2">
-                பிறப்பு விவரம் உள்ளிட்டவுடன் மேற்கண்ட அனைத்து அறிக்கைகளும் தாவல்களாகக் காணலாம்
+                ஒரு அறிக்கையைத் தேர்ந்தெடுத்து, பிறப்பு விவரம் உள்ளிடவும் — தேர்ந்த அறிக்கை நேரடியாகத் திறக்கும்
               </div>
             </div>
             <TodayPanchangam />
