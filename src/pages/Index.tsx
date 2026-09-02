@@ -31,6 +31,8 @@ const REPORT_TABS = [
 
 type ReportView = (typeof REPORT_TABS)[number]["key"];
 
+const TAB_ICONS = [FileText, LayoutList, ScrollText, Baby, BookOpen];
+
 const Index = () => {
   const { isAdmin } = useAuth();
   const isForm = useLocation().pathname === "/jathagam";
