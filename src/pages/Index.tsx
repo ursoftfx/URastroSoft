@@ -253,48 +253,46 @@ const Index = () => {
             <p className="font-tamil text-lg md:text-xl text-muted-foreground mt-4 max-w-2xl mx-auto">
               உங்கள் பிறப்பு விவரங்களின் அடிப்படையில் வேத ஜோதிட பாணியில் முழுமையான ஜாதக பலன் பெறுங்கள்
             </p>
-            {!isForm && (<nav aria-label="Main menu" className="mt-8 max-w-xl mx-auto">
+            {!isForm && (<nav aria-label="Main menu" className="mt-8 max-w-3xl mx-auto">
               <div className="parchment rounded-xl border-2 border-gold-deep/50 p-3 md:p-5">
-                <div className="font-tamil text-2xl md:text-3xl font-bold text-maroon-deep text-center mb-3 tracking-wide">
+                <div className="font-tamil text-2xl md:text-3xl font-bold text-maroon-deep text-center mb-4 tracking-wide">
                   திருக்கணிதம்
                 </div>
-                <ul className="divide-y divide-gold-deep/30 border-y border-gold-deep/30">
+                <ul className="grid gap-3 sm:grid-cols-2">
                   {[
-                    { to: "/jathagam", label: "ஜாதகம் பதிவு" },
-                    { to: "/jathagam", label: "ஜாதகம் கணிப்பு" },
-                    { to: "/porutham", label: "திருமண பொருத்தம்" },
-                    { to: "/gochara", label: "தினசரி கோசாரம்" },
-                    { to: "/bhrigu-nandi-nadi", label: "பிருகு நந்தி நாடி" },
-                    { to: "/nakshatra-karma", label: "108 நட்சத்திர கர்மம்" },
-                    { to: "/panchanga-deities", label: "பஞ்சாங்க அதிதேவதைகள்" },
-                    { to: "/astrologers", label: "ASTRO UR TALK" },
-                    { to: "/my-consultations", label: "என் கேள்விகள்" },
-                    { to: "/articles", label: "உதவி — கட்டுரைகள்" },
-                    { to: "/about", label: "சுபம்" },
-                  ].map((m) => (
+                    { to: "/jathagam", label: "ஜாதகம் பதிவு", icon: FileText },
+                    { to: "/jathagam", label: "ஜாதகம் கணிப்பு", icon: LayoutList },
+                    { to: "/porutham", label: "திருமண பொருத்தம்", icon: Heart },
+                    { to: "/gochara", label: "தினசரி கோசாரம்", icon: Sun },
+                    { to: "/bhrigu-nandi-nadi", label: "பிருகு நந்தி நாடி", icon: ScrollText },
+                    { to: "/nakshatra-karma", label: "108 நட்சத்திர கர்மம்", icon: Sparkles },
+                    { to: "/panchanga-deities", label: "பஞ்சாங்க அதிதேவதைகள்", icon: Flame },
+                    { to: "/astrologers", label: "ASTRO UR TALK", icon: Phone },
+                    { to: "/my-consultations", label: "என் கேள்விகள்", icon: MessageCircle },
+                    { to: "/articles", label: "உதவி — கட்டுரைகள்", icon: BookOpen },
+                    { to: "/about", label: "சுபம்", icon: Star },
+                  ].map((m, i) => (
                     <li key={m.label}>
-                      <Link
-                        to={m.to}
-                        className="group flex items-center justify-center gap-2 py-2 font-tamil text-lg md:text-xl font-bold text-maroon-deep hover:text-gold transition-colors"
-                      >
-                        <span className="w-5 text-gold opacity-0 group-hover:opacity-100">✓</span>
-                        <span>{m.label}</span>
-                        <span className="w-5" />
+                      <Link to={m.to} className={`pill-btn pill-g${(i % 5) + 1}`}>
+                        <span className="pill-icon">
+                          <m.icon className="h-5 w-5" />
+                        </span>
+                        <span className="pill-label font-tamil text-base md:text-lg">
+                          <span className="mr-2">✓</span>{m.label}
+                        </span>
                       </Link>
                     </li>
                   ))}
                   {isAdmin && (
                     <li>
-                      <Link
-                        to="/admin"
-                        className="group flex items-center justify-center gap-2 py-2 font-tamil text-lg md:text-xl font-bold text-maroon-deep hover:text-gold transition-colors"
-                      >
-                        <Shield className="w-4 h-4" /> நிர்வாகம்
+                      <Link to="/admin" className="pill-btn pill-g1">
+                        <span className="pill-icon"><Shield className="h-5 w-5" /></span>
+                        <span className="pill-label font-tamil text-base md:text-lg">நிர்வாகம்</span>
                       </Link>
                     </li>
                   )}
                 </ul>
-                <div className="font-tamil text-center text-sm text-gold-deep mt-3">
+                <div className="font-tamil text-center text-sm text-gold-deep mt-4">
                   வாழ்க வளமுடன் — ASTRO UR
                 </div>
               </div>
