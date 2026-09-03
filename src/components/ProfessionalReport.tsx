@@ -228,7 +228,7 @@ const Page = ({ children, title, subtitle, page, total, name }: any) => (
     }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", borderBottom: "1px solid #000", paddingBottom: 2, marginBottom: 3 }}>
         <div>
-          <div style={{ fontSize: 14, fontWeight: 800, color: "#000", letterSpacing: 1 }}>ASTRO UR</div>
+          <div style={{ fontSize: 14, fontWeight: 800, color: "#000", letterSpacing: 1 }}>AMMAN SOFTWARES</div>
           <div style={{ fontSize: 8, color: "#000" }}>தமிழ் வேத ஜோதிட விரிவான ஜாதகம்</div>
         </div>
         <div style={{ textAlign: "right" }}>
@@ -399,7 +399,7 @@ export const ProfessionalReport = ({ result, orientation = "p" }: Props) => {
           </div>
           <div style={{ marginTop: "5mm", fontSize: 8 }}>
             இது சுத்த திருக்கணித பஞ்சாங்கப்படி, லாஹிரி அயனாம்சம் கொண்டு கணிக்கப்பெற்றது.<br/>
-            © ASTRO UR • www.astroup.com
+            © AMMAN SOFTWARES • www.astroup.com
           </div>
         </div>
       </Page>

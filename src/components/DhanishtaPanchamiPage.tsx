@@ -119,7 +119,7 @@ export const DhanishtaPanchamiPage = ({ result }: Props) => {
       </ol>
 
       <div style={{ marginTop: 10, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 3, color: "#555" }}>
-        தனிஷ்ட பஞ்சமி பரிகார பதிவு • © ASTRO UR
+        தனிஷ்ட பஞ்சமி பரிகார பதிவு • © AMMAN SOFTWARES
       </div>
     </div>
   );

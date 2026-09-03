@@ -236,7 +236,7 @@ export const BabyNamesPage = ({ result }: Props) => {
       </table>
 
       <div style={{ marginTop: 10, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 3, color: "#555", fontWeight: 700 }}>
-        குழந்தை பெயர்கள் &amp; எண் ஜோதிடம் • © ASTRO UR
+        குழந்தை பெயர்கள் &amp; எண் ஜோதிடம் • © AMMAN SOFTWARES
       </div>
     </div>
   );

@@ -124,7 +124,7 @@ export const BirthDeityPage = ({ result }: Props) => {
         <b>குறிப்பு:</b> ஜாதகரின் ஜென்ம நாள், நட்சத்திரம், திதி, யோகம், கரணம் ஆகியவற்றின் அதிதேவதைகள் மற்றும் நட்சத்திர அடிப்படையிலான பஞ்ச பட்சி இங்கு காட்டப்பட்டுள்ளன. இந்த தேவதைகளை வழிபடுவதும், குறிப்பிட்ட பரிகார ஸ்தலங்களில் தரிசனம் செய்வதும் தோஷ நிவர்த்திக்கு உகந்தது.
       </div>
       <div style={{ marginTop: 4, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 3, color: "#555" }}>
-        © ASTRO UR — Janma Panchanga Adhi Devathai
+        © AMMAN SOFTWARES — Janma Panchanga Adhi Devathai
       </div>
     </div>
   );

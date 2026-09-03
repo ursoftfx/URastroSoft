@@ -164,7 +164,7 @@ export const RuthuJathagamPage = ({ result }: Props) => {
       </ol>
 
       <div style={{ marginTop: 8, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 3, color: "#555" }}>
-        ருது ஜாதகம் — {RASIS_TAMIL[result.moon.rasiIndex]} ராசி • © ASTRO UR
+        ருது ஜாதகம் — {RASIS_TAMIL[result.moon.rasiIndex]} ராசி • © AMMAN SOFTWARES
       </div>
     </div>
   );

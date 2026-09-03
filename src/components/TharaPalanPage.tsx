@@ -79,7 +79,7 @@ export const TharaPalanPage = ({ result }: Props) => {
         </div>
 
         <div style={{ marginTop: 8, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 3, color: "#555" }}>
-          தாரா பலன் — © ASTRO UR
+          தாரா பலன் — © AMMAN SOFTWARES
         </div>
       </div>
 
@@ -114,7 +114,7 @@ export const TharaPalanPage = ({ result }: Props) => {
         </table>
 
         <div style={{ marginTop: 8, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 3, color: "#555" }}>
-          தாரா பலன் அட்டவணை • © ASTRO UR
+          தாரா பலன் அட்டவணை • © AMMAN SOFTWARES
         </div>
       </div>
     </>
