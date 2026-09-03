@@ -315,7 +315,7 @@ const BhriguNandiNadi = () => {
             "@type": "Article",
             headline: "Bhrigu Nandi Nadi step-by-step rules and predictions in Tamil",
             inLanguage: "ta",
-            author: { "@type": "Organization", name: "ASTRO UR" },
+            author: { "@type": "Organization", name: "AMMAN SOFTWARES" },
           }}
         />
 

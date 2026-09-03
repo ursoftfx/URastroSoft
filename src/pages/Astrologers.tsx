@@ -36,14 +36,14 @@ const Astrologers = () => {
   return (
     <main className="min-h-screen px-4 py-8 max-w-6xl mx-auto">
       <SEO
-        title="ASTRO UR TALK — ஜோதிடர்களிடம் கேள்வி கேளுங்கள்"
+        title="AMMAN SOFTWARES TALK — ஜோதிடர்களிடம் கேள்வி கேளுங்கள்"
         description="அங்கீகரிக்கப்பட்ட தமிழ் ஜோதிடர்களுடன் உரையாடல் மற்றும் குரல் அழைப்பு மூலம் ஜாதக கேள்விகள் கேளுங்கள்."
       />
       <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
         <Link to="/" className="inline-flex items-center text-sm font-tamil text-maroon-deep">
           <ArrowLeft className="w-4 h-4 mr-1" /> முகப்பு
         </Link>
-        <h1 className="font-tamil text-2xl md:text-3xl font-bold text-maroon-deep">ASTRO UR TALK — ஜோதிடர்கள்</h1>
+        <h1 className="font-tamil text-2xl md:text-3xl font-bold text-maroon-deep">AMMAN SOFTWARES TALK — ஜோதிடர்கள்</h1>
         <Button asChild variant="outline" size="sm" className="font-tamil">
           <Link to="/astrologer/apply">ஜோதிடராக சேர</Link>
         </Button>

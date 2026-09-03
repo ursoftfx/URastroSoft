@@ -143,7 +143,7 @@ const PanchangaDeities = () => {
     <>
       <main className="min-h-screen">
         <SEO
-          title="பஞ்சாங்க அதிதேவதைகள் — நாள், நட்சத்திரம், திதி, யோகம், கரணம் | ASTRO UR"
+          title="பஞ்சாங்க அதிதேவதைகள் — நாள், நட்சத்திரம், திதி, யோகம், கரணம் | AMMAN SOFTWARES"
           description="இன்றைய நாள், நட்சத்திரம், திதி, யோகம், கரணம் மற்றும் பஞ்ச பட்சி அதிதேவதைகள் படங்களுடன் — தேதி தேர்ந்தெடுத்து பாருங்கள்."
         />
         <div className="max-w-5xl mx-auto px-4 py-8 md:py-12">

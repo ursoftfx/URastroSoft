@@ -108,7 +108,7 @@ export const TodayPanchangam = () => {
 
       <div id="today-panchangam-root" className="a4-sheet print-area bg-white rounded-lg p-4 border border-gold/30" style={{ fontFamily: "'Latha','Tahoma',sans-serif" }}>
         <div style={{ borderBottom: "2px solid #7a1a2b", paddingBottom: 5, marginBottom: 8, textAlign: "center" }}>
-          <div style={{ fontSize: 18, fontWeight: 800, color: "#7a1a2b" }}>இன்றைய பஞ்சாங்கம் — ASTRO UR</div>
+          <div style={{ fontSize: 18, fontWeight: 800, color: "#7a1a2b" }}>இன்றைய பஞ்சாங்கம் — AMMAN SOFTWARES</div>
           <div style={{ fontSize: 12, color: "#555", fontWeight: 700 }}>
             {format(now, "EEEE, dd MMMM yyyy")} • {PLACES[0].name}
           </div>
@@ -124,7 +124,7 @@ export const TodayPanchangam = () => {
           </tbody>
         </table>
         <div style={{ marginTop: 8, fontSize: 10, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 3, color: "#555", fontWeight: 700 }}>
-          தினசரி பஞ்சாங்கம் • © ASTRO UR
+          தினசரி பஞ்சாங்கம் • © AMMAN SOFTWARES
         </div>
       </div>
     </div>

@@ -198,7 +198,7 @@ export const DashaTableA4 = ({ result }: Props) => {
               color: "#555",
             }}
           >
-            விம்சோத்தரி தசா – புத்தி – அந்தரம் • © ASTRO UR
+            விம்சோத்தரி தசா – புத்தி – அந்தரம் • © AMMAN SOFTWARES
           </div>
         </div>
       ))}

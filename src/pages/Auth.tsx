@@ -76,14 +76,14 @@ const Auth = () => {
 
   return (
     <main className="min-h-screen flex items-center justify-center px-4 py-10">
-      <SEO title="உள்நுழைவு | ASTRO UR TALK Login" description="தொலைபேசி எண் கொண்டு உள்நுழையவும்" noIndex />
+      <SEO title="உள்நுழைவு | AMMAN SOFTWARES TALK Login" description="தொலைபேசி எண் கொண்டு உள்நுழையவும்" noIndex />
       <div className="w-full max-w-md">
         <Link to="/" className="inline-flex items-center text-sm text-maroon-deep mb-4 font-tamil">
           <ArrowLeft className="w-4 h-4 mr-1" /> முகப்பு
         </Link>
         <div className="parchment rounded-2xl p-6 md:p-8">
           <h1 className="font-tamil text-2xl md:text-3xl font-bold text-maroon-deep text-center mb-2">
-            ASTRO UR TALK
+            AMMAN SOFTWARES TALK
           </h1>
           <p className="text-center text-sm text-muted-foreground font-tamil mb-6">ஜோதிடர்களுடன் நேரடி கலந்தாலோசனை</p>
           <Tabs defaultValue="signin">

@@ -29,7 +29,7 @@ export default function DhanishtaPanchami() {
   return (
     <div className="min-h-screen bg-gradient-temple">
       <SEO
-        title="தனிஷ்ட பஞ்சமி தோஷம் — விவரம் & பரிகாரம் | ASTRO UR"
+        title="தனிஷ்ட பஞ்சமி தோஷம் — விவரம் & பரிகாரம் | AMMAN SOFTWARES"
         description="அவிட்டம் முதல் ரேவதி வரையுள்ள ஐந்து நட்சத்திரங்களுக்கான தனிஷ்ட பஞ்சமி தோஷ தீவிரம், பலன் மற்றும் பரிகாரங்கள்."
       />
       <div className="container mx-auto px-4 py-8 max-w-3xl">

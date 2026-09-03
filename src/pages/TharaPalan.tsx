@@ -27,7 +27,7 @@ export default function TharaPalan() {
   return (
     <div className="min-h-screen bg-gradient-temple">
       <SEO
-        title="தாரா பலன் — நட்சத்திர தாரை கணிப்பு | ASTRO UR"
+        title="தாரா பலன் — நட்சத்திர தாரை கணிப்பு | AMMAN SOFTWARES"
         description="ஜென்ம நட்சத்திரம் மற்றும் நாள் நட்சத்திரம் தேர்ந்தெடுத்து 9 தாரைகளின் பலன், தன்மை மற்றும் பரிகாரங்களை அறியுங்கள்."
       />
       <div className="container mx-auto px-4 py-8 max-w-4xl">
