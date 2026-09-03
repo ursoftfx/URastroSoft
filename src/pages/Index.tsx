@@ -12,6 +12,9 @@ import { OnePageReport } from "@/components/OnePageReport";
 import { ProfessionalReport } from "@/components/ProfessionalReport";
 import { JenanaKurippu } from "@/components/JenanaKurippu";
 import { BabyNamesPage } from "@/components/BabyNamesPage";
+import { TharaPalanPage } from "@/components/TharaPalanPage";
+import { DhanishtaPanchamiPage } from "@/components/DhanishtaPanchamiPage";
+import { RuthuJathagamPage } from "@/components/RuthuJathagamPage";
 import { supabase } from "@/integrations/supabase/client";
 import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -26,12 +29,15 @@ const REPORT_TABS = [
   { key: "onepage", label: "ஒரு பக்கம் (A4)" },
   { key: "kurippu", label: "ஜெனன குறிப்பு" },
   { key: "babynames", label: "குழந்தை பெயர்கள்" },
+  { key: "thara", label: "தாரா அட்டவணை" },
+  { key: "dhanishta", label: "தனிஷ்ட பஞ்சமி" },
+  { key: "ruthu", label: "ருது ஜாதகம் & பரிகாரம்" },
   { key: "detailed", label: "முழு அறிக்கை" },
 ] as const;
 
 type ReportView = (typeof REPORT_TABS)[number]["key"];
 
-const TAB_ICONS = [FileText, LayoutList, ScrollText, Baby, BookOpen];
+const TAB_ICONS = [FileText, LayoutList, ScrollText, Baby, Star, Sparkles, Flame, BookOpen];
 
 const Index = () => {
   const { isAdmin } = useAuth();
@@ -269,6 +275,9 @@ const Index = () => {
                     { to: "/panchanga-deities", label: "பஞ்சாங்க அதிதேவதைகள்", icon: Flame },
                     { to: "/astrologers", label: "AMMAN SOFTWARES TALK", icon: Phone },
                     { to: "/my-consultations", label: "என் கேள்விகள்", icon: MessageCircle },
+                    { to: "/jathagam?tab=thara", label: "தாரா அட்டவணை", icon: Star },
+                    { to: "/jathagam?tab=dhanishta", label: "தனிஷ்ட பஞ்சமி", icon: Sparkles },
+                    { to: "/jathagam?tab=ruthu", label: "ருது ஜாதகம் & பரிகாரம்", icon: Flame },
                     { to: "/articles", label: "உதவி — கட்டுரைகள்", icon: BookOpen },
                     { to: "/about", label: "சுபம்", icon: Star },
                   ].map((m, i) => (
@@ -434,6 +443,24 @@ const ResultView = ({
               <FileText className="w-3.5 h-3.5 inline mr-1" /> குழந்தை பெயர்கள்
             </button>
             <button
+              onClick={() => setView("thara")}
+              className={`px-3 py-1.5 text-xs font-tamil rounded ${view === "thara" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
+            >
+              <Star className="w-3.5 h-3.5 inline mr-1" /> தாரா அட்டவணை
+            </button>
+            <button
+              onClick={() => setView("dhanishta")}
+              className={`px-3 py-1.5 text-xs font-tamil rounded ${view === "dhanishta" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
+            >
+              <Sparkles className="w-3.5 h-3.5 inline mr-1" /> தனிஷ்ட பஞ்சமி
+            </button>
+            <button
+              onClick={() => setView("ruthu")}
+              className={`px-3 py-1.5 text-xs font-tamil rounded ${view === "ruthu" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
+            >
+              <Flame className="w-3.5 h-3.5 inline mr-1" /> ருது ஜாதகம்
+            </button>
+            <button
               onClick={() => setView("detailed")}
               className={`px-3 py-1.5 text-xs font-tamil rounded ${view === "detailed" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
             >
@@ -456,7 +483,7 @@ const ResultView = ({
             <Printer className="w-4 h-4 mr-1" /> அச்சிடு
           </Button>
           <DownloadReport
-            targetId={view === "pro" ? "professional-report-root" : view === "onepage" ? "onepage-report-root" : view === "kurippu" ? "kurippu-report-root" : view === "babynames" ? "babynames-report-root" : "jathagam-report-root"}
+            targetId={view === "pro" ? "professional-report-root" : view === "onepage" ? "onepage-report-root" : view === "kurippu" ? "kurippu-report-root" : view === "babynames" ? "babynames-report-root" : view === "thara" ? "thara-report-root" : view === "dhanishta" ? "dhanishta-report-root" : view === "ruthu" ? "ruthu-report-root" : "jathagam-report-root"}
             fileName={`jathagam-${result.input.name.replace(/\s+/g, "-")}.pdf`}
             paperSize={view === "pro" ? "a5" : "a4"}
             orientation={view === "pro" ? proOrient : "p"}
@@ -481,6 +508,18 @@ const ResultView = ({
       ) : view === "babynames" ? (
         <div id="babynames-report-root" className="overflow-x-auto">
           <BabyNamesPage result={result} />
+        </div>
+      ) : view === "thara" ? (
+        <div id="thara-report-root" className="overflow-x-auto">
+          <TharaPalanPage result={result} />
+        </div>
+      ) : view === "dhanishta" ? (
+        <div id="dhanishta-report-root" className="overflow-x-auto">
+          <DhanishtaPanchamiPage result={result} />
+        </div>
+      ) : view === "ruthu" ? (
+        <div id="ruthu-report-root" className="overflow-x-auto">
+          <RuthuJathagamPage result={result} />
         </div>
       ) : (
         <div id="jathagam-report-root">
