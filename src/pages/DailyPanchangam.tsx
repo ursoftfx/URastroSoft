@@ -18,6 +18,15 @@ import {
   formatDegree,
   type JathagamResult,
 } from "@/lib/jathagam";
+import {
+  tamilYearName,
+  tamilMonthDay,
+  planetColor,
+  toNaazhigai,
+  nallaNeramSegs,
+  chandrashtamaFor,
+  LIMB_GRADIENTS,
+} from "@/lib/panchangam-extra";
 
 const HORA_ORDER = ["சூரியன்", "சுக்ரன்", "புதன்", "சந்திரன்", "சனி", "குரு", "செவ்வாய்"];
 const WEEKDAY_LORD_IDX: Record<number, number> = { 0: 0, 1: 3, 2: 6, 3: 2, 4: 5, 5: 1, 6: 4 };
@@ -169,16 +178,27 @@ const PanchangamSheet = ({ result, date, place }: { result: JathagamResult; date
   };
 
   const tamilMonth = TAMIL_MONTHS[result.sun.rasiIndex];
+  const nakIdx = result.moon.nakshatraIndex;
+  const limbs: [string, string][] = [
+    ["திதி", pg.tithiTamil],
+    ["வாரம்", WEEKDAY_TAMIL[weekday]],
+    ["நட்சத்திரம்", NAKSHATRAS_TAMIL[nakIdx]],
+    ["யோகம்", pg.yogaTamil],
+    ["கரணம்", pg.karanaTamil],
+  ];
+  const nallaSegs = nallaSegs(weekday);
+  const chandraStar = NAKSHATRAS_TAMIL[chandrashtamaFor(nakIdx)];
 
   const main: [string, string][] = [
     ["திகதி (ஆங்கிலம்)", format(date, "dd/MM/yyyy")],
-    ["வாரம்", WEEKDAY_TAMIL[weekday]],
+    ["தமிழ் வருடம்", tamilYearName(date.getFullYear(), result.sun.rasiIndex)],
+    ["தமிழ் மாதம்", `${tamilMonth} மாதம் — ${tamilMonthDay(result.sun.degreeInRasi)}ஆம் திகதி`],
+    ["வாரம்", `${WEEKDAY_TAMIL[weekday]} (வார அதிபதி: ${HORA_ORDER[WEEKDAY_LORD_IDX[weekday]]})`],
     ["இடம்", place],
-    ["தமிழ் மாதம்", tamilMonth],
     ["பட்சம்", `${pg.paksha} பக்ஷம்`],
     ["திதி", pg.tithiTamil],
-    ["நட்சத்திரம்", `${NAKSHATRAS_TAMIL[result.moon.nakshatraIndex]} (${result.pada}ஆம் பாதம்)`],
-    ["நட்சத்திர அதிபதி", NAKSHATRA_LORDS_TAMIL[result.moon.nakshatraIndex]],
+    ["நட்சத்திரம்", `${NAKSHATRAS_TAMIL[nakIdx]} (${result.pada}ஆம் பாதம்)`],
+    ["நட்சத்திர அதிபதி", NAKSHATRA_LORDS_TAMIL[nakIdx]],
     ["யோகம்", pg.yogaTamil],
     ["கரணம்", pg.karanaTamil],
     ["சந்திர ராசி", RASIS_TAMIL[result.moon.rasiIndex]],
@@ -190,11 +210,14 @@ const PanchangamSheet = ({ result, date, place }: { result: JathagamResult; date
     ["சூரிய உதயம்", fmt(sunrise)],
     ["சூரிய அஸ்தமனம்", fmt(sunset)],
     ["பகல் அளவு", `${Math.floor(dayMs / 3600000)} மணி ${Math.round((dayMs % 3600000) / 60000)} நிமிடம்`],
+    ["சூரிய உதய நாழிகை", toNaazhigai(0) + " (சூரிய உதயத்திலிருந்து கணக்கு)"],
+    ["நல்ல நேரம் (காலை)", segRange(nallaSegs[0])],
+    ["நல்ல நேரம் (மாலை)", segRange(nallaSegs[1])],
     ["ராகு காலம்", segRange(RAHU_SEG[weekday])],
     ["யமகண்டம்", segRange(YAMA_SEG[weekday])],
     ["குளிகை காலம்", segRange(GULIKA_SEG[weekday])],
     ["அபிஜித் முகூர்த்தம்", abhijit()],
-    ["சுப நேரம் (பொது)", `${fmt(new Date(sunrise.getTime() + segMs))} – ${fmt(new Date(sunrise.getTime() + 2 * segMs))}`],
+    ["சந்திராஷ்டமம்", `${chandraStar} நட்சத்திரக்காரர்களுக்கு இன்று சந்திராஷ்டமம்`],
   ];
 
   return (
