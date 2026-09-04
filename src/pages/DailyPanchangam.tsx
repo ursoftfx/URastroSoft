@@ -118,6 +118,15 @@ const DailyPanchangam = () => {
                 productLabel="Daily Panchangam"
               />
             </div>
+            <div className="sm:col-span-3">
+              <PanchangamShare
+                message={
+                  result
+                    ? `தினசரி பஞ்சாங்கம் — ${format(new Date(`${date}T06:00:00`), "dd/MM/yyyy")} • ${PLACES[placeIdx].name}\nதிதி: ${pg0(result).tithiTamil} • நட்சத்திரம்: ${NAKSHATRAS_TAMIL[result.moon.nakshatraIndex]} • யோகம்: ${pg0(result).yogaTamil}`
+                    : "தினசரி பஞ்சாங்கம் — AMMAN SOFTWARES"
+                }
+              />
+            </div>
           </div>
 
           {result && <PanchangamSheet result={result} date={sel} place={PLACES[placeIdx].name} />}
