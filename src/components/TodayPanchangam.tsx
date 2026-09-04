@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { CalendarDays, Printer, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DownloadReport } from "@/components/DownloadReport";
+import { PanchangamShare } from "@/components/PanchangamShare";
 import { PLACES } from "@/lib/places";
 import { computeJathagam, NAKSHATRAS_TAMIL, RASIS_TAMIL, type JathagamResult } from "@/lib/jathagam";
 
