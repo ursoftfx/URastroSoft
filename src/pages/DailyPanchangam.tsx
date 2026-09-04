@@ -122,7 +122,7 @@ const DailyPanchangam = () => {
               <PanchangamShare
                 message={
                   result
-                    ? `தினசரி பஞ்சாங்கம் — ${format(new Date(`${date}T06:00:00`), "dd/MM/yyyy")} • ${PLACES[placeIdx].name}\nதிதி: ${pg0(result).tithiTamil} • நட்சத்திரம்: ${NAKSHATRAS_TAMIL[result.moon.nakshatraIndex]} • யோகம்: ${pg0(result).yogaTamil}`
+                    ? `தினசரி பஞ்சாங்கம் — ${format(new Date(`${date}T06:00:00`), "dd/MM/yyyy")} • ${PLACES[placeIdx].name}\nதிதி: ${result.panchangam.tithiTamil} • நட்சத்திரம்: ${NAKSHATRAS_TAMIL[result.moon.nakshatraIndex]} • யோகம்: ${result.panchangam.yogaTamil}`
                     : "தினசரி பஞ்சாங்கம் — AMMAN SOFTWARES"
                 }
               />
