@@ -35,7 +35,7 @@ export const PanchangamShare = ({ message, className, compact = false }: Props) 
       // user can paste it into a story / DM, then open Instagram.
       try {
         await navigator.clipboard.writeText(shareText);
-        toast.success("பங்காங்க விவரம் நகலெடுக்கப்பட்டது — Instagram-ல் ஒட்டவும்");
+        toast.success("பஞ்சாங்க விவரம் நகலெடுக்கப்பட்டது — Instagram-ல் ஒட்டவும்");
       } catch {
         toast.error("நகலெடுக்க முடியவில்லை");
       }

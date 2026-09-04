@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { SEO } from "@/components/SEO";
 import { SiteFooter } from "@/components/SiteFooter";
 import { DownloadReport } from "@/components/DownloadReport";
+import { PanchangamShare } from "@/components/PanchangamShare";
 import { PLACES } from "@/lib/places";
 import {
   computeJathagam,
