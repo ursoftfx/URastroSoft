@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { SEO } from "@/components/SEO";
 import { SiteFooter } from "@/components/SiteFooter";
 import { DownloadReport } from "@/components/DownloadReport";
+import { PanchangamShare } from "@/components/PanchangamShare";
 import { PLACES } from "@/lib/places";
 import {
   computeJathagam,
@@ -115,6 +116,15 @@ const DailyPanchangam = () => {
                 paperSize="a4"
                 orientation="p"
                 productLabel="Daily Panchangam"
+              />
+            </div>
+            <div className="sm:col-span-3">
+              <PanchangamShare
+                message={
+                  result
+                    ? `தினசரி பஞ்சாங்கம் — ${format(new Date(`${date}T06:00:00`), "dd/MM/yyyy")} • ${PLACES[placeIdx].name}\nதிதி: ${result.panchangam.tithiTamil} • நட்சத்திரம்: ${NAKSHATRAS_TAMIL[result.moon.nakshatraIndex]} • யோகம்: ${result.panchangam.yogaTamil}`
+                    : "தினசரி பஞ்சாங்கம் — AMMAN SOFTWARES"
+                }
               />
             </div>
           </div>

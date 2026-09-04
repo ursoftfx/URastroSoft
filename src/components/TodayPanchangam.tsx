@@ -3,6 +3,7 @@ import { format } from "date-fns";
 import { CalendarDays, Printer, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DownloadReport } from "@/components/DownloadReport";
+import { PanchangamShare } from "@/components/PanchangamShare";
 import { PLACES } from "@/lib/places";
 import { computeJathagam, NAKSHATRAS_TAMIL, RASIS_TAMIL, type JathagamResult } from "@/lib/jathagam";
 
@@ -89,7 +90,7 @@ export const TodayPanchangam = () => {
         <div className="flex items-center gap-2 font-tamil text-lg font-bold text-maroon-deep">
           <CalendarDays className="w-5 h-5 text-gold-deep" /> இன்றைய பஞ்சாங்கம்
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Button size="sm" variant="outline" className="font-tamil text-maroon-deep border-gold/40" onClick={() => setNow(new Date())}>
             <RefreshCw className="w-3.5 h-3.5 mr-1" /> புதுப்பி
           </Button>
@@ -104,6 +105,10 @@ export const TodayPanchangam = () => {
             productLabel="Today Panchangam"
           />
         </div>
+        <PanchangamShare
+          message={`இன்றைய பஞ்சாங்கம் — ${format(now, "dd/MM/yyyy")} • ${PLACES[0].name}\nதிதி: ${pg.paksha} ${pg.tithiTamil} • நட்சத்திரம்: ${NAKSHATRAS_TAMIL[result.moon.nakshatraIndex]} • யோகம்: ${pg.yogaTamil}\nராகு காலம்: ${segRange(RAHU_SEG[weekday])}`}
+          className="w-full"
+        />
       </div>
 
       <div id="today-panchangam-root" className="a4-sheet print-area bg-white rounded-lg p-4 border border-gold/30" style={{ fontFamily: "'Latha','Tahoma',sans-serif" }}>

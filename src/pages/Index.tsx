@@ -4,7 +4,7 @@ import { JathagamReport } from "@/components/JathagamReport";
 import { BirthInput, computeJathagam, JathagamResult } from "@/lib/jathagam";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Printer, FileText, LayoutList, Shield, ScrollText, Baby, BookOpen, Heart, Sun, Sparkles, Flame, Phone, MessageCircle, Star } from "lucide-react";
+import { ArrowLeft, Printer, FileText, LayoutList, Shield, ScrollText, Baby, BookOpen, Heart, Sun, Sparkles, Flame, Phone, MessageCircle, Star, CalendarDays } from "lucide-react";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SEO } from "@/components/SEO";
 import { DownloadReport } from "@/components/DownloadReport";
@@ -270,6 +270,7 @@ const Index = () => {
                     { to: "/jathagam", label: "ஜாதகம் கணிப்பு", icon: LayoutList },
                     { to: "/porutham", label: "திருமண பொருத்தம்", icon: Heart },
                     { to: "/gochara", label: "தினசரி கோசாரம்", icon: Sun },
+                    { to: "/panchangam", label: "தினசரி பஞ்சாங்கம்", icon: CalendarDays },
                     { to: "/bhrigu-nandi-nadi", label: "பிருகு நந்தி நாடி", icon: ScrollText },
                     { to: "/nakshatra-karma", label: "108 நட்சத்திர கர்மம்", icon: Sparkles },
                     { to: "/panchanga-deities", label: "பஞ்சாங்க அதிதேவதைகள்", icon: Flame },
