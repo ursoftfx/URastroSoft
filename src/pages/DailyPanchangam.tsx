@@ -18,6 +18,15 @@ import {
   formatDegree,
   type JathagamResult,
 } from "@/lib/jathagam";
+import {
+  tamilYearName,
+  tamilMonthDay,
+  planetColor,
+  toNaazhigai,
+  nallaNeramSegs,
+  chandrashtamaFor,
+  LIMB_GRADIENTS,
+} from "@/lib/panchangam-extra";
 
 const HORA_ORDER = ["சூரியன்", "சுக்ரன்", "புதன்", "சந்திரன்", "சனி", "குரு", "செவ்வாய்"];
 const WEEKDAY_LORD_IDX: Record<number, number> = { 0: 0, 1: 3, 2: 6, 3: 2, 4: 5, 5: 1, 6: 4 };
