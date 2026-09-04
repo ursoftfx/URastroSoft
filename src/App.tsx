@@ -23,6 +23,7 @@ import { ArticlesList, ArticleDetail } from "./pages/Articles.tsx";
 import { About, Contact, PrivacyPolicy, Terms, Disclaimer } from "./pages/StaticPages.tsx";
 import NakshatraKarma from "./pages/NakshatraKarma.tsx";
 import PanchangaDeities from "./pages/PanchangaDeities.tsx";
+import DailyPanchangam from "./pages/DailyPanchangam.tsx";
 
 const queryClient = new QueryClient();
 
@@ -35,6 +36,7 @@ const App = () => (
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/panchangam" element={<DailyPanchangam />} />
             <Route path="/jathagam" element={<Index />} />
             <Route path="/free-horoscope" element={<FreeHoroscope />} />
             <Route path="/birth-horoscope" element={<BirthHoroscope />} />

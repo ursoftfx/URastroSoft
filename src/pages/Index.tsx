@@ -270,6 +270,7 @@ const Index = () => {
                     { to: "/jathagam", label: "ஜாதகம் கணிப்பு", icon: LayoutList },
                     { to: "/porutham", label: "திருமண பொருத்தம்", icon: Heart },
                     { to: "/gochara", label: "தினசரி கோசாரம்", icon: Sun },
+                    { to: "/panchangam", label: "தினசரி பஞ்சாங்கம்", icon: CalendarDays },
                     { to: "/bhrigu-nandi-nadi", label: "பிருகு நந்தி நாடி", icon: ScrollText },
                     { to: "/nakshatra-karma", label: "108 நட்சத்திர கர்மம்", icon: Sparkles },
                     { to: "/panchanga-deities", label: "பஞ்சாங்க அதிதேவதைகள்", icon: Flame },
