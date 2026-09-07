@@ -186,7 +186,7 @@ const PanchangamSheet = ({ result, date, place }: { result: JathagamResult; date
     ["யோகம்", pg.yogaTamil],
     ["கரணம்", pg.karanaTamil],
   ];
-  const nallaSegs = nallaSegs(weekday);
+  const nalla = nallaNeramSegs(weekday);
   const chandraStar = NAKSHATRAS_TAMIL[chandrashtamaFor(nakIdx)];
 
   const main: [string, string][] = [
@@ -211,8 +211,8 @@ const PanchangamSheet = ({ result, date, place }: { result: JathagamResult; date
     ["சூரிய அஸ்தமனம்", fmt(sunset)],
     ["பகல் அளவு", `${Math.floor(dayMs / 3600000)} மணி ${Math.round((dayMs % 3600000) / 60000)} நிமிடம்`],
     ["சூரிய உதய நாழிகை", toNaazhigai(0) + " (சூரிய உதயத்திலிருந்து கணக்கு)"],
-    ["நல்ல நேரம் (காலை)", segRange(nallaSegs[0])],
-    ["நல்ல நேரம் (மாலை)", segRange(nallaSegs[1])],
+    ["நல்ல நேரம் (காலை)", segRange(nalla[0])],
+    ["நல்ல நேரம் (மாலை)", segRange(nalla[1])],
     ["ராகு காலம்", segRange(RAHU_SEG[weekday])],
     ["யமகண்டம்", segRange(YAMA_SEG[weekday])],
     ["குளிகை காலம்", segRange(GULIKA_SEG[weekday])],
@@ -233,6 +233,15 @@ const PanchangamSheet = ({ result, date, place }: { result: JathagamResult; date
         </div>
       </div>
 
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(5, minmax(0, 1fr))", gap: 5, marginBottom: 10 }}>
+        {limbs.map(([label, value], i) => (
+          <div key={label} style={{ background: LIMB_GRADIENTS[i], color: "white", borderRadius: 6, padding: "7px 4px", textAlign: "center", minWidth: 0 }}>
+            <div style={{ fontSize: 10, fontWeight: 700, opacity: 0.9 }}>{label}</div>
+            <div style={{ fontSize: 12, fontWeight: 800, overflowWrap: "anywhere" }}>{value}</div>
+          </div>
+        ))}
+      </div>
+
       <SectionTable title="பஞ்சாங்க விவரங்கள்" rows={main} />
       <SectionTable title="நேர விவரங்கள்" rows={times} />
 
@@ -251,9 +260,9 @@ const PanchangamSheet = ({ result, date, place }: { result: JathagamResult; date
         <tbody>
           {dayHoras.map((h, i) => (
             <tr key={i} style={{ background: i % 2 ? "#fdf6ec" : "white" }}>
-              <td style={cell}>{h.lord}</td>
+              <td style={{ ...cell, color: planetColor(h.lord) }}>{h.lord}</td>
               <td style={cell}>{h.range}</td>
-              <td style={cell}>{nightHoras[i].lord}</td>
+              <td style={{ ...cell, color: planetColor(nightHoras[i].lord) }}>{nightHoras[i].lord}</td>
               <td style={cell}>{nightHoras[i].range}</td>
             </tr>
           ))}
@@ -273,7 +282,7 @@ const PanchangamSheet = ({ result, date, place }: { result: JathagamResult; date
         <tbody>
           {result.planets.map((p, i) => (
             <tr key={p.key} style={{ background: i % 2 ? "#fdf6ec" : "white" }}>
-              <td style={cell}>{p.nameTamil}{p.retrograde ? " (வ)" : ""}</td>
+              <td style={{ ...cell, color: planetColor(p.nameTamil) }}>{p.nameTamil}{p.retrograde ? " (வ)" : ""}</td>
               <td style={cell}>{p.rasiTamil}</td>
               <td style={cell}>{formatDegree(p.degreeInRasi)}</td>
               <td style={cell}>{p.nakshatraTamil}</td>
