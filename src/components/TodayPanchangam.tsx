@@ -6,6 +6,7 @@ import { DownloadReport } from "@/components/DownloadReport";
 import { PanchangamShare } from "@/components/PanchangamShare";
 import { PLACES } from "@/lib/places";
 import { computeJathagam, NAKSHATRAS_TAMIL, RASIS_TAMIL, type JathagamResult } from "@/lib/jathagam";
+import { LIMB_GRADIENTS, planetColor } from "@/lib/panchangam-extra";
 
 const HORA_ORDER = ["சூரியன்", "சுக்ரன்", "புதன்", "சந்திரன்", "சனி", "குரு", "செவ்வாய்"];
 const WEEKDAY_LORD_IDX: Record<number, number> = { 0: 0, 1: 3, 2: 6, 3: 2, 4: 5, 5: 1, 6: 4 };
@@ -68,6 +69,14 @@ export const TodayPanchangam = () => {
   const startLord = isDay ? WEEKDAY_LORD_IDX[weekday] : WEEKDAY_LORD_IDX[(weekday + 1) % 7];
   const hora = HORA_ORDER[(startLord + horaIdx) % 7];
 
+  const limbs: [string, string][] = [
+    ["திதி", pg.tithiTamil],
+    ["வாரம்", pg.vaaraTamil],
+    ["நட்சத்திரம்", NAKSHATRAS_TAMIL[result.moon.nakshatraIndex]],
+    ["யோகம்", pg.yogaTamil],
+    ["கரணம்", pg.karanaTamil],
+  ];
+
   const rows: [string, string][] = [
     ["திகதி", format(now, "dd/MM/yyyy")],
     ["நாள் (வாரம்)", pg.vaaraTamil],
@@ -118,12 +127,20 @@ export const TodayPanchangam = () => {
             {format(now, "EEEE, dd MMMM yyyy")} • {PLACES[0].name}
           </div>
         </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(5, minmax(0, 1fr))", gap: 5, marginBottom: 10 }}>
+          {limbs.map(([label, value], i) => (
+            <div key={label} style={{ background: LIMB_GRADIENTS[i], color: "white", borderRadius: 6, padding: "7px 4px", textAlign: "center", minWidth: 0 }}>
+              <div style={{ fontSize: 10, fontWeight: 700, opacity: 0.9 }}>{label}</div>
+              <div style={{ fontSize: 12, fontWeight: 800, overflowWrap: "anywhere" }}>{value}</div>
+            </div>
+          ))}
+        </div>
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <tbody>
             {rows.map(([k, v], i) => (
               <tr key={k} style={{ background: i % 2 ? "#fdf6ec" : "white" }}>
                 <td style={{ ...th, width: "38%" }}>{k}</td>
-                <td style={cell}>{v}</td>
+                <td style={k === "தற்போதைய ஹோரை" ? { ...cell, color: planetColor(hora), background: `${planetColor(hora)}12` } : cell}>{v}</td>
               </tr>
             ))}
           </tbody>
