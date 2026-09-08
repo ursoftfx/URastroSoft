@@ -486,6 +486,7 @@ export const OnePageReport = ({ result }: Props) => {
     <RuthuJathagamPage result={result} />
     <DhanishtaPanchamiPage result={result} />
     <TharaPalanPage result={result} />
+    <ThithiSuniyamPage result={result} />
     </>
   );
 };
