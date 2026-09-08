@@ -11,12 +11,11 @@ const heading: React.CSSProperties = { fontSize: 16, fontWeight: 800, color: "#7
 
 export const ThithiSuniyamPage = ({ result }: Props) => {
   const pg = result.panchangam;
-  const tithiInPaksha = (pg.tithiIndex % 15) + 1;
-  const suniyaRasis = TITHI_SUNIYAM[tithiInPaksha] ?? [];
+  const suniyaRasis = suniyaRasisFor(pg.tithiIndex);
 
   const janma = result.moon.rasiIndex;
-  const irundhaRasi = (janma + 7) % 12;  // 8-ஆம் ராசி
-  const mudakkuRasi = (janma + 11) % 12; // 12-ஆம் ராசி
+  const irundhaRasi = calcIrundha(janma);  // 8-ஆம் ராசி
+  const mudakkuRasi = calcMudakku(janma);  // 12-ஆம் ராசி
 
   const isSuniyam = (r: number) => suniyaRasis.includes(r);
 
