@@ -22,6 +22,27 @@ import { PLACES } from "@/lib/places";
 import { SiteFooter } from "@/components/SiteFooter";
 import { PoruthamPublisherContent } from "@/components/AdSenseContentBlocks";
 import { cn } from "@/lib/utils";
+import { DownloadReport } from "@/components/DownloadReport";
+import { suniyaRasisFor, irundhaRasi, mudakkuRasi } from "@/lib/thithi-suniyam";
+
+const SuniyamCard = ({ title, j }: { title: string; j: JathagamResult }) => {
+  const suniya = suniyaRasisFor(j.panchangam.tithiIndex);
+  const janma = j.moon.rasiIndex;
+  const affected = suniya.includes(janma);
+  return (
+    <div className="border border-gold/30 rounded-lg p-4 bg-gold/5 font-tamil text-sm space-y-1">
+      <div className="font-bold text-maroon-deep mb-1">{title}</div>
+      <div><span className="text-muted-foreground">திதி:</span> <b>{j.panchangam.tithiTamil}</b> ({j.panchangam.paksha} பக்ஷம்)</div>
+      <div><span className="text-muted-foreground">திதி சூன்ய ராசிகள்:</span> <b className="text-destructive">{suniya.map((r) => RASIS[r]).join(", ") || "—"}</b></div>
+      <div><span className="text-muted-foreground">ஜென்ம ராசி:</span> {RASIS[janma]}</div>
+      <div><span className="text-muted-foreground">இறந்த ராசி (8):</span> {RASIS[irundhaRasi(janma)]}</div>
+      <div><span className="text-muted-foreground">முடக்கு ராசி (12):</span> {RASIS[mudakkuRasi(janma)]}</div>
+      <div className={affected ? "text-destructive font-semibold" : "text-green-700 font-semibold"}>
+        {affected ? "ஜென்ம ராசி திதி சூன்யத்தில் உள்ளது — பரிகாரம் அவசியம்." : "ஜென்ம ராசி திதி சூன்யத்தில் இல்லை — சுபம்."}
+      </div>
+    </div>
+  );
+};
 
 interface PersonForm {
   name: string;
@@ -319,7 +340,7 @@ const Porutham = () => {
           </form>
 
           {result && (
-            <section id="porutham-result" className="mt-10 animate-fade-up print-area space-y-6">
+            <section id="porutham-result" className="a4-sheet print-area bg-white mt-10 animate-fade-up space-y-6 mx-auto">
               <div className="parchment rounded-2xl p-6 md:p-8">
                 <div className="text-center mb-6">
                   <div className="font-display text-xs tracking-[0.4em] text-gold-deep">THIRUMANA PORUTHAM</div>
@@ -425,10 +446,48 @@ const Porutham = () => {
                 </div>
               )}
 
-              <div className="flex justify-center no-print">
+              {/* Thithi Sunyam */}
+              {(girlJ || boyJ) && (
+                <div className="parchment rounded-2xl p-6 md:p-8">
+                  <h3 className="font-tamil text-2xl font-bold text-maroon-deep text-center mb-4">
+                    திதி சூன்யம் • இறந்த ராசி • முடக்கு ராசி
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {girlJ && <SuniyamCard title={`பெண் — ${girl.name || "மணமகள்"}`} j={girlJ} />}
+                    {boyJ && <SuniyamCard title={`ஆண் — ${boy.name || "மணமகன்"}`} j={boyJ} />}
+                  </div>
+                  {girlJ && boyJ && (
+                    <p className="font-tamil text-sm mt-4 text-foreground/90 leading-relaxed">
+                      {(() => {
+                        const gs = suniyaRasisFor(girlJ.panchangam.tithiIndex);
+                        const bs = suniyaRasisFor(boyJ.panchangam.tithiIndex);
+                        const cross =
+                          gs.includes(boyJ.moon.rasiIndex) || bs.includes(girlJ.moon.rasiIndex);
+                        const irBad =
+                          irundhaRasi(girlJ.moon.rasiIndex) === boyJ.moon.rasiIndex ||
+                          irundhaRasi(boyJ.moon.rasiIndex) === girlJ.moon.rasiIndex;
+                        if (cross)
+                          return "ஒருவரின் திதி சூன்ய ராசியில் மற்றவரின் ஜென்ம ராசி அமைந்துள்ளது — திருமண முகூர்த்தத்தை சூன்ய திதிகளில் தவிர்த்து, விநாயகர் வழிபாடு மற்றும் துர்கை தீபம் பரிகாரமாக செய்யவும்.";
+                        if (irBad)
+                          return "இருவரின் ராசிகள் 8-ஆம் இட (இறந்த ராசி) அமைப்பில் உள்ளன — தம்பதி பரிகாரமாக நவகிரக வழிபாடும், சுப முகூர்த்தத்தில் மட்டும் திருமணமும் பரிந்துரைக்கப்படுகிறது.";
+                        return "இருவருக்கும் திதி சூன்யம் / இறந்த ராசி / முடக்கு ராசி தொடர்பான குறை இல்லை — சுப அமைப்பு.";
+                      })()}
+                    </p>
+                  )}
+                </div>
+              )}
+
+              <div className="flex justify-center gap-3 no-print">
                 <Button onClick={handlePrint} className="bg-gradient-royal text-primary-foreground font-tamil">
                   <Printer className="w-4 h-4 mr-2" /> அச்சிடு / Print
                 </Button>
+                <DownloadReport
+                  targetId="porutham-result"
+                  fileName={`thirumana-porutham-${(girl.name || "girl")}-${(boy.name || "boy")}.pdf`}
+                  paperSize="a4"
+                  orientation="p"
+                  productLabel="Thirumana Porutham"
+                />
               </div>
             </section>
           )}

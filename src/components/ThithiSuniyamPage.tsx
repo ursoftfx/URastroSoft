@@ -1,20 +1,9 @@
 import { JathagamResult, RASIS_TAMIL, NAKSHATRAS_TAMIL } from "@/lib/jathagam";
+import { suniyaRasisFor, irundhaRasi as calcIrundha, mudakkuRasi as calcMudakku } from "@/lib/thithi-suniyam";
 
 interface Props {
   result: JathagamResult;
 }
-
-// திதி சூன்ய ராசி அட்டவணை — tithi (1..15 within paksha) -> shunya rasi indices
-const TITHI_SUNIYAM: Record<number, number[]> = {
-  1: [8, 11], 9: [8, 11],
-  2: [9, 10], 10: [9, 10],
-  3: [0, 7], 11: [0, 7],
-  4: [1, 6], 12: [1, 6],
-  5: [2, 5], 13: [2, 5],
-  6: [3, 4], 14: [3, 4],
-  7: [10, 11], 15: [10, 11],
-  8: [9, 8],
-};
 
 const cell: React.CSSProperties = { border: "1px solid #c9a050", padding: "5px 8px", fontSize: 14, fontWeight: 700 };
 const th: React.CSSProperties = { ...cell, background: "#fbe9d0", color: "#7a1a2b" };
@@ -22,12 +11,11 @@ const heading: React.CSSProperties = { fontSize: 16, fontWeight: 800, color: "#7
 
 export const ThithiSuniyamPage = ({ result }: Props) => {
   const pg = result.panchangam;
-  const tithiInPaksha = (pg.tithiIndex % 15) + 1;
-  const suniyaRasis = TITHI_SUNIYAM[tithiInPaksha] ?? [];
+  const suniyaRasis = suniyaRasisFor(pg.tithiIndex);
 
   const janma = result.moon.rasiIndex;
-  const irundhaRasi = (janma + 7) % 12;  // 8-ஆம் ராசி
-  const mudakkuRasi = (janma + 11) % 12; // 12-ஆம் ராசி
+  const irundhaRasi = calcIrundha(janma);  // 8-ஆம் ராசி
+  const mudakkuRasi = calcMudakku(janma);  // 12-ஆம் ராசி
 
   const isSuniyam = (r: number) => suniyaRasis.includes(r);
 
