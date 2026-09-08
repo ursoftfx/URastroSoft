@@ -319,7 +319,7 @@ const Porutham = () => {
           </form>
 
           {result && (
-            <section id="porutham-result" className="mt-10 animate-fade-up print-area space-y-6">
+            <section id="porutham-result" className="a4-sheet print-area bg-white mt-10 animate-fade-up space-y-6 mx-auto">
               <div className="parchment rounded-2xl p-6 md:p-8">
                 <div className="text-center mb-6">
                   <div className="font-display text-xs tracking-[0.4em] text-gold-deep">THIRUMANA PORUTHAM</div>
