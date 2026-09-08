@@ -22,6 +22,27 @@ import { PLACES } from "@/lib/places";
 import { SiteFooter } from "@/components/SiteFooter";
 import { PoruthamPublisherContent } from "@/components/AdSenseContentBlocks";
 import { cn } from "@/lib/utils";
+import { DownloadReport } from "@/components/DownloadReport";
+import { suniyaRasisFor, irundhaRasi, mudakkuRasi } from "@/lib/thithi-suniyam";
+
+const SuniyamCard = ({ title, j }: { title: string; j: JathagamResult }) => {
+  const suniya = suniyaRasisFor(j.panchangam.tithiIndex);
+  const janma = j.moon.rasiIndex;
+  const affected = suniya.includes(janma);
+  return (
+    <div className="border border-gold/30 rounded-lg p-4 bg-gold/5 font-tamil text-sm space-y-1">
+      <div className="font-bold text-maroon-deep mb-1">{title}</div>
+      <div><span className="text-muted-foreground">திதி:</span> <b>{j.panchangam.tithiTamil}</b> ({j.panchangam.paksha} பக்ஷம்)</div>
+      <div><span className="text-muted-foreground">திதி சூன்ய ராசிகள்:</span> <b className="text-destructive">{suniya.map((r) => RASIS[r]).join(", ") || "—"}</b></div>
+      <div><span className="text-muted-foreground">ஜென்ம ராசி:</span> {RASIS[janma]}</div>
+      <div><span className="text-muted-foreground">இறந்த ராசி (8):</span> {RASIS[irundhaRasi(janma)]}</div>
+      <div><span className="text-muted-foreground">முடக்கு ராசி (12):</span> {RASIS[mudakkuRasi(janma)]}</div>
+      <div className={affected ? "text-destructive font-semibold" : "text-green-700 font-semibold"}>
+        {affected ? "ஜென்ம ராசி திதி சூன்யத்தில் உள்ளது — பரிகாரம் அவசியம்." : "ஜென்ம ராசி திதி சூன்யத்தில் இல்லை — சுபம்."}
+      </div>
+    </div>
+  );
+};
 
 interface PersonForm {
   name: string;
