@@ -8,6 +8,7 @@ import { DashaTableA4 } from "@/components/DashaTableA4";
 import { RuthuJathagamPage } from "@/components/RuthuJathagamPage";
 import { DhanishtaPanchamiPage } from "@/components/DhanishtaPanchamiPage";
 import { TharaPalanPage } from "@/components/TharaPalanPage";
+import { ThithiSuniyamPage } from "@/components/ThithiSuniyamPage";
 
 interface Props {
   result: JathagamResult;
