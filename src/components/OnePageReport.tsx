@@ -9,6 +9,7 @@ import { RuthuJathagamPage } from "@/components/RuthuJathagamPage";
 import { DhanishtaPanchamiPage } from "@/components/DhanishtaPanchamiPage";
 import { TharaPalanPage } from "@/components/TharaPalanPage";
 import { ThithiSuniyamPage } from "@/components/ThithiSuniyamPage";
+import { suniyaRasisFor } from "@/lib/thithi-suniyam";
 
 interface Props {
   result: JathagamResult;
@@ -123,7 +124,46 @@ const SI_LAYOUT: (number | null)[][] = [
   [8, 7, 6, 5],
 ];
 
-const renderChart = (title: string, chart: string[][], ascRasi: number, transitChart?: string[][]) => (
+// பிருகு நந்தி நாடி தொடர் (BNN sequence) — லக்னம் முதல் 12 ராசி வரிசையில் கிரகங்கள் ஒரே வரியில்
+export const buildBnnSequence = (result: JathagamResult): string[] => {
+  const seq: string[] = [];
+  const lagnaIdx = result.ascendant.rasiIndex;
+  for (let k = 0; k < 12; k++) {
+    const rIdx = (lagnaIdx + k) % 12;
+    const ps = result.planets
+      .filter((p) => p.rasiIndex === rIdx)
+      .sort((a, b) => (a.longitude % 30) - (b.longitude % 30));
+    const parts: string[] = [];
+    if (k === 0) parts.push("லக்");
+    parts.push(...ps.map((p) => `${PLANET_SHORT_TA[p.key] || p.nameTamil}${p.retrograde ? "(வ)" : ""}`));
+    if (parts.length) seq.push(`${parts.join("·")}(${RASIS_TAMIL[rIdx]})`);
+  }
+  return seq;
+};
+
+export const BnnSequenceBlock = ({ result }: Props) => {
+  const seq = buildBnnSequence(result);
+  return (
+    <div>
+      <div style={{ fontSize: 10, fontWeight: 700, textAlign: "center", background: "#fbe9d0", padding: "2px 0", border: "1px solid #c9a050" }}>
+        பிருகு நந்தி நாடி தொடர் (BNN Sequence)
+      </div>
+      <div style={{ border: "1px solid #c9a050", borderTop: "none", background: "#fffdf7", padding: "6px 8px", fontSize: 11, fontWeight: 800, lineHeight: 1.9, color: "#1a3a8a", textAlign: "center" }}>
+        {seq.map((seg, idx) => (
+          <span key={idx}>
+            <span style={{ background: idx % 2 ? "#eef4ff" : "#fff3e0", border: "1px solid #d8b878", borderRadius: 10, padding: "1px 7px", whiteSpace: "nowrap" }}>{seg}</span>
+            {idx < seq.length - 1 && <span style={{ color: "#7a1a2b", margin: "0 4px", fontWeight: 900 }}>→</span>}
+          </span>
+        ))}
+      </div>
+      <div style={{ fontSize: 8.5, color: "#555", fontWeight: 700, marginTop: 2, textAlign: "center" }}>
+        லக்னம் முதல் ராசி வரிசையில் கிரகங்கள் அடுக்கப்பட்டுள்ளன — (வ) = வக்ர கதி. இத்தொடரின் அடிப்படையில் கிரக சேர்க்கை / 2-ம் / 12-ம் பலன்கள் நாடி முறைப்படி வாசிக்கப்படும்.
+      </div>
+    </div>
+  );
+};
+
+const renderChart = (title: string, chart: string[][], ascRasi: number, transitChart?: string[][], suniyaRasis?: number[]) => (
   <table className="w-full" style={{ borderCollapse: "collapse" }}>
     <tbody>
       {SI_LAYOUT.map((row, r) => (
@@ -147,10 +187,14 @@ const renderChart = (title: string, chart: string[][], ascRasi: number, transitC
             const planets = chart[rasiIdx] || [];
             const transits = transitChart ? (transitChart[rasiIdx] || []).filter((p) => p !== "ascendant" && p !== "mandi") : [];
             const isLagna = rasiIdx === ascRasi;
+            const isSuniya = suniyaRasis?.includes(rasiIdx);
             return (
-              <td key={c} style={{ position: "relative", border: "1px solid #000", height: 60, width: "25%", verticalAlign: "top" }}>
+              <td key={c} style={{ position: "relative", border: "1px solid #000", height: 60, width: "25%", verticalAlign: "top", background: isSuniya ? "#fdecec" : undefined }}>
                 {isLagna && (
                   <div style={{ position: "absolute", top: 0, left: 0, width: 0, height: 0, borderTop: "10px solid #7a1a2b", borderRight: "10px solid transparent" }} />
+                )}
+                {isSuniya && (
+                  <div style={{ position: "absolute", top: 1, right: 1, background: "#c0262c", color: "#fff", fontSize: 7, fontWeight: 800, padding: "0 3px", borderRadius: 3, lineHeight: 1.5 }}>தி.சூ</div>
                 )}
                 <div style={{ fontSize: 9, padding: 3, lineHeight: 1.3 }}>
                   {planets.map((p) => PLANET_SHORT_TA[p] || p).join(" ")}
@@ -242,21 +286,8 @@ export const OnePageReport = ({ result }: Props) => {
 
   const yogi = computeYogi(result.sun.longitude, result.moon.longitude);
 
-  // பிருகு நந்தி நாடி தொடர் (BNN sequence) — லக்னம் முதல் 12 ராசி வரிசையில் கிரகங்கள் ஒரே வரியில்
-  const bnnSequence: string[] = [];
-  {
-    const lagnaIdx = result.ascendant.rasiIndex;
-    for (let k = 0; k < 12; k++) {
-      const rIdx = (lagnaIdx + k) % 12;
-      const ps = result.planets
-        .filter((p) => p.rasiIndex === rIdx)
-        .sort((a, b) => (a.longitude % 30) - (b.longitude % 30));
-      const parts: string[] = [];
-      if (k === 0) parts.push("லக்");
-      parts.push(...ps.map((p) => `${PLANET_SHORT_TA[p.key] || p.nameTamil}${p.retrograde ? "(வ)" : ""}`));
-      if (parts.length) bnnSequence.push(`${parts.join("·")}(${RASIS_TAMIL[rIdx]})`);
-    }
-  }
+  // திதி சூன்ய ராசிகள் (D1 chart highlight)
+  const suniyaRasis = suniyaRasisFor(result.panchangam.tithiIndex);
 
   // Current gochara (transit) chart for today at birth place
   let transitChart: string[][] | undefined;
