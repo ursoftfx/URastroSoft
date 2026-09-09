@@ -242,6 +242,22 @@ export const OnePageReport = ({ result }: Props) => {
 
   const yogi = computeYogi(result.sun.longitude, result.moon.longitude);
 
+  // பிருகு நந்தி நாடி தொடர் (BNN sequence) — லக்னம் முதல் 12 ராசி வரிசையில் கிரகங்கள் ஒரே வரியில்
+  const bnnSequence: string[] = [];
+  {
+    const lagnaIdx = result.ascendant.rasiIndex;
+    for (let k = 0; k < 12; k++) {
+      const rIdx = (lagnaIdx + k) % 12;
+      const ps = result.planets
+        .filter((p) => p.rasiIndex === rIdx)
+        .sort((a, b) => (a.longitude % 30) - (b.longitude % 30));
+      const parts: string[] = [];
+      if (k === 0) parts.push("லக்");
+      parts.push(...ps.map((p) => `${PLANET_SHORT_TA[p.key] || p.nameTamil}${p.retrograde ? "(வ)" : ""}`));
+      if (parts.length) bnnSequence.push(`${parts.join("·")}(${RASIS_TAMIL[rIdx]})`);
+    }
+  }
+
   // Current gochara (transit) chart for today at birth place
   let transitChart: string[][] | undefined;
   let transitDateStr = "";
