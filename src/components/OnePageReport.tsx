@@ -479,6 +479,22 @@ export const OnePageReport = ({ result }: Props) => {
         </tbody>
       </table>
 
+      {/* பிருகு நந்தி நாடி தொடர் — single line */}
+      <div style={{ marginTop: 8, fontSize: 10, fontWeight: 700, textAlign: "center", background: "#fbe9d0", padding: "2px 0", border: "1px solid #c9a050" }}>
+        பிருகு நந்தி நாடி தொடர் (BNN Sequence)
+      </div>
+      <div style={{ border: "1px solid #c9a050", borderTop: "none", background: "#fffdf7", padding: "6px 8px", fontSize: 11, fontWeight: 800, lineHeight: 1.9, color: "#1a3a8a", textAlign: "center" }}>
+        {bnnSequence.map((seg, idx) => (
+          <span key={idx}>
+            <span style={{ background: idx % 2 ? "#eef4ff" : "#fff3e0", border: "1px solid #d8b878", borderRadius: 10, padding: "1px 7px", whiteSpace: "nowrap" }}>{seg}</span>
+            {idx < bnnSequence.length - 1 && <span style={{ color: "#7a1a2b", margin: "0 4px", fontWeight: 900 }}>→</span>}
+          </span>
+        ))}
+      </div>
+      <div style={{ fontSize: 8.5, color: "#555", fontWeight: 700, marginTop: 2, textAlign: "center" }}>
+        லக்னம் முதல் ராசி வரிசையில் கிரகங்கள் அடுக்கப்பட்டுள்ளன — (வ) = வக்ர கதி. இத்தொடரின் அடிப்படையில் கிரக சேர்க்கை / 2-ம் / 12-ம் பலன்கள் நாடி முறைப்படி வாசிக்கப்படும்.
+      </div>
+
       {/* Footer */}
       <div style={{ marginTop: 8, fontSize: 9, textAlign: "center", borderTop: "1px solid #7a1a2b", paddingTop: 4, color: "#555" }}>
         இது சுத்த திருக்கணித பஞ்சாங்கப்படி கணிக்கப்பெற்ற இலவச ஜாதகம் — © AMMAN SOFTWARES
