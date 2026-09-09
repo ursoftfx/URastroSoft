@@ -9,6 +9,7 @@ import { RuthuJathagamPage } from "@/components/RuthuJathagamPage";
 import { DhanishtaPanchamiPage } from "@/components/DhanishtaPanchamiPage";
 import { TharaPalanPage } from "@/components/TharaPalanPage";
 import { ThithiSuniyamPage } from "@/components/ThithiSuniyamPage";
+import { suniyaRasisFor } from "@/lib/thithi-suniyam";
 
 interface Props {
   result: JathagamResult;
@@ -123,7 +124,7 @@ const SI_LAYOUT: (number | null)[][] = [
   [8, 7, 6, 5],
 ];
 
-const renderChart = (title: string, chart: string[][], ascRasi: number, transitChart?: string[][]) => (
+const renderChart = (title: string, chart: string[][], ascRasi: number, transitChart?: string[][], suniyaRasis?: number[]) => (
   <table className="w-full" style={{ borderCollapse: "collapse" }}>
     <tbody>
       {SI_LAYOUT.map((row, r) => (
