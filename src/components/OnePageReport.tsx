@@ -148,10 +148,14 @@ const renderChart = (title: string, chart: string[][], ascRasi: number, transitC
             const planets = chart[rasiIdx] || [];
             const transits = transitChart ? (transitChart[rasiIdx] || []).filter((p) => p !== "ascendant" && p !== "mandi") : [];
             const isLagna = rasiIdx === ascRasi;
+            const isSuniya = suniyaRasis?.includes(rasiIdx);
             return (
-              <td key={c} style={{ position: "relative", border: "1px solid #000", height: 60, width: "25%", verticalAlign: "top" }}>
+              <td key={c} style={{ position: "relative", border: "1px solid #000", height: 60, width: "25%", verticalAlign: "top", background: isSuniya ? "#fdecec" : undefined }}>
                 {isLagna && (
                   <div style={{ position: "absolute", top: 0, left: 0, width: 0, height: 0, borderTop: "10px solid #7a1a2b", borderRight: "10px solid transparent" }} />
+                )}
+                {isSuniya && (
+                  <div style={{ position: "absolute", top: 1, right: 1, background: "#c0262c", color: "#fff", fontSize: 7, fontWeight: 800, padding: "0 3px", borderRadius: 3, lineHeight: 1.5 }}>தி.சூ</div>
                 )}
                 <div style={{ fontSize: 9, padding: 3, lineHeight: 1.3 }}>
                   {planets.map((p) => PLANET_SHORT_TA[p] || p).join(" ")}
