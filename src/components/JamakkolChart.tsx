@@ -108,9 +108,10 @@ export const JamakkolChart = () => {
         <div className="relative">
           {data.jama.map((g) => {
             const pos = outerPos(g.lon);
-            const off = pos.side === "top" ? "translate(-50%, -140%)" : pos.side === "bottom" ? "translate(-50%, 40%)" : pos.side === "left" ? "translate(-115%, -50%)" : "translate(15%, -50%)";
+            const off = pos.side === "top" ? "translate(-50%, -140%)" : pos.side === "bottom" ? "translate(-50%, 40%)" : pos.side === "left" ? "translate(-130%, -50%) rotate(180deg)" : "translate(30%, -50%)";
+            const vertical = pos.side === "left" || pos.side === "right";
             return (
-              <div key={g.key} className="absolute z-10 whitespace-nowrap font-tamil text-[10px] sm:text-xs font-bold text-[hsl(220_60%_45%)]" style={{ left: pos.left, top: pos.top, transform: off }}>
+              <div key={g.key} className="absolute z-10 whitespace-nowrap font-tamil text-[10px] sm:text-xs font-bold text-[hsl(220_60%_45%)]" style={{ left: pos.left, top: pos.top, transform: off, writingMode: vertical ? "vertical-rl" : undefined }}>
                 {g.short} <span className="text-foreground/80 font-semibold">{Math.floor(g.lon)}° {String(Math.round((g.lon % 1) * 60) % 60).padStart(2, "0")}'</span>
               </div>
             );
