@@ -499,9 +499,11 @@ const ResultView = ({
           <ProfessionalReport result={result} orientation={proOrient} />
         </div>
       ) : view === "onepage" ? (
-        <div id="onepage-report-root" className="overflow-x-auto">
-          <OnePageReport result={result} />
-        </div>
+        <FitToWidth>
+          <div id="onepage-report-root" className="overflow-x-auto">
+            <OnePageReport result={result} />
+          </div>
+        </FitToWidth>
       ) : view === "kurippu" ? (
         <div id="kurippu-report-root" className="overflow-x-auto">
           <JenanaKurippu result={result} />
