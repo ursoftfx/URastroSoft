@@ -23,6 +23,8 @@ import { AstrologyContentSections } from "@/components/AstrologyContentSections"
 import { AnnouncementsBanner } from "@/components/AnnouncementsBanner";
 import { GocharaSummary } from "@/components/GocharaSummary";
 import { TodayPanchangam } from "@/components/TodayPanchangam";
+import { TharaQuickTable } from "@/components/TharaQuickTable";
+import { DashaTreeList } from "@/components/DashaTreeList";
 import { useAuth } from "@/hooks/useAuth";
 
 const REPORT_TABS = [
@@ -31,6 +33,7 @@ const REPORT_TABS = [
   { key: "kurippu", label: "ஜெனன குறிப்பு" },
   { key: "babynames", label: "குழந்தை பெயர்கள்" },
   { key: "thara", label: "தாரா அட்டவணை" },
+  { key: "dasa", label: "தசா / புத்தி / அந்தரம்" },
   { key: "dhanishta", label: "தனிஷ்ட பஞ்சமி" },
   { key: "ruthu", label: "ருது ஜாதகம் & பரிகாரம்" },
   { key: "detailed", label: "முழு அறிக்கை" },
@@ -38,7 +41,7 @@ const REPORT_TABS = [
 
 type ReportView = (typeof REPORT_TABS)[number]["key"];
 
-const TAB_ICONS = [FileText, LayoutList, ScrollText, Baby, Star, Sparkles, Flame, BookOpen];
+const TAB_ICONS = [FileText, LayoutList, ScrollText, Baby, Star, CalendarDays, Sparkles, Flame, BookOpen];
 
 const Index = () => {
   const { isAdmin } = useAuth();
@@ -350,6 +353,7 @@ const Index = () => {
               </div>
             </div>
             <TodayPanchangam />
+            <TharaQuickTable />
             <GocharaSummary />
           </div>
         )}
@@ -463,6 +467,12 @@ const ResultView = ({
               <Flame className="w-3.5 h-3.5 inline mr-1" /> ருது ஜாதகம்
             </button>
             <button
+              onClick={() => setView("dasa")}
+              className={`px-3 py-1.5 text-xs font-tamil rounded ${view === "dasa" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
+            >
+              <CalendarDays className="w-3.5 h-3.5 inline mr-1" /> தசா அட்டவணை
+            </button>
+            <button
               onClick={() => setView("detailed")}
               className={`px-3 py-1.5 text-xs font-tamil rounded ${view === "detailed" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
             >
@@ -485,7 +495,7 @@ const ResultView = ({
             <Printer className="w-4 h-4 mr-1" /> அச்சிடு
           </Button>
           <DownloadReport
-            targetId={view === "pro" ? "professional-report-root" : view === "onepage" ? "onepage-report-root" : view === "kurippu" ? "kurippu-report-root" : view === "babynames" ? "babynames-report-root" : view === "thara" ? "thara-report-root" : view === "dhanishta" ? "dhanishta-report-root" : view === "ruthu" ? "ruthu-report-root" : "jathagam-report-root"}
+            targetId={view === "pro" ? "professional-report-root" : view === "onepage" ? "onepage-report-root" : view === "kurippu" ? "kurippu-report-root" : view === "babynames" ? "babynames-report-root" : view === "thara" ? "thara-report-root" : view === "dhanishta" ? "dhanishta-report-root" : view === "ruthu" ? "ruthu-report-root" : view === "dasa" ? "dasa-report-root" : "jathagam-report-root"}
             fileName={`jathagam-${result.input.name.replace(/\s+/g, "-")}.pdf`}
             paperSize={view === "pro" ? "a5" : "a4"}
             orientation={view === "pro" ? proOrient : "p"}
@@ -520,6 +530,10 @@ const ResultView = ({
       ) : view === "dhanishta" ? (
         <div id="dhanishta-report-root" className="overflow-x-auto">
           <DhanishtaPanchamiPage result={result} />
+        </div>
+      ) : view === "dasa" ? (
+        <div id="dasa-report-root">
+          <DashaTreeList result={result} />
         </div>
       ) : view === "ruthu" ? (
         <div id="ruthu-report-root" className="overflow-x-auto">
