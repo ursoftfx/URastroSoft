@@ -6,7 +6,8 @@ import { DownloadReport } from "@/components/DownloadReport";
 import { PanchangamShare } from "@/components/PanchangamShare";
 import { PLACES } from "@/lib/places";
 import { computeJathagam, NAKSHATRAS_TAMIL, RASIS_TAMIL, type JathagamResult } from "@/lib/jathagam";
-import { LIMB_GRADIENTS, planetColor } from "@/lib/panchangam-extra";
+import { LIMB_GRADIENTS, planetColor, tamilYearName, tamilMonthDay, chandrashtamaFor } from "@/lib/panchangam-extra";
+import { formatDegree } from "@/lib/jathagam";
 
 const HORA_ORDER = ["சூரியன்", "சுக்ரன்", "புதன்", "சந்திரன்", "சனி", "குரு", "செவ்வாய்"];
 const WEEKDAY_LORD_IDX: Record<number, number> = { 0: 0, 1: 3, 2: 6, 3: 2, 4: 5, 5: 1, 6: 4 };
@@ -14,7 +15,15 @@ const RAHU_SEG = [8, 2, 7, 5, 6, 4, 3];
 const YAMAGANDAM_SEG = [5, 4, 3, 2, 1, 7, 6];
 const GULIKA_SEG = [7, 6, 5, 4, 3, 2, 1];
 
-const fmtTime = (d: Date) => {
+const TAMIL_MONTHS = ["சித்திரை","வைகாசி","ஆனி","ஆடி","ஆவணி","புரட்டாசி","ஐப்பசி","கார்த்திகை","மார்கழி","தை","மாசி","பங்குனி"];
+const SOOLAM: [string, string][] = [["மேற்கு","வெல்லம்"],["கிழக்கு","தயிர்"],["வடக்கு","பால்"],["வடக்கு","பால்"],["தெற்கு","தைலம்"],["மேற்கு","வெல்லம்"],["கிழக்கு","தயிர்"]];
+const NALLA_FIXED: [string, string][] = [
+  ["07:30 – 08:30", "15:30 – 16:30"], ["06:30 – 07:30", "16:30 – 17:30"], ["07:30 – 08:30", "16:30 – 17:30"],
+  ["09:15 – 10:15", "16:45 – 17:45"], ["10:45 – 11:45", "12:15 – 13:15"], ["09:15 – 10:15", "16:45 – 17:45"], ["07:30 – 08:30", "16:30 – 17:30"],
+];
+let TZ_H = 5.5;
+const fmtTime = (d0: Date) => {
+  const d = new Date(d0.getTime() + TZ_H * 3600_000);
   const hh = String(d.getUTCHours()).padStart(2, "0");
   const mm = String(d.getUTCMinutes()).padStart(2, "0");
   return `${hh}:${mm}`;
@@ -51,7 +60,8 @@ export const TodayPanchangam = () => {
   const { panchangam: pg } = result;
   const sunrise = pg.sunriseLocal;
   const sunset = pg.sunsetLocal;
-  const weekday = sunrise.getUTCDay();
+  TZ_H = PLACES[0].tz;
+  const weekday = new Date(sunrise.getTime() + TZ_H * 3600_000).getUTCDay();
   const dayMs = sunset.getTime() - sunrise.getTime();
   const segMs = dayMs / 8;
 
@@ -79,6 +89,10 @@ export const TodayPanchangam = () => {
 
   const rows: [string, string][] = [
     ["திகதி", format(now, "dd/MM/yyyy")],
+    ["தமிழ் வருடம் / அயனம்", `${tamilYearName(now.getFullYear(), result.sun.rasiIndex)} • ${result.sun.rasiIndex >= 3 && result.sun.rasiIndex <= 8 ? "தட்சிணாயனம்" : "உத்தராயணம்"}`],
+    ["தமிழ் மாதம்", `${TAMIL_MONTHS[result.sun.rasiIndex]} ${tamilMonthDay(result.sun.degreeInRasi)}ஆம் நாள்`],
+    ["பிறை", pg.paksha === "சுக்ல" ? "வளர்பிறை" : "தேய்பிறை"],
+    ["சூரிய ராசி", RASIS_TAMIL[result.sun.rasiIndex]],
     ["நாள் (வாரம்)", pg.vaaraTamil],
     ["திதி", `${pg.paksha} பக்ஷம் — ${pg.tithiTamil}`],
     ["நட்சத்திரம்", `${NAKSHATRAS_TAMIL[result.moon.nakshatraIndex]} (${result.pada}ஆம் பாதம்)`],
@@ -90,6 +104,12 @@ export const TodayPanchangam = () => {
     ["ராகு காலம்", segRange(RAHU_SEG[weekday])],
     ["யமகண்டம்", segRange(YAMAGANDAM_SEG[weekday])],
     ["குளிகை", segRange(GULIKA_SEG[weekday])],
+    ["நல்ல நேரம் (காலை)", NALLA_FIXED[weekday][0]],
+    ["நல்ல நேரம் (மாலை)", NALLA_FIXED[weekday][1]],
+    ["அபிஜித் முகூர்த்தம்", `${fmtTime(new Date(sunrise.getTime() + dayMs / 2 - dayMs / 30))} – ${fmtTime(new Date(sunrise.getTime() + dayMs / 2 + dayMs / 30))}`],
+    ["சூலம் / பரிகாரம்", `${SOOLAM[weekday][0]} / ${SOOLAM[weekday][1]}`],
+    ["சந்திராஷ்டமம்", `${NAKSHATRAS_TAMIL[chandrashtamaFor(result.moon.nakshatraIndex)]} நட்சத்திரக்காரர்கள்`],
+    ["பகல் அளவு", `${Math.floor(dayMs / 3600000)} மணி ${Math.round((dayMs % 3600000) / 60000)} நிமிடம்`],
     ["தற்போதைய ஹோரை", `${hora} ஹோரை (${isDay ? "பகல்" : "இரவு"})`],
   ];
 
@@ -141,6 +161,20 @@ export const TodayPanchangam = () => {
               <tr key={k} style={{ background: i % 2 ? "#fdf6ec" : "white" }}>
                 <td style={{ ...th, width: "38%" }}>{k}</td>
                 <td style={k === "தற்போதைய ஹோரை" ? { ...cell, color: planetColor(hora), background: `${planetColor(hora)}12` } : cell}>{v}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div style={{ fontSize: 14, fontWeight: 800, color: "#7a1a2b", margin: "10px 0 4px" }}>கிரக நிலைகள் (தற்போது)</div>
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead><tr><th style={th}>கிரகம்</th><th style={th}>ராசி</th><th style={th}>பாகை</th><th style={th}>நட்சத்திரம்</th></tr></thead>
+          <tbody>
+            {result.planets.map((p, i) => (
+              <tr key={p.key} style={{ background: i % 2 ? "#fdf6ec" : "white" }}>
+                <td style={{ ...cell, color: planetColor(p.nameTamil) }}>{p.nameTamil}{p.retrograde ? " (வ)" : ""}</td>
+                <td style={cell}>{p.rasiTamil}</td>
+                <td style={cell}>{formatDegree(p.degreeInRasi)}</td>
+                <td style={cell}>{p.nakshatraTamil}</td>
               </tr>
             ))}
           </tbody>
