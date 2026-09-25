@@ -233,6 +233,65 @@ const PanchangamSheet = ({ result, date, place }: { result: JathagamResult; date
         </div>
       </div>
 
+      {(() => {
+        const SOOLAM = [["மேற்கு","வெல்லம்"],["கிழக்கு","தயிர்"],["வடக்கு","பால்"],["வடக்கு","பால்"],["தெற்கு","தைலம்"],["மேற்கு","வெல்லம்"],["கிழக்கு","தயிர்"]][weekday];
+        const ayanam = result.sun.rasiIndex >= 3 && result.sun.rasiIndex <= 8 ? "தட்சிணாயனம்" : "உத்தராயணம்";
+        const b = "1px solid #c9c9c9";
+        const hd: React.CSSProperties = { background: "#fdf1e6", fontWeight: 800, fontSize: 16, padding: 8, textAlign: "center", border: b };
+        const vl: React.CSSProperties = { fontSize: 14, fontWeight: 600, padding: 8, textAlign: "center", border: b };
+        const pair = (a: [string, string], c: [string, string]) => (
+          <>
+            <tr><td style={hd}>{a[0]}</td><td style={hd}>{c[0]}</td></tr>
+            <tr><td style={vl}>{a[1]}</td><td style={vl}>{c[1]}</td></tr>
+          </>
+        );
+        return (
+          <div style={{ maxWidth: 520, margin: "0 auto 14px" }}>
+            <div style={{ background: "#f0394f", color: "#fff", textAlign: "center", padding: "12px 8px" }}>
+              <div style={{ fontSize: 18, fontWeight: 700 }}>{ayanam} - {tamilYearName(date.getFullYear(), result.sun.rasiIndex)}</div>
+              <div style={{ fontSize: 38, fontWeight: 800, lineHeight: 1.2 }}>{format(date, "dd-MM-yyyy")}</div>
+              <div style={{ fontSize: 18, fontWeight: 700 }}>{tamilMonth} - {tamilMonthDay(result.sun.degreeInRasi)}, {WEEKDAY_TAMIL[weekday]}</div>
+            </div>
+            <div style={{ background: "#eafbe8", textAlign: "center", padding: 8, fontSize: 15, fontWeight: 600, color: "#555", marginTop: 6 }}>
+              ☾ {pg.paksha === "சுக்ல" || String(pg.paksha).includes("சுக்") ? "வளர்பிறை" : "தேய்பிறை"} • {place}
+            </div>
+            <table style={{ width: "100%", borderCollapse: "collapse", marginTop: 6 }}>
+              <tbody>
+                <tr><td colSpan={2} style={{ background: "#12a150", color: "#fff", textAlign: "center", fontWeight: 800, padding: 8, fontSize: 16 }}>நல்ல நேரம்</td></tr>
+                <tr><td style={{ ...hd, fontSize: 20 }}>காலை</td><td style={{ ...hd, fontSize: 20 }}>மாலை</td></tr>
+                <tr><td style={{ ...vl, fontSize: 18, background: "#fdf1e6" }}>{segRange(nalla[0])}</td><td style={{ ...vl, fontSize: 18, background: "#fdf1e6" }}>{segRange(nalla[1])}</td></tr>
+              </tbody>
+            </table>
+            <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
+              <tbody>
+                <tr>
+                  <td style={{ ...vl, background: "#4cc9a0", color: "#fff" }}>இராகு</td>
+                  <td style={{ ...vl, background: "#f7941d", color: "#fff" }}>குளிகை</td>
+                  <td style={{ ...vl, background: "#ef4056", color: "#fff" }}>எமகண்டம்</td>
+                </tr>
+                <tr>
+                  <td style={{ ...vl, background: "#fdf1e6" }}>{segRange(RAHU_SEG[weekday])}</td>
+                  <td style={{ ...vl, background: "#fdf1e6" }}>{segRange(GULIKA_SEG[weekday])}</td>
+                  <td style={{ ...vl, background: "#fdf1e6" }}>{segRange(YAMA_SEG[weekday])}</td>
+                </tr>
+              </tbody>
+            </table>
+            <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
+              <tbody>
+                <tr><td style={vl}>சூலம் - {SOOLAM[0]}</td><td style={vl}>பரிகாரம் - {SOOLAM[1]}</td></tr>
+                {pair(["சூரிய உதயம்", fmt(sunrise)], ["சூரிய அஸ்தமனம்", fmt(sunset)])}
+                {pair(["திதி", `${pg.paksha} ${pg.tithiTamil}`], ["நட்சத்திரம்", `${NAKSHATRAS_TAMIL[nakIdx]} (${result.pada}ஆம் பாதம்)`])}
+                {pair(["நாமயோகம்", pg.yogaTamil], ["கரணம்", pg.karanaTamil])}
+                {pair(["அபிஜித் முகூர்த்தம்", abhijit()], ["சந்திராஷ்டமம்", chandraStar])}
+              </tbody>
+            </table>
+            <div style={{ background: "#fdf1e6", color: "#2b3a8f", textAlign: "center", padding: 8, fontSize: 14, fontWeight: 600, marginTop: 6 }}>
+              நாளை என்பது கனவை போன்றது. இன்றைய நிஜத்தை ரசித்திடு.
+            </div>
+          </div>
+        );
+      })()}
+
       <div style={{ display: "grid", gridTemplateColumns: "repeat(5, minmax(0, 1fr))", gap: 5, marginBottom: 10 }}>
         {limbs.map(([label, value], i) => (
           <div key={label} style={{ background: LIMB_GRADIENTS[i], color: "white", borderRadius: 6, padding: "7px 4px", textAlign: "center", minWidth: 0 }}>
