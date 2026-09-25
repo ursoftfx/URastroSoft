@@ -23,7 +23,6 @@ import {
   tamilMonthDay,
   planetColor,
   toNaazhigai,
-  nallaNeramSegs,
   chandrashtamaFor,
   LIMB_GRADIENTS,
 } from "@/lib/panchangam-extra";
@@ -41,6 +40,16 @@ const TAMIL_MONTHS = [
 ];
 
 let TZ_H = 5.5;
+// Traditional fixed Nalla Neram (Tamil calendar) per weekday: [morning, evening]
+const NALLA_FIXED: [string, string][] = [
+  ["07:30 AM – 08:30 AM", "03:30 PM – 04:30 PM"],
+  ["06:30 AM – 07:30 AM", "04:30 PM – 05:30 PM"],
+  ["07:30 AM – 08:30 AM", "04:30 PM – 05:30 PM"],
+  ["09:15 AM – 10:15 AM", "04:45 PM – 05:45 PM"],
+  ["10:45 AM – 11:45 AM", "12:15 PM – 01:15 PM"],
+  ["09:15 AM – 10:15 AM", "04:45 PM – 05:45 PM"],
+  ["07:30 AM – 08:30 AM", "04:30 PM – 05:30 PM"],
+];
 const fmt = (d0: Date) => {
   const d = new Date(d0.getTime() + TZ_H * 3600_000);
   const hh = d.getUTCHours();
@@ -189,7 +198,6 @@ const PanchangamSheet = ({ result, date, place }: { result: JathagamResult; date
     ["யோகம்", pg.yogaTamil],
     ["கரணம்", pg.karanaTamil],
   ];
-  const nalla = nallaNeramSegs(weekday);
   const chandraStar = NAKSHATRAS_TAMIL[chandrashtamaFor(nakIdx)];
 
   const main: [string, string][] = [
@@ -214,8 +222,8 @@ const PanchangamSheet = ({ result, date, place }: { result: JathagamResult; date
     ["சூரிய அஸ்தமனம்", fmt(sunset)],
     ["பகல் அளவு", `${Math.floor(dayMs / 3600000)} மணி ${Math.round((dayMs % 3600000) / 60000)} நிமிடம்`],
     ["சூரிய உதய நாழிகை", toNaazhigai(0) + " (சூரிய உதயத்திலிருந்து கணக்கு)"],
-    ["நல்ல நேரம் (காலை)", segRange(nalla[0])],
-    ["நல்ல நேரம் (மாலை)", segRange(nalla[1])],
+    ["நல்ல நேரம் (காலை)", NALLA_FIXED[weekday][0]],
+    ["நல்ல நேரம் (மாலை)", NALLA_FIXED[weekday][1]],
     ["ராகு காலம்", segRange(RAHU_SEG[weekday])],
     ["யமகண்டம்", segRange(YAMA_SEG[weekday])],
     ["குளிகை காலம்", segRange(GULIKA_SEG[weekday])],
@@ -262,7 +270,7 @@ const PanchangamSheet = ({ result, date, place }: { result: JathagamResult; date
               <tbody>
                 <tr><td colSpan={2} style={{ background: "#12a150", color: "#fff", textAlign: "center", fontWeight: 800, padding: 8, fontSize: 16 }}>நல்ல நேரம்</td></tr>
                 <tr><td style={{ ...hd, fontSize: 20 }}>காலை</td><td style={{ ...hd, fontSize: 20 }}>மாலை</td></tr>
-                <tr><td style={{ ...vl, fontSize: 18, background: "#fdf1e6" }}>{segRange(nalla[0])}</td><td style={{ ...vl, fontSize: 18, background: "#fdf1e6" }}>{segRange(nalla[1])}</td></tr>
+                <tr><td style={{ ...vl, fontSize: 18, background: "#fdf1e6" }}>{NALLA_FIXED[weekday][0]}</td><td style={{ ...vl, fontSize: 18, background: "#fdf1e6" }}>{NALLA_FIXED[weekday][1]}</td></tr>
               </tbody>
             </table>
             <table style={{ width: "100%", borderCollapse: "collapse", tableLayout: "fixed" }}>
