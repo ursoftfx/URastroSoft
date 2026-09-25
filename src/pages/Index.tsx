@@ -24,6 +24,7 @@ import { AnnouncementsBanner } from "@/components/AnnouncementsBanner";
 import { GocharaSummary } from "@/components/GocharaSummary";
 import { TodayPanchangam } from "@/components/TodayPanchangam";
 import { TharaQuickTable } from "@/components/TharaQuickTable";
+import { JamakkolChart } from "@/components/JamakkolChart";
 import { DashaTreeList } from "@/components/DashaTreeList";
 import { useAuth } from "@/hooks/useAuth";
 
@@ -354,6 +355,7 @@ const Index = () => {
             </div>
             <TodayPanchangam />
             <TharaQuickTable />
+            <JamakkolChart />
             <GocharaSummary />
           </div>
         )}
