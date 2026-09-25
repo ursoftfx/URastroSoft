@@ -89,9 +89,9 @@ export const JamakkolChart = () => {
             {PLACES.map((p, i) => <option key={i} value={i}>{p.name}</option>)}
           </select>
         </label>
-        <label className="flex flex-col gap-1">ஆருடம் (கேட்பவர் தேர்வு)
+        <label className="flex flex-col gap-1">ஆருடம் (மாற்ற விரும்பினால்)
           <select value={arudamRasi} onChange={(e) => setArudamRasi(e.target.value === "" ? "" : Number(e.target.value))} className="border border-gold/60 rounded px-2 py-1 bg-background">
-            <option value="">உதய ராசி (இயல்பு)</option>
+            <option value="">தானியங்கி (நேரப்படி)</option>
             {RASIS_TAMIL.map((r, i) => <option key={i} value={i}>{r}</option>)}
           </select>
         </label>
