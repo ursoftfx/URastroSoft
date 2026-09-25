@@ -400,7 +400,7 @@ function sunriseSunset(year: number, month: number, day: number, lat: number, lo
   cosH = Math.max(-1, Math.min(1, cosH));
   const ha = Math.acos(cosH) / rad;
   const noonUtcMin = 720 - 4 * lon - eqt; // minutes after 00:00 UTC
-  const base = Date.UTC(year, month - 1, day) - tzHours * 3600_000 + tzHours * 3600_000;
+  const base = Date.UTC(year, month - 1, day); void tzHours;
   const mk = (m: number) => new Date(base + m * 60_000);
   return { sunrise: mk(noonUtcMin - 4 * ha), sunset: mk(noonUtcMin + 4 * ha) };
 }

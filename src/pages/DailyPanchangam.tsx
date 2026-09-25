@@ -40,7 +40,9 @@ const TAMIL_MONTHS = [
   "ஐப்பசி", "கார்த்திகை", "மார்கழி", "தை", "மாசி", "பங்குனி",
 ];
 
-const fmt = (d: Date) => {
+let TZ_H = 5.5;
+const fmt = (d0: Date) => {
+  const d = new Date(d0.getTime() + TZ_H * 3600_000);
   const hh = d.getUTCHours();
   const mm = String(d.getUTCMinutes()).padStart(2, "0");
   const ap = hh >= 12 ? "PM" : "AM";
@@ -147,6 +149,7 @@ const DailyPanchangam = () => {
 };
 
 const PanchangamSheet = ({ result, date, place }: { result: JathagamResult; date: Date; place: string }) => {
+  TZ_H = result.input.tzOffsetHours;
   const pg = result.panchangam;
   const sunrise = pg.sunriseLocal;
   const sunset = pg.sunsetLocal;
