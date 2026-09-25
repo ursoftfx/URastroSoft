@@ -391,47 +391,18 @@ export function navamsaRasi(siderealLon: number, _retrograde = false): number {
 
 // ----- Sunrise / Sunset (NOAA approximation) -----
 function sunriseSunset(year: number, month: number, day: number, lat: number, lon: number, tzHours: number): { sunrise: Date; sunset: Date } {
-  const dt = new Date(Date.UTC(year, month - 1, day));
-  const start = new Date(Date.UTC(year, 0, 1));
-  const N = Math.floor((dt.getTime() - start.getTime()) / 86400000) + 1;
-  const calc = (rising: boolean): number => {
-    const lonHour = lon / 15;
-    const t = N + ((rising ? 6 : 18) - lonHour) / 24;
-    const M = 0.9856 * t - 3.289;
-    let L = M + 1.916 * Math.sin((M * Math.PI) / 180) + 0.02 * Math.sin((2 * M * Math.PI) / 180) + 282.634;
-    L = norm360(L);
-    let RA = (Math.atan(0.91764 * Math.tan((L * Math.PI) / 180)) * 180) / Math.PI;
-    RA = norm360(RA);
-    const Lq = Math.floor(L / 90) * 90;
-    const RAq = Math.floor(RA / 90) * 90;
-    RA = RA + (Lq - RAq);
-    RA = RA / 15;
-    const sinDec = 0.39782 * Math.sin((L * Math.PI) / 180);
-    const cosDec = Math.cos(Math.asin(sinDec));
-    const zenith = 90.833;
-    const cosH = (Math.cos((zenith * Math.PI) / 180) - sinDec * Math.sin((lat * Math.PI) / 180)) / (cosDec * Math.cos((lat * Math.PI) / 180));
-    if (cosH > 1 || cosH < -1) return rising ? 6 : 18;
-    let H = (Math.acos(cosH) * 180) / Math.PI;
-    if (rising) H = 360 - H;
-    H = H / 15;
-    const T = H + RA - 0.06571 * t - 6.622;
-    let UT = T - lonHour;
-    UT = ((UT % 24) + 24) % 24;
-    return UT + tzHours;
-  };
-  const sr = calc(true);
-  const ss = calc(false);
-  const toDate = (h: number) => {
-    let dayOff = 0;
-    let hLocal = h;
-    if (hLocal >= 24) { hLocal -= 24; dayOff = 1; }
-    if (hLocal < 0) { hLocal += 24; dayOff = -1; }
-    const hh = Math.floor(hLocal);
-    const mm = Math.floor((hLocal - hh) * 60);
-    const ss2 = Math.floor(((hLocal - hh) * 60 - mm) * 60);
-    return new Date(Date.UTC(year, month - 1, day + dayOff, hh - tzHours, mm, ss2));
-  };
-  return { sunrise: toDate(sr), sunset: toDate(ss) };
+  const rad = Math.PI / 180;
+  const N = Math.floor((Date.UTC(year, month - 1, day) - Date.UTC(year, 0, 0)) / 86400000);
+  const g = (2 * Math.PI / 365) * (N - 1);
+  const eqt = 229.18 * (0.000075 + 0.001868 * Math.cos(g) - 0.032077 * Math.sin(g) - 0.014615 * Math.cos(2 * g) - 0.040849 * Math.sin(2 * g));
+  const decl = 0.006918 - 0.399912 * Math.cos(g) + 0.070257 * Math.sin(g) - 0.006758 * Math.cos(2 * g) + 0.000907 * Math.sin(2 * g) - 0.002697 * Math.cos(3 * g) + 0.00148 * Math.sin(3 * g);
+  let cosH = Math.cos(90.833 * rad) / (Math.cos(lat * rad) * Math.cos(decl)) - Math.tan(lat * rad) * Math.tan(decl);
+  cosH = Math.max(-1, Math.min(1, cosH));
+  const ha = Math.acos(cosH) / rad;
+  const noonUtcMin = 720 - 4 * lon - eqt; // minutes after 00:00 UTC
+  const base = Date.UTC(year, month - 1, day); void tzHours;
+  const mk = (m: number) => new Date(base + m * 60_000);
+  return { sunrise: mk(noonUtcMin - 4 * ha), sunset: mk(noonUtcMin + 4 * ha) };
 }
 
 const VAARA_TAMIL = ["ஞாயிறு", "திங்கள்", "செவ்வாய்", "புதன்", "வியாழன்", "வெள்ளி", "சனி"];
