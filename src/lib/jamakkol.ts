@@ -66,8 +66,9 @@ export function computeJamakkol(date: Date, place: { lat: number; lon: number; t
   const udayam = norm(chart.sun.longitude + (u <= dayLen ? (u / dayLen) * 360 : ((u - dayLen) / (1440 - dayLen)) * 360));
   const sunrise = srM, sunset = ssM;
 
-  const aRasi = arudamRasi ?? Math.floor(udayam / 30);
-  const arudam = aRasi * 30 + Math.min(29.99, Math.max(0, arudamDeg));
+  // Auto Arudam = clock minute-hand position from Mesham 0° (6° per minute), matches 3 refs.
+  const minuteHand = norm((local.getUTCMinutes() + local.getUTCSeconds() / 60) * 6);
+  const arudam = arudamRasi === undefined ? minuteHand : arudamRasi * 30 + Math.min(29.99, Math.max(0, arudamDeg));
   // Mirror of arudam, shifted +1 rasi when udayam is in an even rasi, −1 when odd (matches both references)
   const udayamEven = Math.floor(udayam / 30) % 2 === 1;
   const kavippu = norm(360 - arudam + (udayamEven ? 30 : -30));
