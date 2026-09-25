@@ -9,6 +9,7 @@ import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SEO } from "@/components/SEO";
 import { DownloadReport } from "@/components/DownloadReport";
 import { OnePageReport } from "@/components/OnePageReport";
+import { FitToWidth } from "@/components/FitToWidth";
 import { ProfessionalReport } from "@/components/ProfessionalReport";
 import { JenanaKurippu } from "@/components/JenanaKurippu";
 import { BabyNamesPage } from "@/components/BabyNamesPage";
@@ -418,7 +419,7 @@ const ResultView = ({
           <ArrowLeft className="w-4 h-4 mr-2" /> புதிய ஜாதகம்
         </Button>
         <div className="flex items-center gap-2 flex-wrap">
-          <div className="inline-flex rounded-md border border-gold/40 bg-cream/50 p-1">
+          <div className="inline-flex flex-wrap max-w-full rounded-md border border-gold/40 bg-cream/50 p-1">
             <button
               onClick={() => setView("pro")}
               className={`px-3 py-1.5 text-xs font-tamil rounded ${view === "pro" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
@@ -469,7 +470,7 @@ const ResultView = ({
             </button>
           </div>
           {view === "pro" && (
-            <div className="inline-flex rounded-md border border-gold/40 bg-cream/50 p-1">
+            <div className="inline-flex flex-wrap max-w-full rounded-md border border-gold/40 bg-cream/50 p-1">
               <button
                 onClick={() => setProOrient("p")}
                 className={`px-2 py-1 text-xs font-tamil rounded ${proOrient === "p" ? "bg-gradient-royal text-primary-foreground" : "text-maroon-deep"}`}
@@ -499,9 +500,11 @@ const ResultView = ({
           <ProfessionalReport result={result} orientation={proOrient} />
         </div>
       ) : view === "onepage" ? (
-        <div id="onepage-report-root" className="overflow-x-auto">
-          <OnePageReport result={result} />
-        </div>
+        <FitToWidth>
+          <div id="onepage-report-root" className="overflow-x-auto">
+            <OnePageReport result={result} />
+          </div>
+        </FitToWidth>
       ) : view === "kurippu" ? (
         <div id="kurippu-report-root" className="overflow-x-auto">
           <JenanaKurippu result={result} />
