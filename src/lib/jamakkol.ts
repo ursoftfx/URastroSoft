@@ -37,9 +37,9 @@ const norm = (x: number) => ((x % 360) + 360) % 360;
  * - Jama grahas move backwards 45° per jamam (0.5°/min), all 45° apart.
  * - Udayam = Sun at sunrise, advancing 180° by sunset (and another 180° by next sunrise).
  * - Arudam = rasi chosen by the querent (default: udayam's rasi).
- * - Kavippu degree mirrors Arudam (30° − arudam degree).
+ * - Kavippu = mirror of Arudam (360° − arudam), ±1 rasi by udayam rasi parity.
  */
-export function computeJamakkol(date: Date, place: { lat: number; lon: number; tz: number }, arudamRasi?: number): JamakkolData {
+export function computeJamakkol(date: Date, place: { lat: number; lon: number; tz: number }, arudamRasi?: number, arudamDeg = 0): JamakkolData {
   const tzMs = place.tz * 3600_000;
   const local = new Date(date.getTime() + tzMs); // use UTC getters as local
   let minutes = local.getUTCHours() * 60 + local.getUTCMinutes() + local.getUTCSeconds() / 60;
@@ -68,8 +68,10 @@ export function computeJamakkol(date: Date, place: { lat: number; lon: number; t
   const udayam = norm(chart.sun.longitude + (u <= dayLen ? (u / dayLen) * 180 : 180 + ((u - dayLen) / (1440 - dayLen)) * 180));
 
   const aRasi = arudamRasi ?? Math.floor(udayam / 30);
-  const arudam = aRasi * 30;
-  const kavippu = norm(360 - arudam);
+  const arudam = aRasi * 30 + Math.min(29.99, Math.max(0, arudamDeg));
+  // Mirror of arudam, shifted +1 rasi when udayam is in an even rasi, −1 when odd (matches both references)
+  const udayamEven = Math.floor(udayam / 30) % 2 === 1;
+  const kavippu = norm(360 - arudam + (udayamEven ? 30 : -30));
 
   return { date, weekday, weekdayEn: DAY_EN[weekday], jamam, jama, udayam, arudam, kavippu, chart };
 }
