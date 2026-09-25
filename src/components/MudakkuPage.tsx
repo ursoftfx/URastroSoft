@@ -3,7 +3,7 @@ import { JathagamResult, NAKSHATRAS_TAMIL, RASIS_TAMIL, PLANETS_TAMIL } from "@/
 interface Props { result: JathagamResult }
 
 const sheet: React.CSSProperties = {
-  width: "210mm", minHeight: "297mm", padding: "8mm 10mm", margin: "auto", marginTop: "8mm",
+  width: "100%", maxWidth: "210mm", minHeight: "297mm", padding: "clamp(10px, 3vw, 38px)", overflowWrap: "anywhere", margin: "auto", marginTop: "8mm",
   background: "white", color: "#000", fontFamily: "'Latha','Tahoma',sans-serif",
   boxSizing: "border-box", pageBreakBefore: "always",
 };
