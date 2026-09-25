@@ -353,7 +353,7 @@ const Index = () => {
                 ஒரு அறிக்கையைத் தேர்ந்தெடுத்து, பிறப்பு விவரம் உள்ளிடவும் — தேர்ந்த அறிக்கை நேரடியாகத் திறக்கும்
               </div>
             </div>
-            <TodayPanchangam />
+            <FitToWidth><TodayPanchangam /></FitToWidth>
             <TharaQuickTable />
             <JamakkolChart />
             <GocharaSummary />
