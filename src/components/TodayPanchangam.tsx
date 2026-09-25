@@ -8,6 +8,7 @@ import { PLACES } from "@/lib/places";
 import { computeJathagam, NAKSHATRAS_TAMIL, RASIS_TAMIL, type JathagamResult } from "@/lib/jathagam";
 import { LIMB_GRADIENTS, planetColor, tamilYearName, tamilMonthDay, chandrashtamaFor } from "@/lib/panchangam-extra";
 import { formatDegree } from "@/lib/jathagam";
+import { RasiClock } from "@/components/RasiClock";
 
 const HORA_ORDER = ["சூரியன்", "சுக்ரன்", "புதன்", "சந்திரன்", "சனி", "குரு", "செவ்வாய்"];
 const WEEKDAY_LORD_IDX: Record<number, number> = { 0: 0, 1: 3, 2: 6, 3: 2, 4: 5, 5: 1, 6: 4 };
@@ -155,6 +156,7 @@ export const TodayPanchangam = () => {
             </div>
           ))}
         </div>
+        <RasiClock tz={PLACES[0].tz} horaStart={horaBase + horaIdx * horaLen} horaEnd={horaBase + (horaIdx + 1) * horaLen} horaLord={hora} />
         <table style={{ width: "100%", borderCollapse: "collapse" }}>
           <tbody>
             {rows.map(([k, v], i) => (
