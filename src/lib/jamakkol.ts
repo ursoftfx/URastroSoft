@@ -26,6 +26,8 @@ export interface JamakkolData {
   arudam: number;
   kavippu: number;
   chart: JathagamResult;
+  sunrise: number; // local minutes
+  sunset: number;
 }
 
 const norm = (x: number) => ((x % 360) + 360) % 360;
@@ -35,7 +37,7 @@ const norm = (x: number) => ((x % 360) + 360) % 360;
  * - Jamakkol day starts 6:00 AM; 8 jamams of 90 min (4 day + 4 night).
  * - At 6:00 AM the weekday lord's jama graha is at 0° (Mesha start).
  * - Jama grahas move backwards 45° per jamam (0.5°/min), all 45° apart.
- * - Udayam = Sun at sunrise, advancing 180° by sunset (and another 180° by next sunrise).
+ * - Udayam = Sun at sunrise, full 360° circle during day (sunrise→sunset) and again at night.
  * - Arudam = rasi chosen by the querent (default: udayam's rasi).
  * - Kavippu = mirror of Arudam (360° − arudam), ±1 rasi by udayam rasi parity.
  */
@@ -58,14 +60,11 @@ export function computeJamakkol(date: Date, place: { lat: number; lon: number; t
     tzOffsetHours: place.tz, latitude: place.lat, longitude: place.lon, placeName: "", name: "",
   } as never);
 
-  const p = chart.panchangam as unknown as { sunriseLocal?: Date; sunsetLocal?: Date } | undefined;
-  const sr = p?.sunriseLocal, ss = p?.sunsetLocal;
-  const toMin = (d?: Date) => (d ? d.getHours() * 60 + d.getMinutes() : undefined);
-  let srM = toMin(sr) ?? 360, ssM = toMin(ss) ?? 1080;
-  if (!(ssM > srM)) { srM = 360; ssM = 1080; }
+  const { sr: srM, ss: ssM } = sunTimes(local.getUTCFullYear(), local.getUTCMonth() + 1, local.getUTCDate(), place.lat, place.lon, place.tz);
   const dayLen = ssM - srM;
   let u = minutes - srM; if (u < 0) u += 1440;
-  const udayam = norm(chart.sun.longitude + (u <= dayLen ? (u / dayLen) * 180 : 180 + ((u - dayLen) / (1440 - dayLen)) * 180));
+  const udayam = norm(chart.sun.longitude + (u <= dayLen ? (u / dayLen) * 360 : ((u - dayLen) / (1440 - dayLen)) * 360));
+  const sunrise = srM, sunset = ssM;
 
   const aRasi = arudamRasi ?? Math.floor(udayam / 30);
   const arudam = aRasi * 30 + Math.min(29.99, Math.max(0, arudamDeg));
@@ -73,5 +72,17 @@ export function computeJamakkol(date: Date, place: { lat: number; lon: number; t
   const udayamEven = Math.floor(udayam / 30) % 2 === 1;
   const kavippu = norm(360 - arudam + (udayamEven ? 30 : -30));
 
-  return { date, weekday, weekdayEn: DAY_EN[weekday], jamam, jama, udayam, arudam, kavippu, chart };
+  return { sunrise, sunset, date, weekday, weekdayEn: DAY_EN[weekday], jamam, jama, udayam, arudam, kavippu, chart };
+}
+
+/** NOAA sunrise/sunset in local minutes (upper limb, refraction). */
+export function sunTimes(y: number, m: number, d: number, lat: number, lon: number, tz: number) {
+  const rad = Math.PI / 180;
+  const N = Math.floor((Date.UTC(y, m - 1, d) - Date.UTC(y, 0, 0)) / 86400000);
+  const g = (2 * Math.PI / 365) * (N - 1);
+  const eqt = 229.18 * (0.000075 + 0.001868 * Math.cos(g) - 0.032077 * Math.sin(g) - 0.014615 * Math.cos(2 * g) - 0.040849 * Math.sin(2 * g));
+  const decl = 0.006918 - 0.399912 * Math.cos(g) + 0.070257 * Math.sin(g) - 0.006758 * Math.cos(2 * g) + 0.000907 * Math.sin(2 * g) - 0.002697 * Math.cos(3 * g) + 0.00148 * Math.sin(3 * g);
+  const ha = Math.acos(Math.cos(90.833 * rad) / (Math.cos(lat * rad) * Math.cos(decl)) - Math.tan(lat * rad) * Math.tan(decl)) / rad;
+  const noon = 720 - 4 * lon - eqt + tz * 60;
+  return { sr: noon - 4 * ha, ss: noon + 4 * ha };
 }
