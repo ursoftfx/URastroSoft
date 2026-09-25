@@ -26,6 +26,12 @@ export const MudakkuPage = ({ result }: Props) => {
   const janma = result.moon.nakshatraIndex;
   const moonR = result.moon.rasiIndex;
   const lagR = result.ascendant.rasiIndex;
+  const MOOLAM = 18;
+  const sunNak = result.sun.nakshatraIndex;
+  const count = ((MOOLAM - sunNak + 27) % 27) + 1;
+  const lagNak = result.ascendant.nakshatraIndex;
+  const mudNak = (lagNak + count - 1) % 27;
+  const mudRasi = Math.floor((mudNak * 4) / 9);
   const planetsIn = (r: number) =>
     result.planets.filter((p) => p.rasiIndex === r)
       .map((p) => PLANETS_TAMIL[p.key as keyof typeof PLANETS_TAMIL] ?? p.key).join(", ") || "—";
@@ -37,39 +43,20 @@ export const MudakkuPage = ({ result }: Props) => {
         {result.input.name} — ஜென்ம நட்சத்திரம்: {NAKSHATRAS_TAMIL[janma]} ({result.pada}) · ராசி: {RASIS_TAMIL[moonR]} · லக்னம்: {RASIS_TAMIL[lagR]}
       </p>
 
-      <h3 style={{ fontSize: 15, fontWeight: 800, color: "#7a1a2b" }}>முடக்கு நட்சத்திரங்கள்</h3>
-      <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 12 }}>
-        <thead><tr><th style={th}>தாரை</th><th style={th}>நட்சத்திரங்கள்</th><th style={th}>பலன்</th><th style={th}>பரிகாரம்</th></tr></thead>
-        <tbody>
-          {NAK_TYPES.map((t) => (
-            <tr key={t.name} style={{ background: t.bg }}>
-              <td style={{ ...cell, color: t.tone, fontWeight: 800 }}>{t.name}</td>
-              <td style={cell}>{t.pos.map((n) => `${NAKSHATRAS_TAMIL[(janma + n - 1) % 27]} (${n})`).join(", ")}</td>
-              <td style={cell}>{t.palan}</td>
-              <td style={cell}>{t.parikaram}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <h3 style={{ fontSize: 15, fontWeight: 800, color: "#7a1a2b" }}>முடக்கு ராசிகள்</h3>
-      <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 12 }}>
-        <thead><tr><th style={th}>இடம்</th><th style={th}>சந்திரனிலிருந்து</th><th style={th}>லக்னத்திலிருந்து</th><th style={th}>உள்ள கிரகங்கள் (ச / ல)</th><th style={th}>பலன்</th></tr></thead>
-        <tbody>
-          {RASI_TYPES.map((t) => {
-            const fm = (moonR + t.h - 1) % 12, fl = (lagR + t.h - 1) % 12;
-            return (
-              <tr key={t.h} style={{ background: t.h === 8 ? "#fdecea" : "#fffaf0" }}>
-                <td style={{ ...cell, fontWeight: 800 }}>{t.name}</td>
-                <td style={cell}>{RASIS_TAMIL[fm]}</td>
-                <td style={cell}>{RASIS_TAMIL[fl]}</td>
-                <td style={cell}>{planetsIn(fm)} / {planetsIn(fl)}</td>
-                <td style={cell}>{t.palan}</td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <div style={{ border: "3px solid #7a1a2b", borderRadius: 10, padding: 10, background: "#fdecea", marginBottom: 12 }}>
+        <h3 style={{ fontSize: 16, fontWeight: 800, color: "#7a1a2b", margin: 0 }}>கணக்கீடு</h3>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginTop: 6 }}><tbody>
+          <tr><td style={th}>சூரியன் நின்ற நட்சத்திரம் / ராசி</td><td style={cell}>{NAKSHATRAS_TAMIL[sunNak]} / {RASIS_TAMIL[result.sun.rasiIndex]}</td></tr>
+          <tr><td style={th}>சூரியன் முதல் மூலம் வரை எண்ணிக்கை</td><td style={cell}>{count}</td></tr>
+          <tr><td style={th}>லக்ன நட்சத்திரம்</td><td style={cell}>{NAKSHATRAS_TAMIL[lagNak]} (லக்னம்: {RASIS_TAMIL[lagR]})</td></tr>
+          <tr><td style={th}>லக்ன நட்சத்திரம் முதல் {count}-வது</td><td style={{ ...cell, fontSize: 14, color: "#7a1a2b", fontWeight: 800 }}>முடக்கு நட்சத்திரம்: {NAKSHATRAS_TAMIL[mudNak]}</td></tr>
+          <tr><td style={th}>அது நிற்கும் ராசி</td><td style={{ ...cell, fontSize: 14, color: "#7a1a2b", fontWeight: 800 }}>முடக்கு ராசி: {RASIS_TAMIL[mudRasi]}</td></tr>
+          <tr><td style={th}>முடக்கு ராசியில் உள்ள கிரகங்கள்</td><td style={cell}>{planetsIn(mudRasi)}</td></tr>
+        </tbody></table>
+        <p style={{ fontSize: 12, fontWeight: 700, lineHeight: 1.6, margin: "8px 0 0" }}>
+          முடக்கு நட்சத்திரம் / ராசியில் நிற்கும் கிரகங்களின் தசா, புத்தி காலங்களிலும், கோசாரத்தில் சந்திரன் {NAKSHATRAS_TAMIL[mudNak]} நட்சத்திரத்தில் சஞ்சரிக்கும் நாட்களிலும் காரியத் தடை, முடக்கம் ஏற்படும். அந்நாட்களில் சுப காரியங்கள் தவிர்த்து, அந்த நட்சத்திர அதிதேவதைக்கு வழிபாடு செய்யவும்.
+        </p>
+      </div>
 
       <div style={{ border: "2px solid #c9a050", borderRadius: 8, padding: 8, background: "#fffaf0", fontSize: 12, fontWeight: 700, lineHeight: 1.6 }}>
         சந்திரன் முடக்கு நட்சத்திரங்களில் சஞ்சரிக்கும் நாட்களிலும், சந்திரன் {RASIS_TAMIL[(moonR + 7) % 12]} ராசியில் (சந்திராஷ்டமம்) இருக்கும் நாட்களிலும் திருமணம், கிரகப்பிரவேசம், புதிய தொழில், நீண்ட பயணம் போன்றவற்றைத் தவிர்க்கவும். இந்த இடங்களில் கிரகங்கள் இருந்தால் அவற்றின் தசா / புத்தி காலங்களில் முடக்கு பலன் அதிகரிக்கும் — உரிய பரிகாரம் செய்யவும்.
