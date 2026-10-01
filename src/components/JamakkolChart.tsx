@@ -127,10 +127,9 @@ export const JamakkolChart = () => {
                     <div className="text-[hsl(220_60%_45%)] text-[10px] sm:text-xs font-semibold">{dateStr}<br />{timeStr}</div>
                     <div className="text-[hsl(220_60%_45%)] text-[10px] sm:text-xs font-bold mt-1">{data.weekdayEn} Jamam # {data.jamam}</div>
                     {[["உதயம்", data.udayam], ["ஆருடம்", data.arudam], ["கவிப்பு", data.kavippu]].map(([l, v]) => (
-                      <div key={l as string} className="mt-1">
-                        <div className="text-[hsl(0_70%_40%)] font-bold text-[11px] sm:text-sm">{l}</div>
-                        <div className="text-[9px] sm:text-[11px] font-bold">{RASIS_TAMIL[Math.floor((v as number) / 30)]} {dm(v as number)}</div>
-                        <div className="border border-[hsl(0_70%_85%)] rounded px-1 text-[9px] sm:text-[11px]">★ {nak(v as number)}</div>
+                      <div key={l as string} className="mt-0.5 leading-tight">
+                        <div className="text-[9px] sm:text-[11px] font-bold"><span className="text-[hsl(0_70%_40%)]">{l}:</span> {RASIS_TAMIL[Math.floor((v as number) / 30)]} {dm(v as number)}</div>
+                        <div className="text-[8px] sm:text-[10px]">★ {nak(v as number)}</div>
                       </div>
                     ))}
                   </div>
