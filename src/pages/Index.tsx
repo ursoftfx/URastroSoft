@@ -320,39 +320,6 @@ const Index = () => {
         {!result && (
           <div className="max-w-5xl mx-auto space-y-4 mb-6">
             <AnnouncementsBanner />
-            {/* Quick access to report tabs — selectable list */}
-            <div className="parchment rounded-xl border-2 border-gold-deep/50 p-4 no-print">
-              <div className="font-tamil text-lg font-bold text-maroon-deep text-center mb-3">அறிக்கைகள் — தேர்வு பட்டியல்</div>
-              <ul className="grid gap-3 sm:grid-cols-2">
-                {REPORT_TABS.map((t, i) => {
-                  const active = selectedTab === t.key;
-                  const Icon = TAB_ICONS[i % TAB_ICONS.length];
-                  return (
-                    <li key={t.key}>
-                      <button
-                        onClick={() => {
-                          setSelectedTab(t.key);
-                          navigate(`/jathagam?tab=${t.key}`);
-                        }}
-                        aria-pressed={active}
-                        className={`pill-btn pill-g${(i % 5) + 1}`}
-                      >
-                        <span className="pill-icon">
-                          <Icon className="h-5 w-5" />
-                        </span>
-                        <span className="pill-label font-tamil text-base md:text-lg">
-                          {t.label}
-                          {active && <span className="ml-2">✓</span>}
-                        </span>
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-              <div className="font-tamil text-xs text-muted-foreground text-center mt-2">
-                ஒரு அறிக்கையைத் தேர்ந்தெடுத்து, பிறப்பு விவரம் உள்ளிடவும் — தேர்ந்த அறிக்கை நேரடியாகத் திறக்கும்
-              </div>
-            </div>
             <FitToWidth><TodayPanchangam /></FitToWidth>
             <TharaQuickTable />
             <JamakkolChart />
@@ -394,7 +361,6 @@ const Index = () => {
         )}
       </div>
       <WhatsAppButton message="வணக்கம்! எனக்கு ஜாதக ஆலோசனை வேண்டும்." />
-      <AstrologyContentSections />
     </main>
     <SiteFooter />
     </>
