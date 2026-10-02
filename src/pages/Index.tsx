@@ -249,7 +249,7 @@ const Index = () => {
 
       <div className="relative max-w-5xl mx-auto px-4 py-10 md:py-16">
         {/* Header */}
-        {!result && (
+        {!result && !isForm && (
           <header className="text-center mb-12 animate-fade-up">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-gradient-royal shadow-royal mb-6 relative">
               <div className="absolute inset-0 rounded-full bg-gradient-gold opacity-30 animate-shimmer" />
@@ -317,7 +317,7 @@ const Index = () => {
           </header>
         )}
 
-        {!result && (
+        {!result && !isForm && (
           <div className="max-w-5xl mx-auto space-y-4 mb-6">
             <AnnouncementsBanner />
             <FitToWidth><TodayPanchangam /></FitToWidth>
