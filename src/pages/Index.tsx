@@ -360,6 +360,26 @@ const Index = () => {
           />
         )}
       </div>
+      {result && (
+        <div className="fixed bottom-24 right-4 left-4 sm:left-auto sm:max-w-sm z-50 parchment rounded-2xl p-4 shadow-royal border border-gold/40">
+          <div className="font-tamil text-sm text-maroon-deep font-bold mb-2">
+            Welcome To AMMAN SOFTWARES
+          </div>
+          <div className="font-tamil text-sm mb-3">
+            உங்கள் ஜாதகம் தொடர்பான தகவல்களுக்கு தொடர்புக்கு 9600543617
+          </div>
+          <a
+            href={`https://wa.me/919600543617?text=${encodeURIComponent(
+              `Welcome To AMMAN SOFTWARES\nஉங்கள் ஜாதகம் தொடர்பான தகவல்களுக்கு தொடர்புக்கு 9600543617\n\nபெயர்: ${result.input.name}${result.input.phone ? `\nதொலைபேசி: ${result.input.phone}` : ""}`
+            )}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block text-center bg-whatsapp hover:bg-whatsapp-deep text-primary-foreground font-tamil font-semibold py-2 rounded-full"
+          >
+            WhatsApp-ல் அனுப்பவும்
+          </a>
+        </div>
+      )}
       <WhatsAppButton message="வணக்கம்! எனக்கு ஜாதக ஆலோசனை வேண்டும்." />
     </main>
     <SiteFooter />
