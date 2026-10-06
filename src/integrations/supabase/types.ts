@@ -60,10 +60,15 @@ export type Database = {
           contact_whatsapp: string | null
           created_at: string
           display_name: string
+          earnings: number
           experience_years: number
           id: string
+          is_online: boolean
           languages: string[]
           photo_url: string | null
+          rate_per_minute: number
+          rating_avg: number
+          rating_count: number
           specialties: string[]
           status: Database["public"]["Enums"]["astrologer_status"]
           updated_at: string
@@ -78,10 +83,15 @@ export type Database = {
           contact_whatsapp?: string | null
           created_at?: string
           display_name: string
+          earnings?: number
           experience_years?: number
           id?: string
+          is_online?: boolean
           languages?: string[]
           photo_url?: string | null
+          rate_per_minute?: number
+          rating_avg?: number
+          rating_count?: number
           specialties?: string[]
           status?: Database["public"]["Enums"]["astrologer_status"]
           updated_at?: string
@@ -96,16 +106,145 @@ export type Database = {
           contact_whatsapp?: string | null
           created_at?: string
           display_name?: string
+          earnings?: number
           experience_years?: number
           id?: string
+          is_online?: boolean
           languages?: string[]
           photo_url?: string | null
+          rate_per_minute?: number
+          rating_avg?: number
+          rating_count?: number
           specialties?: string[]
           status?: Database["public"]["Enums"]["astrologer_status"]
           updated_at?: string
           user_id?: string
         }
         Relationships: []
+      }
+      astrologer_reviews: {
+        Row: {
+          astrologer_id: string
+          comment: string | null
+          created_at: string
+          id: string
+          rating: number
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          astrologer_id: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating: number
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          astrologer_id?: string
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating?: number
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "astrologer_reviews_astrologer_id_fkey"
+            columns: ["astrologer_id"]
+            isOneToOne: false
+            referencedRelation: "astrologer_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "astrologer_reviews_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: true
+            referencedRelation: "chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_messages: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          sender_id: string
+          session_id: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          sender_id: string
+          session_id: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          sender_id?: string
+          session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "chat_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_sessions: {
+        Row: {
+          amount: number
+          astrologer_id: string
+          created_at: string
+          ended_at: string | null
+          id: string
+          minutes: number
+          rate: number
+          started_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          astrologer_id: string
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          minutes?: number
+          rate: number
+          started_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          astrologer_id?: string
+          created_at?: string
+          ended_at?: string | null
+          id?: string
+          minutes?: number
+          rate?: number
+          started_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_sessions_astrologer_id_fkey"
+            columns: ["astrologer_id"]
+            isOneToOne: false
+            referencedRelation: "astrologer_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       consultation_messages: {
         Row: {
@@ -330,17 +469,106 @@ export type Database = {
         }
         Relationships: []
       }
+      wallet_recharges: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          reviewed_at: string | null
+          status: string
+          user_id: string
+          utr: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          reviewed_at?: string | null
+          status?: string
+          user_id: string
+          utr: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          reviewed_at?: string | null
+          status?: string
+          user_id?: string
+          utr?: string
+        }
+        Relationships: []
+      }
+      wallet_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          kind: string
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          kind: string
+          note?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          kind?: string
+          note?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wallets: {
+        Row: {
+          balance: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      approve_recharge: {
+        Args: { _approve: boolean; _id: string }
+        Returns: undefined
+      }
+      end_chat: { Args: { _session: string }; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      request_chat: { Args: { _astrologer_id: string }; Returns: string }
+      respond_chat: {
+        Args: { _accept: boolean; _session: string }
+        Returns: undefined
+      }
+      submit_review: {
+        Args: { _comment: string; _rating: number; _session: string }
+        Returns: undefined
       }
     }
     Enums: {
