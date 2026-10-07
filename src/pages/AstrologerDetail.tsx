@@ -17,6 +17,7 @@ interface Astrologer {
   specialties: string[]; languages: string[]; experience_years: number;
   charges_note: string | null; contact_phone: string | null;
   contact_whatsapp: string | null; photo_url: string | null;
+  is_online: boolean; rate_per_minute: number; rating_avg: number; rating_count: number;
 }
 
 const AstrologerDetail = () => {
@@ -29,14 +30,27 @@ const AstrologerDetail = () => {
   const [subject, setSubject] = useState("");
   const [question, setQuestion] = useState("");
   const [busy, setBusy] = useState(false);
+  const [reviews, setReviews] = useState<any[]>([]);
+  const startChat = async () => {
+    if (!user) { nav("/auth"); return; }
+    const { data, error } = await supabase.rpc("request_chat", { _astrologer_id: id! });
+    if (error) {
+      toast.error(error.message.includes("balance") ? "வாலட்டில் குறைந்தது 3 நிமிடத்திற்கான தொகை வேண்டும்" : error.message);
+      if (error.message.includes("balance")) nav("/wallet");
+      return;
+    }
+    nav(`/chat/${data}`);
+  };
 
   useEffect(() => {
     if (!id) return;
     (async () => {
       const { data } = await supabase.from("astrologer_profiles")
-        .select("id, display_name, bio, specialties, languages, experience_years, charges_note, contact_phone, contact_whatsapp, photo_url")
+        .select("id, display_name, bio, specialties, languages, experience_years, charges_note, contact_phone, contact_whatsapp, photo_url, is_online, rate_per_minute, rating_avg, rating_count")
         .eq("id", id).eq("status", "approved").maybeSingle();
       setA(data as Astrologer | null);
+      const { data: rv } = await supabase.from("astrologer_reviews").select("id, rating, comment, created_at").eq("astrologer_id", id).order("created_at", { ascending: false }).limit(20);
+      setReviews(rv || []);
     })();
   }, [id]);
 
@@ -81,7 +95,24 @@ const AstrologerDetail = () => {
           {a.specialties.map((s) => <Badge key={s} variant="secondary" className="font-tamil">{s}</Badge>)}
         </div>
         {a.charges_note && <p className="text-sm font-tamil text-gold-deep">{a.charges_note}</p>}
+        <div className="flex items-center justify-between gap-2 mt-4 flex-wrap">
+          <div className="text-sm"><Badge variant={a.is_online ? "default" : "secondary"}>{a.is_online ? "● ஆன்லைன்" : "ஆஃப்லைன்"}</Badge> ₹{a.rate_per_minute}/நிமிடம் • ⭐ {Number(a.rating_avg).toFixed(1)} ({a.rating_count})</div>
+          <Button onClick={startChat} disabled={!a.is_online} className="bg-gradient-royal text-primary-foreground font-tamil">
+            <MessageCircle className="w-4 h-4" /> இப்போது Chat — ₹{a.rate_per_minute}/நிமி
+          </Button>
+        </div>
       </div>
+
+      {reviews.length > 0 && (
+        <div className="parchment rounded-2xl p-6 mb-6">
+          <h2 className="font-tamil text-lg font-bold text-maroon-deep mb-2">மதிப்பீடுகள்</h2>
+          {reviews.map((r) => (
+            <div key={r.id} className="py-1 border-b border-gold/20 text-sm">
+              <span className="text-gold-deep">{"★".repeat(r.rating)}{"☆".repeat(5 - r.rating)}</span> {r.comment}
+            </div>
+          ))}
+        </div>
+      )}
 
       <div className="parchment rounded-2xl p-6">
         <h2 className="font-tamil text-xl font-bold text-maroon-deep mb-4">கேள்வி கேளுங்கள்</h2>

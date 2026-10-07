@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { SEO } from "@/components/SEO";
 import { ArrowLeft, Send } from "lucide-react";
+import AstroLivePanel from "@/components/AstroLivePanel";
 
 interface Consult {
   id: string; mode: string; subject: string | null; question: string; status: string; created_at: string;
@@ -89,8 +90,14 @@ const MyConsultations = ({ asAstrologer = false }: { asAstrologer?: boolean }) =
             <Link to="/astrologers">ஜோதிடர்கள்</Link>
           </Button>
         )}
+        {!asAstrologer && (
+          <Button asChild size="sm" variant="outline" className="font-tamil">
+            <Link to="/wallet">வாலட்</Link>
+          </Button>
+        )}
       </div>
 
+      {asAstrologer && astroId && <AstroLivePanel />}
       {asAstrologer && !astroId && (
         <div className="parchment rounded-2xl p-6 text-center">
           <p className="font-tamil mb-3">நீங்கள் ஜோதிடராக பதிவு செய்யவில்லை.</p>

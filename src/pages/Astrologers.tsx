@@ -14,6 +14,7 @@ interface Astrologer {
   languages: string[];
   experience_years: number;
   charges_note: string | null;
+  is_online: boolean; rate_per_minute: number; rating_avg: number; rating_count: number;
   photo_url: string | null;
 }
 
@@ -25,9 +26,9 @@ const Astrologers = () => {
     (async () => {
       const { data } = await supabase
         .from("astrologer_profiles")
-        .select("id, display_name, bio, specialties, languages, experience_years, charges_note, photo_url")
+        .select("id, display_name, bio, specialties, languages, experience_years, charges_note, photo_url, is_online, rate_per_minute, rating_avg, rating_count")
         .eq("status", "approved")
-        .order("experience_years", { ascending: false });
+        .order("is_online", { ascending: false }).order("experience_years", { ascending: false });
       setList((data as Astrologer[]) || []);
       setLoading(false);
     })();
@@ -44,6 +45,7 @@ const Astrologers = () => {
           <ArrowLeft className="w-4 h-4 mr-1" /> முகப்பு
         </Link>
         <h1 className="font-tamil text-2xl md:text-3xl font-bold text-maroon-deep">AMMAN SOFTWARES TALK — ஜோதிடர்கள்</h1>
+        <Button asChild variant="outline" size="sm" className="font-tamil"><Link to="/wallet">வாலட்</Link></Button>
         <Button asChild variant="outline" size="sm" className="font-tamil">
           <Link to="/astrologer/apply">ஜோதிடராக சேர</Link>
         </Button>
@@ -69,8 +71,9 @@ const Astrologers = () => {
                 </div>
                 <div className="flex-1 min-w-0">
                   <h2 className="font-tamil font-bold text-maroon-deep truncate">{a.display_name}</h2>
+                  <div className="flex gap-2 items-center text-xs"><Badge variant={a.is_online ? "default" : "secondary"}>{a.is_online ? "● ஆன்லைன்" : "ஆஃப்லைன்"}</Badge> ₹{a.rate_per_minute}/நிமி</div>
                   <div className="text-xs text-muted-foreground flex items-center gap-1">
-                    <Star className="w-3 h-3 text-gold-deep" /> {a.experience_years}+ ஆண்டுகள் அனுபவம்
+                    <Star className="w-3 h-3 text-gold-deep" /> {Number(a.rating_avg).toFixed(1)} ({a.rating_count}) • {a.experience_years}+ ஆண்டுகள்
                   </div>
                 </div>
               </div>
@@ -83,7 +86,7 @@ const Astrologers = () => {
               {a.charges_note && <p className="text-xs text-gold-deep font-tamil mb-3">{a.charges_note}</p>}
               <div className="mt-auto grid grid-cols-2 gap-2">
                 <Button asChild size="sm" className="bg-gradient-royal text-primary-foreground font-tamil">
-                  <Link to={`/astrologers/${a.id}?mode=text`}><MessageCircle className="w-4 h-4" /> உரை</Link>
+                  <Link to={`/astrologers/${a.id}?mode=text`}><MessageCircle className="w-4 h-4" /> {a.is_online ? "Chat" : "உரை"}</Link>
                 </Button>
                 <Button asChild size="sm" variant="outline" className="font-tamil">
                   <Link to={`/astrologers/${a.id}?mode=voice`}><Phone className="w-4 h-4" /> குரல்</Link>

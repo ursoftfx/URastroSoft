@@ -24,6 +24,8 @@ import { About, Contact, PrivacyPolicy, Terms, Disclaimer } from "./pages/Static
 import NakshatraKarma from "./pages/NakshatraKarma.tsx";
 import PanchangaDeities from "./pages/PanchangaDeities.tsx";
 import DailyPanchangam from "./pages/DailyPanchangam.tsx";
+import Wallet from "./pages/Wallet.tsx";
+import ChatRoom from "./pages/ChatRoom.tsx";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +63,8 @@ const App = () => (
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/disclaimer" element={<Disclaimer />} />
+            <Route path="/wallet" element={<Wallet />} />
+            <Route path="/chat/:id" element={<ChatRoom />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/admin" element={<Admin />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
