@@ -51,9 +51,6 @@ const AstrologerDetail = () => {
       setA(data as Astrologer | null);
       const { data: rv } = await supabase.from("astrologer_reviews").select("id, rating, comment, created_at").eq("astrologer_id", id).order("created_at", { ascending: false }).limit(20);
       setReviews(rv || []);
-      if (false) await supabase.from("astrologer_profiles").select("id")
-        .eq("id", id).eq("status", "approved").maybeSingle();
-      setA(data as Astrologer | null);
     })();
   }, [id]);
 
