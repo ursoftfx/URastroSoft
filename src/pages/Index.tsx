@@ -4,7 +4,7 @@ import { JathagamReport } from "@/components/JathagamReport";
 import { BirthInput, computeJathagam, JathagamResult } from "@/lib/jathagam";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Printer, FileText, LayoutList, Shield, ScrollText, Baby, BookOpen, Heart, Sun, Sparkles, Flame, Phone, MessageCircle, Star, CalendarDays } from "lucide-react";
+import { ArrowLeft, Printer, FileText, LayoutList, Shield, ScrollText, Baby, BookOpen, Heart, Sun, Sparkles, Flame, Phone, MessageCircle, Star, CalendarDays, Clock } from "lucide-react";
 import { WhatsAppButton } from "@/components/WhatsAppButton";
 import { SEO } from "@/components/SEO";
 import { DownloadReport } from "@/components/DownloadReport";
@@ -276,6 +276,7 @@ const Index = () => {
                     { to: "/porutham", label: "திருமண பொருத்தம்", icon: Heart },
                     { to: "/gochara", label: "தினசரி கோசாரம்", icon: Sun },
                     { to: "/panchangam", label: "தினசரி பஞ்சாங்கம்", icon: CalendarDays },
+                    { to: "#jamakkol", label: "ஜாமக்கோள் பிரசன்னம்", icon: Clock, anchor: true },
                     { to: "/bhrigu-nandi-nadi", label: "பிருகு நந்தி நாடி", icon: ScrollText },
                     { to: "/nakshatra-karma", label: "108 நட்சத்திர கர்மம்", icon: Sparkles },
                     { to: "/panchanga-deities", label: "பஞ்சாங்க அதிதேவதைகள்", icon: Flame },
@@ -286,18 +287,28 @@ const Index = () => {
                     { to: "/jathagam?tab=ruthu", label: "ருது ஜாதகம் & பரிகாரம்", icon: Flame },
                     { to: "/articles", label: "உதவி — கட்டுரைகள்", icon: BookOpen },
                     { to: "/about", label: "சுபம்", icon: Star },
-                  ].map((m, i) => (
-                    <li key={m.label}>
-                      <Link to={m.to} className={`pill-btn pill-g${(i % 5) + 1}`}>
+                  ].map((m, i) => {
+                    const pill = `pill-btn pill-g${(i % 5) + 1}`;
+                    const inner = (
+                      <>
                         <span className="pill-icon">
                           <m.icon className="h-5 w-5" />
                         </span>
                         <span className="pill-label font-tamil text-base md:text-lg">
                           <span className="mr-2">✓</span>{m.label}
                         </span>
-                      </Link>
-                    </li>
-                  ))}
+                      </>
+                    );
+                    return (
+                      <li key={m.label}>
+                        {m.anchor ? (
+                          <a href={m.to} className={pill}>{inner}</a>
+                        ) : (
+                          <Link to={m.to} className={pill}>{inner}</Link>
+                        )}
+                      </li>
+                    );
+                  })}
                   {isAdmin && (
                     <li>
                       <Link to="/admin" className="pill-btn pill-g1">
@@ -322,7 +333,9 @@ const Index = () => {
             <AnnouncementsBanner />
             <FitToWidth><TodayPanchangam /></FitToWidth>
             <TharaQuickTable />
-            <JamakkolChart />
+            <div id="jamakkol" className="scroll-mt-24">
+              <JamakkolChart />
+            </div>
             <GocharaSummary />
           </div>
         )}
