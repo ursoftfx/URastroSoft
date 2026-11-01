@@ -71,7 +71,6 @@ export const Contact = () => (
     <ul className="space-y-3 text-base">
       <li><strong>மின்னஞ்சல்:</strong> <a href="mailto:contact@kanagadara.lovable.app" className="text-maroon-deep underline">contact@kanagadara.lovable.app</a></li>
       <li><strong>WhatsApp:</strong> ஒவ்வொரு பக்கத்திலும் கீழே உள்ள பச்சை பட்டனை அழுத்தவும்.</li>
-      <li><strong>ஆலோசனை பக்கம்:</strong> <Link to="/astrology-consultation" className="text-maroon-deep underline">ஆலோசனை கோர</Link></li>
     </ul>
     <h2 className="text-xl font-bold text-maroon-deep mt-8 mb-2">பதில் நேரம்</h2>
     <p>

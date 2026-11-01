@@ -180,12 +180,10 @@ const Admin = () => {
       </div>
 
       <Tabs defaultValue="posts">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="posts" className="font-tamil">கட்டுரைகள்</TabsTrigger>
           <TabsTrigger value="anns" className="font-tamil">அறிவிப்புகள்</TabsTrigger>
-          <TabsTrigger value="astros" className="font-tamil">ஜோதிடர்கள்</TabsTrigger>
           <TabsTrigger value="users" className="font-tamil">பயனர்கள்</TabsTrigger>
-          <TabsTrigger value="wallet" className="font-tamil">வாலட்/Chat</TabsTrigger>
         </TabsList>
 
         <TabsContent value="posts" className="space-y-6 mt-4">
