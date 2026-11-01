@@ -432,3 +432,5 @@ ARTICLES.push(
 `
   ),
 );
+
+ARTICLES.push(...EXTRA_ARTICLES);
