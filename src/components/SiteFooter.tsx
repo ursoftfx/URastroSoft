@@ -17,7 +17,6 @@ export const SiteFooter = () => {
             <li><Link to="/free-horoscope" className="hover:text-maroon-deep text-muted-foreground">Free Horoscope</Link></li>
             <li><Link to="/birth-horoscope" className="hover:text-maroon-deep text-muted-foreground">பிறப்பு ஜாதகம்</Link></li>
             <li><Link to="/porutham" className="hover:text-maroon-deep text-muted-foreground">திருமண பொருத்தம்</Link></li>
-            <li><Link to="/astrology-consultation" className="hover:text-maroon-deep text-muted-foreground">ஆலோசனை</Link></li>
           </ul>
         </div>
         <div>

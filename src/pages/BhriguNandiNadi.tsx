@@ -577,10 +577,10 @@ const BhriguNandiNadi = () => {
                     <Link to="/gochara" className="text-maroon-deep underline hover:text-gold">
                       தினசரி கோசாரம்
                     </Link>{" "}
-                    பக்கத்தில் பாருங்கள், அல்லது விரிவான ஆலோசனைக்கு{" "}
-                    <Link to="/astrology-consultation" className="text-maroon-deep underline hover:text-gold">
+                     பக்கத்தில் பாருங்கள், அல்லது விரிவான ஆலோசனைக்கு{" "}
+                    <a href="https://wa.me/919600543617?text=%E0%AE%B5%E0%AE%A3%E0%AE%95%E0%AF%8D%E0%AE%95%E0%AE%AE%E0%AF%8D!%20%E0%AE%8E%E0%AE%A9%E0%AE%95%E0%AF%8D%E0%AE%95%E0%AF%81%20%E0%AE%86%E0%AE%B2%E0%AF%8B%E0%AE%9A%E0%AE%A9%E0%AF%88%20%E0%AE%B5%E0%AF%87%E0%AE%A3%E0%AF%8D%E0%AE%9F%E0%AF%81%E0%AE%AE%E0%AF%8D." className="text-maroon-deep underline hover:text-gold">
                       நிபுணரை அணுகவும்
-                    </Link>.
+                    </a>.
                   </p>
                 </div>
               </div>

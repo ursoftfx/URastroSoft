@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import AdminWalletTab from "@/components/AdminWalletTab";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
@@ -29,7 +28,6 @@ const annSchema = z.object({
 
 interface Post { id: string; title: string; slug: string; published: boolean; created_at: string; }
 interface Ann { id: string; rasi: string | null; title: string; message: string; active_date: string; active: boolean; }
-interface Astro { id: string; user_id: string; display_name: string; experience_years: number; status: string; created_at: string; contact_phone: string | null; specialties: string[]; }
 interface Prof { id: string; full_name: string | null; phone: string; whatsapp_number: string | null; created_at: string; }
 
 const Admin = () => {
@@ -49,7 +47,6 @@ const Admin = () => {
   const [aMsg, setAMsg] = useState("");
   const [aRasi, setARasi] = useState<string>("all");
   const [anns, setAnns] = useState<Ann[]>([]);
-  const [astros, setAstros] = useState<Astro[]>([]);
   const [profs, setProfs] = useState<Prof[]>([]);
 
   useEffect(() => {
@@ -65,12 +62,6 @@ const Admin = () => {
     setAnns((data as Ann[]) || []);
   };
 
-  const loadAstros = async () => {
-    const { data } = await supabase.from("astrologer_profiles")
-      .select("id, user_id, display_name, experience_years, status, created_at, contact_phone, specialties")
-      .order("created_at", { ascending: false });
-    setAstros((data as Astro[]) || []);
-  };
   const loadProfs = async () => {
     const { data } = await supabase.from("profiles")
       .select("id, full_name, phone, whatsapp_number, created_at")
@@ -78,14 +69,7 @@ const Admin = () => {
     setProfs((data as Prof[]) || []);
   };
 
-  useEffect(() => { if (isAdmin) { loadPosts(); loadAnns(); loadAstros(); loadProfs(); } }, [isAdmin]);
-
-  const setAstroStatus = async (a: Astro, status: "approved" | "rejected" | "pending") => {
-    const patch: any = { status };
-    if (status === "approved") { patch.approved_at = new Date().toISOString(); patch.approved_by = user?.id; }
-    const { error } = await supabase.from("astrologer_profiles").update(patch).eq("id", a.id);
-    if (error) toast.error(error.message); else { toast.success("புதுப்பிக்கப்பட்டது"); loadAstros(); }
-  };
+  useEffect(() => { if (isAdmin) { loadPosts(); loadAnns(); loadProfs(); } }, [isAdmin]);
 
   const submitPost = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -180,12 +164,10 @@ const Admin = () => {
       </div>
 
       <Tabs defaultValue="posts">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-3">
           <TabsTrigger value="posts" className="font-tamil">கட்டுரைகள்</TabsTrigger>
           <TabsTrigger value="anns" className="font-tamil">அறிவிப்புகள்</TabsTrigger>
-          <TabsTrigger value="astros" className="font-tamil">ஜோதிடர்கள்</TabsTrigger>
           <TabsTrigger value="users" className="font-tamil">பயனர்கள்</TabsTrigger>
-          <TabsTrigger value="wallet" className="font-tamil">வாலட்/Chat</TabsTrigger>
         </TabsList>
 
         <TabsContent value="posts" className="space-y-6 mt-4">
@@ -285,39 +267,7 @@ const Admin = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="astros" className="space-y-4 mt-4">
-          <div className="parchment rounded-xl p-4">
-            <h3 className="font-tamil font-bold text-maroon-deep mb-3">ஜோதிடர் விண்ணப்பங்கள் ({astros.length})</h3>
-            <div className="space-y-2">
-              {astros.map((a) => (
-                <div key={a.id} className="p-3 border border-gold/20 rounded">
-                  <div className="flex items-center justify-between gap-2 flex-wrap">
-                    <div className="flex-1 min-w-0">
-                      <div className="font-tamil font-semibold">{a.display_name}
-                        <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-secondary">{a.status}</span>
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {a.experience_years}+ years • {a.contact_phone || "—"} • {new Date(a.created_at).toLocaleDateString()}
-                      </div>
-                      <div className="text-xs font-tamil mt-1">{(a.specialties || []).join(", ")}</div>
-                    </div>
-                    <div className="flex gap-2">
-                      {a.status !== "approved" && (
-                        <Button size="sm" onClick={() => setAstroStatus(a, "approved")} className="bg-gradient-royal text-primary-foreground font-tamil">அனுமதி</Button>
-                      )}
-                      {a.status !== "rejected" && (
-                        <Button size="sm" variant="outline" onClick={() => setAstroStatus(a, "rejected")} className="font-tamil">நிராகரி</Button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-              {astros.length === 0 && <p className="text-sm text-muted-foreground font-tamil text-center py-4">விண்ணப்பங்கள் இல்லை</p>}
-            </div>
-          </div>
-        </TabsContent>
 
-        <TabsContent value="wallet" className="mt-4"><AdminWalletTab /></TabsContent>
 
         <TabsContent value="users" className="space-y-4 mt-4">
           <div className="parchment rounded-xl p-4">
