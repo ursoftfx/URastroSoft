@@ -83,7 +83,7 @@ const Auth = () => {
         </Link>
         <div className="parchment rounded-2xl p-6 md:p-8">
           <h1 className="font-tamil text-2xl md:text-3xl font-bold text-maroon-deep text-center mb-2">
-            AMMAN SOFTWARES TALK
+            AMMAN SOFTWARES
           </h1>
           <p className="text-center text-sm text-muted-foreground font-tamil mb-6">ஜோதிடர்களுடன் நேரடி கலந்தாலோசனை</p>
           <Tabs defaultValue="signin">
