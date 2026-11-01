@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import AdminWalletTab from "@/components/AdminWalletTab";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
@@ -283,39 +282,7 @@ const Admin = () => {
           </div>
         </TabsContent>
 
-        <TabsContent value="astros" className="space-y-4 mt-4">
-          <div className="parchment rounded-xl p-4">
-            <h3 className="font-tamil font-bold text-maroon-deep mb-3">ஜோதிடர் விண்ணப்பங்கள் ({astros.length})</h3>
-            <div className="space-y-2">
-              {astros.map((a) => (
-                <div key={a.id} className="p-3 border border-gold/20 rounded">
-                  <div className="flex items-center justify-between gap-2 flex-wrap">
-                    <div className="flex-1 min-w-0">
-                      <div className="font-tamil font-semibold">{a.display_name}
-                        <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-secondary">{a.status}</span>
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {a.experience_years}+ years • {a.contact_phone || "—"} • {new Date(a.created_at).toLocaleDateString()}
-                      </div>
-                      <div className="text-xs font-tamil mt-1">{(a.specialties || []).join(", ")}</div>
-                    </div>
-                    <div className="flex gap-2">
-                      {a.status !== "approved" && (
-                        <Button size="sm" onClick={() => setAstroStatus(a, "approved")} className="bg-gradient-royal text-primary-foreground font-tamil">அனுமதி</Button>
-                      )}
-                      {a.status !== "rejected" && (
-                        <Button size="sm" variant="outline" onClick={() => setAstroStatus(a, "rejected")} className="font-tamil">நிராகரி</Button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-              {astros.length === 0 && <p className="text-sm text-muted-foreground font-tamil text-center py-4">விண்ணப்பங்கள் இல்லை</p>}
-            </div>
-          </div>
-        </TabsContent>
 
-        <TabsContent value="wallet" className="mt-4"><AdminWalletTab /></TabsContent>
 
         <TabsContent value="users" className="space-y-4 mt-4">
           <div className="parchment rounded-xl p-4">
