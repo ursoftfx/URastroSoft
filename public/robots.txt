@@ -13,6 +13,12 @@ Allow: /
 User-agent: *
 Allow: /
 Disallow: /auth
+Disallow: /astrologers
+Disallow: /astrologer
+Disallow: /wallet
+Disallow: /chat
+Disallow: /my-consultations
+Disallow: /login
 Disallow: /admin
 Disallow: /posts
 
