@@ -1,4 +1,5 @@
 import { EXTRA_ARTICLES } from "./articles-extra";
+import { MORE_ARTICLES } from "./articles-more";
 
 export interface Article {
   slug: string;
@@ -434,3 +435,6 @@ ARTICLES.push(
 );
 
 ARTICLES.push(...EXTRA_ARTICLES);
+
+const existingArticleSlugs = new Set(ARTICLES.map((article) => article.slug));
+ARTICLES.push(...MORE_ARTICLES.filter((article) => !existingArticleSlugs.has(article.slug)));
