@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { SEO } from "@/components/SEO";
 import { RASIS_TAMIL } from "@/lib/jathagam";
-import { ArrowLeft, Trash2, Eye, EyeOff, LogOut } from "lucide-react";
+import { ArrowLeft, Trash2, Eye, EyeOff, LogOut, Search, Download, RefreshCw } from "lucide-react";
 import { z } from "zod";
 
 const slugify = (s: string) =>
@@ -29,6 +29,8 @@ const annSchema = z.object({
 interface Post { id: string; title: string; slug: string; published: boolean; created_at: string; }
 interface Ann { id: string; rasi: string | null; title: string; message: string; active_date: string; active: boolean; }
 interface Prof { id: string; full_name: string | null; phone: string; whatsapp_number: string | null; created_at: string; }
+interface Lead { id: string; name: string; phone: string; gender: string | null; birth_date: string; birth_time: string; place_name: string; rasi: string | null; nakshatra: string | null; lagna: string | null; created_at: string; }
+interface ReportDownload { id: string; lead_id: string | null; report_type: string; created_at: string; }
 
 const Admin = () => {
   const { user, isAdmin, loading, signOut } = useAuth();
@@ -48,6 +50,12 @@ const Admin = () => {
   const [aRasi, setARasi] = useState<string>("all");
   const [anns, setAnns] = useState<Ann[]>([]);
   const [profs, setProfs] = useState<Prof[]>([]);
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [downloads, setDownloads] = useState<ReportDownload[]>([]);
+  const [leadCount, setLeadCount] = useState(0);
+  const [downloadCount, setDownloadCount] = useState(0);
+  const [leadSearch, setLeadSearch] = useState("");
+  const [leadPeriod, setLeadPeriod] = useState("all");
 
   useEffect(() => {
     if (!loading && !user) nav("/auth", { replace: true });
@@ -69,7 +77,51 @@ const Admin = () => {
     setProfs((data as Prof[]) || []);
   };
 
-  useEffect(() => { if (isAdmin) { loadPosts(); loadAnns(); loadProfs(); } }, [isAdmin]);
+  const loadReportAnalytics = async () => {
+    const [leadTotal, downloadTotal, recentLeads, recentDownloads] = await Promise.all([
+      supabase.from("jathagam_leads").select("id", { count: "exact", head: true }),
+      supabase.from("report_download_events").select("id", { count: "exact", head: true }),
+      supabase.from("jathagam_leads").select("id, name, phone, gender, birth_date, birth_time, place_name, rasi, nakshatra, lagna, created_at").order("created_at", { ascending: false }).limit(1000),
+      supabase.from("report_download_events").select("id, lead_id, report_type, created_at").order("created_at", { ascending: false }).limit(1000),
+    ]);
+    if (leadTotal.error || downloadTotal.error || recentLeads.error || recentDownloads.error) {
+      toast.error("அறிக்கை விவரங்களை ஏற்ற முடியவில்லை");
+      return;
+    }
+    setLeadCount(leadTotal.count ?? 0);
+    setDownloadCount(downloadTotal.count ?? 0);
+    setLeads((recentLeads.data as Lead[]) || []);
+    setDownloads((recentDownloads.data as ReportDownload[]) || []);
+  };
+
+  useEffect(() => { if (isAdmin) { loadPosts(); loadAnns(); loadProfs(); loadReportAnalytics(); } }, [isAdmin]);
+
+  const visibleLeads = leads.filter((lead) => {
+    const matchesSearch = `${lead.name} ${lead.phone} ${lead.place_name} ${lead.rasi ?? ""} ${lead.nakshatra ?? ""}`
+      .toLocaleLowerCase().includes(leadSearch.toLocaleLowerCase().trim());
+    const days = Number(leadPeriod);
+    const matchesPeriod = !days || Date.now() - new Date(lead.created_at).getTime() <= days * 24 * 60 * 60 * 1000;
+    return matchesSearch && matchesPeriod;
+  });
+
+  const exportLeads = () => {
+    const headers = ["Name", "Phone", "Birth date", "Birth time", "Place", "Rasi", "Nakshatra", "Lagna", "Generated at"];
+    const rows = visibleLeads.map((lead) => [lead.name, lead.phone, lead.birth_date, lead.birth_time, lead.place_name, lead.rasi ?? "", lead.nakshatra ?? "", lead.lagna ?? "", new Date(lead.created_at).toLocaleString()]);
+    const csv = [headers, ...rows].map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(",")).join("\n");
+    const url = URL.createObjectURL(new Blob(["\uFEFF", csv], { type: "text/csv;charset=utf-8" }));
+    const anchor = document.createElement("a");
+    anchor.href = url;
+    anchor.download = "amman-horoscope-reports.csv";
+    anchor.click();
+    URL.revokeObjectURL(url);
+  };
+
+  const reportName = (type: string) => ({
+    professional: "Professional PDF",
+    onepage: "ஒரு பக்க அறிக்கை",
+    birth_report: "ஜாதக அறிக்கை",
+    daily_panchangam: "தினசரி பஞ்சாங்கம்",
+  }[type] ?? type);
 
   const submitPost = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -163,12 +215,76 @@ const Admin = () => {
         </Button>
       </div>
 
-      <Tabs defaultValue="posts">
-        <TabsList className="grid w-full grid-cols-3">
+      <Tabs defaultValue="reports">
+        <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto">
+          <TabsTrigger value="reports" className="font-tamil">அறிக்கை விவரங்கள்</TabsTrigger>
           <TabsTrigger value="posts" className="font-tamil">கட்டுரைகள்</TabsTrigger>
           <TabsTrigger value="anns" className="font-tamil">அறிவிப்புகள்</TabsTrigger>
           <TabsTrigger value="users" className="font-tamil">பயனர்கள்</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="reports" className="space-y-4 mt-4">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="parchment rounded-lg border border-gold/30 p-4">
+              <div className="font-tamil text-sm text-muted-foreground">ஜாதகம் உருவாக்கியவர்கள்</div>
+              <div className="text-3xl font-bold text-maroon-deep">{leadCount.toLocaleString()}</div>
+            </div>
+            <div className="parchment rounded-lg border border-gold/30 p-4">
+              <div className="font-tamil text-sm text-muted-foreground">PDF பதிவிறக்கங்கள்</div>
+              <div className="text-3xl font-bold text-maroon-deep">{downloadCount.toLocaleString()}</div>
+            </div>
+          </div>
+          <section className="parchment rounded-lg border border-gold/30 p-4 space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-3">
+              <h2 className="font-tamil text-lg font-bold text-maroon-deep">சமீபத்திய ஜாதக பதிவுகள்</h2>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={loadReportAnalytics} aria-label="புதுப்பிக்க">
+                  <RefreshCw className="h-4 w-4" />
+                </Button>
+                <Button variant="outline" size="sm" onClick={exportLeads}>
+                  <Download className="h-4 w-4 mr-1" /> CSV
+                </Button>
+              </div>
+            </div>
+            <div className="grid gap-2 sm:grid-cols-[1fr_auto]">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input className="pl-9" value={leadSearch} onChange={(e) => setLeadSearch(e.target.value)} placeholder="பெயர், தொலைபேசி அல்லது ஊர் தேடுக" />
+              </div>
+              <Select value={leadPeriod} onValueChange={setLeadPeriod}>
+                <SelectTrigger className="w-full sm:w-40"><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">எல்லா நாட்களும்</SelectItem>
+                  <SelectItem value="7">கடந்த 7 நாட்கள்</SelectItem>
+                  <SelectItem value="30">கடந்த 30 நாட்கள்</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <p className="text-sm text-muted-foreground font-tamil">காட்டப்படுவது: {visibleLeads.length} / {leadCount.toLocaleString()} • சமீபத்திய 1,000 பதிவுகள் வரை</p>
+            <div className="space-y-2">
+              {visibleLeads.map((lead) => {
+                const leadDownloads = downloads.filter((entry) => entry.lead_id === lead.id);
+                return (
+                  <article key={lead.id} className="border border-gold/20 rounded-md p-3">
+                    <div className="flex flex-wrap items-start justify-between gap-2">
+                      <div>
+                        <h3 className="font-tamil font-semibold text-maroon-deep">{lead.name}</h3>
+                        <a href={`tel:${lead.phone}`} className="text-sm underline">{lead.phone || "தொலைபேசி இல்லை"}</a>
+                        <p className="text-sm text-muted-foreground font-tamil">{lead.place_name} • {lead.birth_date} {lead.birth_time}</p>
+                        <p className="text-sm text-muted-foreground font-tamil">{[lead.rasi, lead.nakshatra, lead.lagna].filter(Boolean).join(" • ") || "ஜாதக விவரங்கள் இல்லை"}</p>
+                      </div>
+                      <div className="text-right text-sm text-muted-foreground font-tamil">
+                        <div>{new Date(lead.created_at).toLocaleString()}</div>
+                        <div>PDF: {leadDownloads.length ? leadDownloads.map((entry) => reportName(entry.report_type)).join(", ") : "இன்னும் பதிவிறக்கம் இல்லை"}</div>
+                      </div>
+                    </div>
+                  </article>
+                );
+              })}
+              {visibleLeads.length === 0 && <p className="py-6 text-center font-tamil text-muted-foreground">பதிவுகள் இல்லை</p>}
+            </div>
+          </section>
+        </TabsContent>
 
         <TabsContent value="posts" className="space-y-6 mt-4">
           <form onSubmit={submitPost} className="parchment rounded-xl p-5 space-y-4">

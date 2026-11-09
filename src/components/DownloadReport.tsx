@@ -11,6 +11,9 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { supabase } from "@/integrations/supabase/client";
+
+type ReportType = "professional" | "onepage" | "birth_report" | "daily_panchangam";
 
 interface Props {
   targetId: string;
@@ -21,6 +24,8 @@ interface Props {
   priceInRupees?: number;
   /** Label shown in the payment dialog (e.g. "Professional Report"). */
   productLabel?: string;
+  leadId?: string | null;
+  reportType?: ReportType;
 }
 
 const UPI_ID = "udhayaraj24-1@oksbi";
@@ -43,6 +48,8 @@ export const DownloadReport = ({
   orientation = "p",
   priceInRupees,
   productLabel = "Report",
+  leadId = null,
+  reportType = "birth_report",
 }: Props) => {
   const [loading, setLoading] = useState(false);
   const [payOpen, setPayOpen] = useState(false);
@@ -91,6 +98,11 @@ export const DownloadReport = ({
         heightLeft -= pageHeight;
       }
       pdf.save(fileName);
+      const { error: trackingError } = await supabase.from("report_download_events").insert({
+        lead_id: leadId,
+        report_type: reportType,
+      });
+      if (trackingError) console.warn("Report download tracking failed", trackingError);
       toast.success("PDF பதிவிறக்கம் முடிந்தது");
     } catch (e) {
       console.error(e);

@@ -50,6 +50,7 @@ const Index = () => {
   const navigate = useNavigate();
   const searchParams = useSearchParams()[0];
   const [result, setResult] = useState<JathagamResult | null>(null);
+  const [leadId, setLeadId] = useState<string | null>(null);
   const [selectedTab, setSelectedTab] = useState<ReportView>("pro");
 
   const [interpretation, setInterpretation] = useState("");
@@ -124,6 +125,8 @@ const Index = () => {
     try {
       const r = computeJathagam(input);
       setResult(r);
+      const generatedLeadId = crypto.randomUUID();
+      setLeadId(generatedLeadId);
       window.scrollTo({ top: 0, behavior: "smooth" });
       streamInterpretation(r);
       // Share with other pages (Bhrigu Nandi Nadi, Gochara) so users don't re-enter data
@@ -137,6 +140,7 @@ const Index = () => {
       supabase
         .from("jathagam_leads")
         .insert({
+          id: generatedLeadId,
           name: input.name,
           phone: input.phone || "",
           gender: input.gender ?? null,
@@ -162,6 +166,7 @@ const Index = () => {
 
   const handleReset = () => {
     setResult(null);
+    setLeadId(null);
     setInterpretation("");
   };
 
@@ -353,6 +358,7 @@ const Index = () => {
 
           <ResultView
             result={result}
+            leadId={leadId}
             initialView={searchParams.get("tab") as ReportView | null}
             interpretation={interpretation}
             interpretationLoading={interpretationLoading}
@@ -389,12 +395,14 @@ const Index = () => {
 
 const ResultView = ({
   result,
+  leadId,
   initialView,
   interpretation,
   interpretationLoading,
   onReset,
 }: {
   result: JathagamResult;
+  leadId: string | null;
   initialView?: ReportView | null;
   interpretation: string;
   interpretationLoading: boolean;
@@ -489,6 +497,8 @@ const ResultView = ({
             orientation={view === "pro" ? proOrient : "p"}
             priceInRupees={view === "pro" ? 99 : view === "onepage" ? 9 : undefined}
             productLabel={view === "pro" ? "Professional Report" : view === "onepage" ? "One Page Report" : "Report"}
+            leadId={leadId}
+            reportType={view === "pro" ? "professional" : view === "onepage" ? "onepage" : "birth_report"}
           />
         </div>
       </div>

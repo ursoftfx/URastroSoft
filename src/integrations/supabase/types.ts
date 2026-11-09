@@ -448,6 +448,35 @@ export type Database = {
         }
         Relationships: []
       }
+      report_download_events: {
+        Row: {
+          created_at: string
+          id: string
+          lead_id: string | null
+          report_type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lead_id?: string | null
+          report_type: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lead_id?: string | null
+          report_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "report_download_events_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "jathagam_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           created_at: string
