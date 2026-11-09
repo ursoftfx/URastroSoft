@@ -133,6 +133,7 @@ export const TodayPanchangam = () => {
             paperSize="a4"
             orientation="p"
             productLabel="Today Panchangam"
+            reportType="daily_panchangam"
           />
         </div>
         <PanchangamShare

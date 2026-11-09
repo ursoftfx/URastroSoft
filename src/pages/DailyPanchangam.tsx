@@ -136,6 +136,7 @@ const DailyPanchangam = () => {
                 paperSize="a4"
                 orientation="p"
                 productLabel="Daily Panchangam"
+                reportType="daily_panchangam"
               />
             </div>
             <div className="sm:col-span-3">
