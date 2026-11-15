@@ -47,4 +47,11 @@ describe("Tamil 10-porutham calculations", () => {
     expect(item(2, 2, 1, 0, "ராசி பொருத்தம்")?.score).toBe(1); // Krittika spans Mesha/Rishabha
     expect(item(2, 2, 0, 1, "தின பொருத்தம்")?.score).toBe(1); // Krittika same-star exception
   });
+
+  it("flags Rajju or Vedha failures in the overall summary", () => {
+    const result = compute10Porutham(17, 0, 0, 0); // Ashwini–Jyeshtha: both Rajju and Vedha fail
+    expect(result.items.find((entry) => entry.name === "ரஜ்ஜு பொருத்தம்")?.score).toBe(0);
+    expect(result.items.find((entry) => entry.name === "வேத பொருத்தம்")?.score).toBe(0);
+    expect(result.verdict).toContain("ரஜ்ஜு / வேதை");
+  });
 });
