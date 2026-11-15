@@ -15,6 +15,14 @@ export const RASIS = [
   "துலாம்","விருச்சிகம்","தனுசு","மகரம்","கும்பம்","மீனம்",
 ];
 
+// A nakshatra quarter maps to one of the 12 rasis; boundary stars may map to two.
+export function isNakshatraRasiCombinationValid(nakshatraIndex: number, rasiIndex: number): boolean {
+  if (!Number.isInteger(nakshatraIndex) || nakshatraIndex < 0 || nakshatraIndex >= 27) return false;
+  if (!Number.isInteger(rasiIndex) || rasiIndex < 0 || rasiIndex >= 12) return false;
+  const firstPada = nakshatraIndex * 4;
+  return Array.from({ length: 4 }, (_, pada) => Math.floor((firstPada + pada) / 9)).includes(rasiIndex);
+}
+
 // Rasi lord (rasiyathipathi)
 const RASI_LORDS = [
   "செவ்வாய்","சுக்ரன்","புதன்","சந்திரன்","சூரியன்","புதன்",
