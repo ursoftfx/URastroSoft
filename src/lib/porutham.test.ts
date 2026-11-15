@@ -45,6 +45,6 @@ describe("Tamil 10-porutham calculations", () => {
     expect(item(0, 0, 0, 8, "ராசி பொருத்தம்")?.score).toBe(1); // 9th
     expect(item(0, 0, 0, 0, "ராசி பொருத்தம்")?.score).toBe(0); // same star and rasi
     expect(item(2, 2, 1, 0, "ராசி பொருத்தம்")?.score).toBe(1); // Krittika spans Mesha/Rishabha
-    expect(item(2, 2, 0, 0, "தின பொருத்தம்")?.score).toBe(1); // Krittika same-star exception
+    expect(item(2, 2, 0, 1, "தின பொருத்தம்")?.score).toBe(1); // Krittika same-star exception
   });
 });
