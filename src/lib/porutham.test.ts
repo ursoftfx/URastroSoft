@@ -29,6 +29,20 @@ describe("Tamil 10-porutham calculations", () => {
 
   it("checks Vasya from the bride's rasi toward the groom's rasi", () => {
     expect(item(0, 0, 0, 4, "வசிய பொருத்தம்")?.score).toBe(1); // Mesha draws Simha
-    expect(item(4, 0, 0, 4, "வசிய பொருத்தம்")?.score).toBe(0); // Reverse direction is not a listed pair
+    expect(item(0, 0, 0, 1, "வசிய பொருத்தம்")?.score).toBe(0); // Mesha–Rishabha is not a listed pair
+  });
+
+  it("counts Mahendra and Stree Deergha in bride-to-groom order", () => {
+    expect(item(0, 3, 0, 0, "மகேந்திர பொருத்தம்")?.score).toBe(1); // Count 4
+    expect(item(0, 3, 0, 0, "ஸ்த்ரீ தீர்க்க பொருத்தம்")?.score).toBe(0);
+    expect(item(0, 13, 0, 0, "ஸ்த்ரீ தீர்க்க பொருத்தம்")?.score).toBe(1); // Count 14
+  });
+
+  it("applies bride-to-groom Rasi positions and the same-star exception", () => {
+    expect(item(0, 0, 0, 6, "ராசி பொருத்தம்")?.score).toBe(1); // 7th
+    expect(item(0, 0, 0, 5, "ராசி பொருத்தம்")?.score).toBe(0); // 6th
+    expect(item(0, 0, 0, 0, "ராசி பொருத்தம்")?.score).toBe(0); // same star and rasi
+    expect(item(2, 2, 0, 1, "ராசி பொருத்தம்")?.score).toBe(1); // Krittika spans Mesha/Rishabha
+    expect(item(2, 2, 0, 0, "தின பொருத்தம்")?.score).toBe(1); // Krittika same-star exception
   });
 });
