@@ -219,9 +219,13 @@ export function compute10Porutham(
   const max = items.reduce((s, i) => s + i.max, 0);
   let verdict = "";
   const pct = (total / max) * 100;
-  if (pct >= 75) verdict = "சிறந்த பொருத்தம் — திருமணம் சாத்தியம்";
-  else if (pct >= 60) verdict = "நல்ல பொருத்தம் — பரிசீலனை செய்யலாம்";
-  else if (pct >= 40) verdict = "சாதாரண பொருத்தம் — ஜோதிடரை அணுகவும்";
-  else verdict = "குறைந்த பொருத்தம் — ஆலோசனை அவசியம்";
+  const hasCriticalMismatch = items.some(
+    (item) => (item.name.includes("ரஜ்ஜு") || item.name.includes("வேத")) && item.score === 0,
+  );
+  if (hasCriticalMismatch) verdict = "ரஜ்ஜு / வேதை குறிப்பு உள்ளது — முழு ஜாதகத்துடன் ஆலோசிக்கவும்";
+  else if (pct >= 75) verdict = "10 பொருத்தக் கணக்கில் உயர்ந்த மதிப்பு — முழு ஜாதகத்தையும் பரிசீலிக்கவும்";
+  else if (pct >= 60) verdict = "10 பொருத்தக் கணக்கில் நல்ல மதிப்பு — முழு ஜாதகத்தையும் பரிசீலிக்கவும்";
+  else if (pct >= 40) verdict = "10 பொருத்தக் கணக்கில் மிதமான மதிப்பு — ஜோதிடரிடம் ஆலோசிக்கவும்";
+  else verdict = "10 பொருத்தக் கணக்கில் குறைந்த மதிப்பு — ஜோதிடரிடம் ஆலோசிக்கவும்";
   return { items, total, max, verdict };
 }
