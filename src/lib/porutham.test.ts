@@ -39,8 +39,10 @@ describe("Tamil 10-porutham calculations", () => {
   });
 
   it("applies bride-to-groom Rasi positions and the same-star exception", () => {
-    expect(item(0, 0, 0, 6, "ராசி பொருத்தம்")?.score).toBe(1); // 7th
+    expect(item(0, 0, 0, 6, "ராசி பொருத்தம்")?.score).toBe(0.5); // 7th, moderate in the cited Hosur convention
+    expect(item(0, 0, 0, 7, "ராசி பொருத்தம்")?.score).toBe(0.5); // 8th, moderate
     expect(item(0, 0, 0, 5, "ராசி பொருத்தம்")?.score).toBe(0); // 6th
+    expect(item(0, 0, 0, 8, "ராசி பொருத்தம்")?.score).toBe(1); // 9th
     expect(item(0, 0, 0, 0, "ராசி பொருத்தம்")?.score).toBe(0); // same star and rasi
     expect(item(2, 2, 0, 1, "ராசி பொருத்தம்")?.score).toBe(1); // Krittika spans Mesha/Rishabha
     expect(item(2, 2, 0, 0, "தின பொருத்தம்")?.score).toBe(1); // Krittika same-star exception
