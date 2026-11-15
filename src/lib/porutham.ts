@@ -26,7 +26,7 @@ const YONI = [
   0,1,2,3,3,4,5,2,5,6,6,7,8,9,8,9,10,10,4,11,12,11,13,0,13,7,1,
 ];
 // Yoni names
-const YONI_NAMES = ["குதிரை","யானை","ஆடு","பாம்பு","நாய்","பூனை","எலி","பசு","எருமை","புலி","மான்","குரங்கு","மரநாய்","சிங்கம்"];
+const YONI_NAMES = ["குதிரை","யானை","ஆடு","பாம்பு","நாய்","பூனை","எலி","பசு","எருமை","புலி","மான்","குரங்கு","கீரி","சிங்கம்"];
 // Yoni enemies (traditional)
 const YONI_ENEMIES: [number, number][] = [
   [0,8],[1,13],[2,11],[3,12],[4,10],[5,6],[7,9],
@@ -159,7 +159,7 @@ function rasiyathipathi(boyRasi: number, girlRasi: number): { score: number; max
 
 // Vasya table: bride's rasi -> groom's rasi.
 const VASYA: Record<number, number[]> = {
-  0:[4,7], 1:[3,6], 2:[5], 3:[7,8], 4:[6], 5:[2,11],
+  0:[4,7], 1:[3,6], 2:[5], 3:[7,8], 4:[7], 5:[2,11],
   6:[9], 7:[3,5], 8:[11], 9:[11], 10:[0], 11:[9],
 };
 function vasya(boyRasi: number, girlRasi: number): { score: number; max: number; note: string } {
