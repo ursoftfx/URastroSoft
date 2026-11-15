@@ -82,8 +82,6 @@ function gana(boyNak: number, girlNak: number): { score: number; max: number; no
   if (b === g) return { score: 1, max: 1, note: `இருவரும் ${names[b]} (சிறந்தது)` };
   // Deva-Manushya = average
   if ((b === 0 && g === 1) || (b === 1 && g === 0)) return { score: 0.5, max: 1, note: `${names[b]} - ${names[g]} (சாதாரணம்)` };
-  // Manushya-Rakshasa = average
-  if ((b === 1 && g === 2) || (b === 2 && g === 1)) return { score: 0.5, max: 1, note: `${names[b]} - ${names[g]} (சாதாரணம்)` };
   return { score: 0, max: 1, note: `${names[b]} - ${names[g]} (சரியில்லை)` };
 }
 
@@ -104,16 +102,18 @@ function yoni(boyNak: number, girlNak: number): { score: number; max: number; no
   return { score: 0.5, max: 1, note: `${YONI_NAMES[by]} - ${YONI_NAMES[gy]} (சாதாரணம்)` };
 }
 
-// Rasi porutham: girl's rasi should not be 2,3,4,5,6 from boy
-function rasi(boyRasi: number, girlRasi: number): { score: number; max: number; note: string } {
-  const fromBoy = ((girlRasi - boyRasi + 12) % 12) + 1;
-  const fromGirl = ((boyRasi - girlRasi + 12) % 12) + 1;
-  // Bad: 6,8,12 from each other
-  const bad = [6, 8, 12];
-  if (bad.includes(fromBoy) || bad.includes(fromGirl)) {
-    return { score: 0, max: 1, note: `${fromBoy}/${fromGirl}-ம் இடம் (சரியில்லை)` };
+// Rasi porutham: count from the bride's Moon sign to the groom's.
+function rasi(
+  boyRasi: number, girlRasi: number, boyNak: number, girlNak: number,
+): { score: number; max: number; note: string } {
+  const count = ((boyRasi - girlRasi + 12) % 12) + 1;
+  if (count === 1) {
+    const sameStar = boyNak === girlNak;
+    return { score: sameStar ? 0 : 1, max: 1, note: sameStar ? "ஒரே ராசி, ஒரே நட்சத்திரம் (பொருத்தமில்லை)" : "ஒரே ராசி, வேறு நட்சத்திரம் ✓" };
   }
-  return { score: 1, max: 1, note: `${fromBoy}/${fromGirl}-ம் இடம் ✓` };
+  if (count === 7 || count === 8) return { score: 0.5, max: 1, note: `பெண் ராசியிலிருந்து ${count}-ம் இடம் (மிதமானது)` };
+  if (count >= 9) return { score: 1, max: 1, note: `பெண் ராசியிலிருந்து ${count}-ம் இடம் ✓` };
+  return { score: 0, max: 1, note: `பெண் ராசியிலிருந்து ${count}-ம் இடம் (பொருத்தமில்லை)` };
 }
 
 // Rasiyathipathi (Rasi lord) friendship
@@ -145,7 +145,7 @@ function vasya(boyRasi: number, girlRasi: number): { score: number; max: number;
   const list = VASYA[girlRasi] || [];
   if (list.includes(boyRasi)) return { score: 1, max: 1, note: `${RASIS[boyRasi]} வசம் ✓` };
   const reverse = VASYA[boyRasi] || [];
-  if (reverse.includes(girlRasi)) return { score: 0.5, max: 1, note: "ஒரு வழி வசம்" };
+  if (reverse.includes(girlRasi)) return { score: 1, max: 1, note: `${RASIS[girlRasi]} வசம் ✓` };
   return { score: 0, max: 1, note: "வசியம் இல்லை" };
 }
 
@@ -188,7 +188,7 @@ export function compute10Porutham(
     { name: "மகேந்திர பொருத்தம்", ...mahendra(girlNak, boyNak) },
     { name: "ஸ்த்ரீ தீர்க்க பொருத்தம்", ...streeDheergam(girlNak, boyNak) },
     { name: "யோனி பொருத்தம்", ...yoni(boyNak, girlNak) },
-    { name: "ராசி பொருத்தம்", ...rasi(boyRasi, girlRasi) },
+    { name: "ராசி பொருத்தம்", ...rasi(boyRasi, girlRasi, boyNak, girlNak) },
     { name: "ராசியதிபதி பொருத்தம்", ...rasiyathipathi(boyRasi, girlRasi) },
     { name: "வசிய பொருத்தம்", ...vasya(boyRasi, girlRasi) },
     { name: "ரஜ்ஜு பொருத்தம்", ...rajju(boyNak, girlNak) },
