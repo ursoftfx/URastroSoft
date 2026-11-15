@@ -159,14 +159,12 @@ function rasiyathipathi(boyRasi: number, girlRasi: number): { score: number; max
 
 // Vasya table: bride's rasi -> groom's rasi.
 const VASYA: Record<number, number[]> = {
-  0:[4,7], 1:[3,6], 2:[5], 3:[7,8], 4:[7], 5:[2,11],
-  6:[9], 7:[3,5], 8:[11], 9:[11], 10:[0], 11:[9],
+  0:[4,7], 1:[3,6], 2:[5], 3:[7,8], 4:[6], 5:[2,11],
+  6:[2,11], 7:[9], 8:[3,5], 9:[11], 10:[0], 11:[9],
 };
 function vasya(boyRasi: number, girlRasi: number): { score: number; max: number; note: string } {
   const list = VASYA[girlRasi] || [];
   if (list.includes(boyRasi)) return { score: 1, max: 1, note: `${RASIS[boyRasi]} வசம் ✓` };
-  const reverse = VASYA[boyRasi] || [];
-  if (reverse.includes(girlRasi)) return { score: 1, max: 1, note: `${RASIS[girlRasi]} வசம் ✓` };
   return { score: 0, max: 1, note: "வசியம் இல்லை" };
 }
 
