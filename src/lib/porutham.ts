@@ -66,13 +66,21 @@ function streeDheergam(girlNak: number, boyNak: number): { score: number; max: n
 }
 
 // Dina porutham: count from the bride's star to the groom's, divide by 9.
-function dina(girlNak: number, boyNak: number): { score: number; max: number; note: string } {
+function dina(
+  girlNak: number, boyNak: number, girlRasi: number, boyRasi: number,
+): { score: number; max: number; note: string } {
   const count = starCount(girlNak, boyNak);
   const rem = count % 9;
   // Auspicious remainders: 2,4,6,8,9(0)
   const good = [2, 4, 6, 8, 0];
-  const ok = good.includes(rem);
-  return { score: ok ? 1 : 0, max: 1, note: `எண்ணிக்கை ${count} (மீதி ${rem === 0 ? 9 : rem}) ${ok ? "✓" : "✗"}` };
+  // Same-star exception: a star spanning two signs can agree when the partners' Moon signs differ.
+  const spansRasis = Math.floor((girlNak * 4) / 9) !== Math.floor((girlNak * 4 + 3) / 9);
+  const sameStarException = girlNak === boyNak && girlRasi !== boyRasi && spansRasis;
+  const ok = good.includes(rem) || sameStarException;
+  const note = sameStarException
+    ? `ஒரே நட்சத்திரம், வேறு ராசி — விதிவிலக்கு ✓`
+    : `எண்ணிக்கை ${count} (மீதி ${rem === 0 ? 9 : rem}) ${ok ? "✓" : "✗"}`;
+  return { score: ok ? 1 : 0, max: 1, note };
 }
 
 // Gana porutham
@@ -126,14 +134,27 @@ const PLANET_FRIENDS: Record<string, string[]> = {
   "சுக்ரன்": ["புதன்", "சனி"],
   "சனி": ["புதன்", "சுக்ரன்"],
 };
+const PLANET_ENEMIES: Record<string, string[]> = {
+  "சூரியன்": ["சுக்ரன்", "சனி"],
+  "சந்திரன்": [],
+  "செவ்வாய்": ["புதன்"],
+  "புதன்": ["சந்திரன்"],
+  "குரு": ["புதன்", "சுக்ரன்"],
+  "சுக்ரன்": ["சூரியன்", "சந்திரன்"],
+  "சனி": ["சூரியன்", "சந்திரன்", "செவ்வாய்"],
+};
 function rasiyathipathi(boyRasi: number, girlRasi: number): { score: number; max: number; note: string } {
   const bl = RASI_LORDS[boyRasi], gl = RASI_LORDS[girlRasi];
   if (bl === gl) return { score: 1, max: 1, note: `இருவருக்கும் ${bl} (சிறந்தது)` };
   const bf = PLANET_FRIENDS[bl] || [];
   const gf = PLANET_FRIENDS[gl] || [];
+  const be = PLANET_ENEMIES[bl] || [];
+  const ge = PLANET_ENEMIES[gl] || [];
   if (bf.includes(gl) && gf.includes(bl)) return { score: 1, max: 1, note: `${bl} - ${gl} (நட்பு)` };
+  if (be.includes(gl) && ge.includes(bl)) return { score: 0, max: 1, note: `${bl} - ${gl} (பகை)` };
+  if (be.includes(gl) || ge.includes(bl)) return { score: 0.5, max: 1, note: `${bl} - ${gl} (கலப்பு / மிதமான நிலை)` };
   if (bf.includes(gl) || gf.includes(bl)) return { score: 0.5, max: 1, note: `${bl} - ${gl} (ஒரு வழி நட்பு)` };
-  return { score: 0, max: 1, note: `${bl} - ${gl} (பகை)` };
+  return { score: 0.5, max: 1, note: `${bl} - ${gl} (சமம்)` };
 }
 
 // Vasya table: bride's rasi -> groom's rasi.
@@ -183,7 +204,7 @@ export function compute10Porutham(
   girlNak: number, girlRasi: number
 ): PoruthamResult {
   const items: PoruthamItem[] = [
-    { name: "தின பொருத்தம்", ...dina(girlNak, boyNak) },
+    { name: "தின பொருத்தம்", ...dina(girlNak, boyNak, girlRasi, boyRasi) },
     { name: "கண பொருத்தம்", ...gana(boyNak, girlNak) },
     { name: "மகேந்திர பொருத்தம்", ...mahendra(girlNak, boyNak) },
     { name: "ஸ்த்ரீ தீர்க்க பொருத்தம்", ...streeDheergam(girlNak, boyNak) },
