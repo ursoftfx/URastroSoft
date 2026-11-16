@@ -32,6 +32,28 @@ describe("Tamil 10-porutham calculations", () => {
     expect(item(0, 0, 0, 1, "வசிய பொருத்தம்")?.score).toBe(0); // Mesha–Rishabha is not a listed pair
   });
 
+  it("uses the complete directional Vasya table", () => {
+    const expectedGroomRasisByBride = [
+      [4, 7], [3, 6], [5], [7, 8], [9], [1, 11],
+      [9], [3, 5], [11], [10], [11], [9],
+    ];
+    expectedGroomRasisByBride.forEach((expected, brideRasi) => {
+      const actual = Array.from({ length: 12 }, (_, groomRasi) => groomRasi)
+        .filter((groomRasi) => item(0, 0, brideRasi, groomRasi, "வசிய பொருத்தம்")?.score === 1);
+      expect(actual).toEqual(expected);
+    });
+  });
+
+  it("labels the five Rajju groups consistently with their calculation groups", () => {
+    const expected = [
+      [0, 8, "பாத"], [1, 7, "ஊரு"], [2, 6, "நாபி"],
+      [3, 5, "கண்ட"], [4, 13, "சிரோ"],
+    ] as const;
+    expected.forEach(([firstStar, secondStar, label]) => {
+      expect(item(firstStar, secondStar, 0, 0, "ரஜ்ஜு பொருத்தம்")?.note).toContain(label);
+    });
+  });
+
   it("counts Mahendra and Stree Deergha in bride-to-groom order", () => {
     expect(item(0, 3, 0, 0, "மகேந்திர பொருத்தம்")?.score).toBe(1); // Count 4
     expect(item(0, 3, 0, 0, "ஸ்த்ரீ தீர்க்க பொருத்தம்")?.score).toBe(0);

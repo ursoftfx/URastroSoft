@@ -165,10 +165,10 @@ function rasiyathipathi(boyRasi: number, girlRasi: number): { score: number; max
   return { score: 0.5, max: 1, note: `${bl} - ${gl} (சமம்)` };
 }
 
-// Vasya table: bride's rasi -> groom's rasi.
+// Vasya table: directional bride's rasi -> groom's rasi.
 const VASYA: Record<number, number[]> = {
-  0:[4,7], 1:[3,6], 2:[5], 3:[7,8], 4:[6], 5:[2,11],
-  6:[2,11], 7:[9], 8:[3,5], 9:[11], 10:[0], 11:[9],
+  0:[4,7], 1:[3,6], 2:[5], 3:[7,8], 4:[9], 5:[1,11],
+  6:[9], 7:[3,5], 8:[11], 9:[10], 10:[11], 11:[9],
 };
 function vasya(boyRasi: number, girlRasi: number): { score: number; max: number; note: string } {
   const list = VASYA[girlRasi] || [];
@@ -178,7 +178,7 @@ function vasya(boyRasi: number, girlRasi: number): { score: number; max: number;
 
 // Rajju: same rajju is dosha
 function rajju(boyNak: number, girlNak: number): { score: number; max: number; note: string } {
-  const names = ["பாத","ஜானு","கடி","நாபி","கண்ட","சிரோ"];
+  const names = ["பாத","ஊரு","நாபி","கண்ட","சிரோ"];
   const b = RAJJU[boyNak], g = RAJJU[girlNak];
   if (b === g) return { score: 0, max: 1, note: `இருவரும் ${names[b]} ரஜ்ஜு (தோஷம்)` };
   return { score: 1, max: 1, note: `${names[b]} - ${names[g]} (சரி)` };
